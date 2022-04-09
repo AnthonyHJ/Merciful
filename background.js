@@ -171,6 +171,7 @@ chrome.runtime.onMessage.addListener(
 			  chrome.tabs.sendMessage(key, request);
 			}
 		}
+	return true;
 	});
 
 //	Startup script

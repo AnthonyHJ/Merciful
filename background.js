@@ -209,12 +209,8 @@ chrome.runtime.onStartup.addListener(function() {
 
 //	Update scrolls 
  chrome.webNavigation.onCompleted.addListener(function(details) {
-	chrome.scripting.executeScript(details.tabId, 
-		{file: "time.js"}, 
-		(result) => {
-			chrome.scripting.executeScript(details.tabId, {
-				file: "insertMercyProp.js",
-			})
+	chrome.scripting.executeScript({target: {tabId: details.tabId},files: ["time.js"],}, 
+		(result) => {chrome.scripting.executeScript({target: {tabId: details.tabId},files: ["insertMercyProp.js"],})
 		})
 	
 }, {url: [{urlPrefix : 'http://game.marrach.com:8080/SAM/Prop/'}]});
@@ -233,8 +229,9 @@ chrome.runtime.onStartup.addListener(function() {
  chrome.webNavigation.onCompleted.addListener(function(details) {
 	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
-	chrome.scripting.executeScript(details.tabId, {
-		file: "insertMercyAoE.js",
+	chrome.scripting.executeScript({
+		target: {tabId: details.tabId},
+		files: ["insertMercyCM.js"],
 	})
 }, {url: [{urlMatches : 'http://game.allegoryofempires.com/SAM/Prop/Allegory:Theatre:Theatre/Index?$'}]});
  
@@ -242,8 +239,9 @@ chrome.runtime.onStartup.addListener(function() {
  chrome.webNavigation.onCompleted.addListener(function(details) {
 	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
-	chrome.scripting.executeScript(details.tabId, {
-		file: "insertMercyMR.js",
+	chrome.scripting.executeScript({
+		target: {tabId: details.tabId},
+		files: ["insertMercyCM.js"]
 	})
 }, {url: [{urlMatches : 'http://game.multirev.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}]});
  

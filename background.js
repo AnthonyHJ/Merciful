@@ -14,18 +14,18 @@ var pageNames = {
 	'LP':'lazarus',
 	};
 
-var gameTabs = new Map();	//	List of active tabs
-var gameTabLog = new Map();	//	List of tabs which may have an active log-file
+//	var gameTabs = new Map();	//	List of active tabs
+//	var gameTabLog = new Map();	//	List of tabs which may have an active log-file
 
 //	Logging
-var logFileName = new Map();
-var logFileString = new Map();
-var logFileID = new Map();
-var logFileStyle = new Map();
+//	var logFileName = new Map();
+//	var logFileString = new Map();
+//	var logFileID = new Map();
+//	var logFileStyle = new Map();
 
-var fileExt = "txt";
+//	var fileExt = "txt";
 
-var logFiles = new Object();
+//	var logFiles = new Object();
 
 //	Recieves messages and passes them along
 chrome.runtime.onMessage.addListener(

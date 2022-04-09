@@ -1,0 +1,45 @@
+{
+  "name": "Merciful Client",
+  "short_name": "Merciful",
+  "version": "0.4.5",
+  "version_name": "0.4.5 - Interim Fixes",
+  "description": "A less-zealous client for Skotos-Tech games",
+  
+  "icons": {
+    "16": "images/Merciful_16.png",
+    "32": "images/Merciful_32.png",
+    "48": "images/Merciful_48.png",
+    "128": "images/Merciful_128.png"
+  },
+  
+  "browser_action": {
+    "default_title": "Merciful Client",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/Merciful_16.png",
+      "32": "images/Merciful_32.png",
+      "48": "images/Merciful_48.png",
+      "128": "images/Merciful_128.png"
+    }
+  },
+  
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "externally_connectable": {
+    "matches": ["*://*.marrach.com/*","*://*.multirev.net/*","*://*.allegoryofempires.com/*"]
+    },
+  "options_page": "options.html",
+  "permissions": [
+            "cookies", 
+			"downloads", 
+            "storage", 
+            "webNavigation",
+            "*://*.marrach.com/*",
+			"*://*.multirev.net/*",
+			"*://*.allegoryofempires.com/*"
+            ],
+    
+  "manifest_version": 2
+}

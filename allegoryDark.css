@@ -1,0 +1,14 @@
+/*	Dark, no contrast prefs	*/
+.themeMain { background-color : #404040; color : #ccc; }
+.themeMain A { color : #3fd; }
+.themeContrast { background-color : #ccc; color : #000; }
+#weather_box	{ background-color:#ccc; margin: 7px 7px 0px 7px; padding: 7px; }
+
+@media (prefers-contrast: more)
+{
+	/*	Dark, high contrast	*/
+	.themeMain { background-color : #000; color : #fff; }
+	.themeMain A { color : #77f; text-decoration: underline !important; }
+	.themeContrast { background-color : #111; color : #000; }
+	#weather_box	{ background-color:#fff; margin: 7px 7px 0px 7px; padding: 7px; filter: contrast(2) invert(1);}
+}

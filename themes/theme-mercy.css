@@ -1,0 +1,52 @@
+#left { min-width: 0; }
+#right { width:calc(26px + 7em); }
+#chat_theatre {}
+#clientui {padding-right:33px; padding-top:4px;}
+
+#image_map {margin-bottom: 10px; border: 3px solid black; background: black;}
+#image_map_img {border: 0px solid black; height:130px;width:130px; background-position:center center; margin: auto; background-repeat:no-repeat; background-image:url('http://images.marrach.com/map-loading.gif');}
+
+#options, #log {overflow:hidden; overflow-wrap:break-word; margin:7px auto 0px auto; width: calc(10px + 7em); height: auto; position:relative; vertical-align: top; padding: 5px 1px; font-weight:bold;}
+
+#helper_area {flex:1; overflow:hidden; overflow-wrap:break-word; margin:7px auto 7px auto; width: calc(10px + 7em); height: 120px; position:relative; vertical-align: top; display: flex; flex-direction: column; padding: 7px 1px;}
+
+#map_area {border: 1px solid  #666666; background: rgba(0, 0, 0, 0.5); overflow:hidden; margin:7px auto; width: calc(10px + 7em); height: calc(10px + 7em); position:relative; vertical-align: bottom; align: center; background-size: cover;}
+
+#core {
+	position: relative;
+}
+#snap_holder {position: relative;}
+
+.sidebar {
+	min-width:136px;
+	vertical-align: bottom;
+    height: 100vh;
+	border : 1;
+}
+
+.target-assist	{
+	overflow:hidden; 
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	cursor:pointer;
+	padding: 2px 0px; 
+	position: relative;
+}
+
+#snap_button	{ position: absolute; bottom: 5px; right: 25px; z-index: 1; display: none; }
+#snap_image		{ border-radius: 5px; padding: 5px; }
+#icon_tray		{ position: absolute; top: 5px; right: 25px; z-index: 1; display: block; }
+.icon_item		{ animation: 1 iconflash 8s; width: 0; opacity: 0; }
+
+.map_button		{ width: 13px; height: 13px; position: absolute; }
+
+#Compass-N				{ top: 0px; left: calc(50% - 7px); z-index: 1; display: block; background-repeat:no-repeat; }
+#Compass-NE				{ top: 0px; right: 0px; z-index: 1; display: block; background-repeat:no-repeat; }
+#Compass-E				{ top: calc(50% - 7px); right: 0px; z-index: 1; display: block; background-repeat:no-repeat; }
+#Compass-SE				{ bottom: 0px; right: 0px; z-index: 1; display: block; background-repeat:no-repeat; }
+#Compass-S				{ bottom: 0px; left: calc(50% - 7px); z-index: 1; display: block; background-repeat:no-repeat; }
+#Compass-SW				{ bottom: 0px; left: 0px; z-index: 1; display: block; background-repeat:no-repeat; }
+#Compass-W				{ top: calc(50% - 7px); left: 0px; z-index: 1; display: block; background-repeat:no-repeat; }
+#Compass-NW				{ top: 0px; left: 0px; z-index: 1; display: block; background-repeat:no-repeat; }
+
+#go_n, #go_ne, #go_e, #go_se, #go_s, #go_sw, #go_w, #go_nw			{ display: none; cursor:pointer; }

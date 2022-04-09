@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en-UK">
+<head>
+	<meta charset="utf-8">
+	<title>Multiverse Revelations - Merciful</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="author" content="">
+	<meta name="keywords" content="client, prototype, html5">
+	<meta name="description" content="Multiverse Revelations HTML5 client ">
+	<link type="text/css" href="mercy.css" rel="stylesheet">
+	<link type="text/css" href="themes/theme-mercy.css"   rel="stylesheet" 			 title="mercy">
+	<script type="text/javascript" src="/server.js"></script>
+	<script type="text/javascript" src="md5.js"></script>
+	<style></style>
+</head>
+<body id="body">
+	<template id="notificationIcon">
+		<img src="images/letter_b.png" class='themeContrast icon_item'>
+	</template>
+	<div id="mainclient">
+		<div id="left" class="sidebar themeContrast UIText"></div>
+		<div id="core" class="themeContrast">
+			<div id="icon_tray"></div>
+			<noscript>Notice: You don't seem to have JavaScript turned on.  JavaScript is required for the client to function.</noscript>
+			<div id="output" class="selectable light themeMain">
+				<div id="initial_output"></div>
+			</div>
+			<div id="snap_holder">
+				<div id='snap_button'><a title='Snap the window back to the bottom'><img src='images/download_w.png' id='snap_image' class='themeContrast' /></a></div>
+			</div>
+			<div class="UIText inputwrapper">
+				<div id="ghostinput" class="selectable themeMain"></div>
+				<div id="inputsizer"></div>
+			</div>
+			<div class="UIText inputwrapper">
+				<textarea id="commandinput" class="selectable themeMain" autocomplete="off" autocapitalize="none" spellcheck="true" autofocus disabled></textarea>
+				<div id="inputsizer"></div>
+			</div>
+		</div>
+		<div id="right" class="sidebar themeContrast UIText">
+			<div title="@options" id="options" class="UIText themeMain" style="cursor:pointer;">Options</div> 
+			<div title = "@log" id = "log" class = "UIText themeMain" style = "cursor:pointer;">Get Log</div>
+			<div id="helper_area" class = "themeMain UIText"></div>
+			<div id="map_area" class="UIText">
+				<div id="Compass-N" class="map_button">
+					<img title="go north" id='go_n'  src='https://images.marrach.com/maparrows/n-ex.gif' />
+				</div>
+				<div id="Compass-NE" class="map_button">
+					<img title="go northeast" id='go_ne' src='https://images.marrach.com/maparrows/ne-ex.gif' />
+				</div>
+				<div id="Compass-E" class="map_button">
+					<img title="go east" id='go_e' src='https://images.marrach.com/maparrows/e-ex.gif' />
+				</div>
+				<div id="Compass-SE" class="map_button">
+					<img title="go southeast" id='go_se' src='https://images.marrach.com/maparrows/se-ex.gif' />
+				</div>
+				<div id="Compass-S" class="map_button">
+					<img title="go south" id='go_s' src='https://images.marrach.com/maparrows/s-ex.gif' />
+				</div>
+				<div id="Compass-SW" class="map_button">
+					<img title="go southwest" id='go_sw' src='https://images.marrach.com/maparrows/sw-ex.gif' />
+				</div>
+				<div id="Compass-W" class="map_button">
+					<img title="go west" id='go_w' src='https://images.marrach.com/maparrows/w-ex.gif' />
+				</div>
+				<div id="Compass-NW" class="map_button">
+					<img title="go northwest" id='go_nw' src='https://images.marrach.com/maparrows/nw-ex.gif' />
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="time.js"></script>
+	<script type="text/javascript" src="multirev.js"></script>
+	<script type="text/javascript" src="mercy.js"></script>
+	<script type="text/javascript" src="/skoot.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+/*	Default (light, no contrast prefs)	*/
+.themeMain { background-color : #ddd; color : #222; }
+.themeMain A { color : #3f9; }
+.themeContrast { background-color : #aaa; color : #000; }
+
+@media (prefers-contrast: more)
+{
+	/*	Light, high contrast	*/
+	.themeMain { background-color : #fff; color : #000; }
+	.themeMain A { color : #00f; text-decoration: underline !important; }
+	.themeContrast { background-color : #fff; color : #000; }
+	#weather_box	{ background-color:#fff; margin: 7px 7px 0px 7px; padding: 7px; filter: contrast(2);}
+}

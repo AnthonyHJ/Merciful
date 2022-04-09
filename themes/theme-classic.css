@@ -1,0 +1,28 @@
+#left {background-image:url('http://images.marrach.com/edgeleft.jpg');}
+#right {background-image:url('http://images.marrach.com/edgeright.jpg');}
+#chat_theatre {}
+#clientui {padding-right:33px; padding-top:4px;}
+#skotos_logo {background-image: url('http://images.marrach.com/skotoslogo.jpg'); height: 66px;}
+#save_button, #settings_button {display:inline-block; opacity:0.85; padding-left:4px;}
+
+    #image_map {margin-bottom: 10px; border: 3px solid black; background: black;}
+	#image_map_img {border: 0px solid black; height:130px;width:130px; background-position:center center; margin: auto; background-repeat:no-repeat; background-image:url('http://images.marrach.com/map-loading.gif');}
+	.comp_button {position:absolute; height:13px; width:14px; border: 0px solid black; opacity: 0.9; z-index:2; background-repeat: no-repeat; margin: auto;}
+
+	#comp_nw {right:120px;	bottom:130px;}
+	#comp_n  {right:60px;	bottom:131px;}
+	#comp_ne {right:2px;	bottom:131px;}
+	#comp_w  {right:120px;	bottom:74px;}
+	#comp_e  {right:3px;	bottom:74px;}
+	#comp_sw {right:120px;	bottom:12px;}
+	#comp_s  {right:60px;	bottom:12px;}
+	#comp_se {right:1px;	bottom:12px;}
+
+#map_area {border: 1px solid  #666666; background: rgba(0, 0, 0, 0.5); overflow:hidden; margin:7px auto; width: 120px; height: 120px; position:relative;}
+
+#core {
+	max-width:calc(100% - 272px);
+}
+.sidebar {
+	width:136px;
+}

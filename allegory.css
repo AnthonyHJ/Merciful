@@ -1,0 +1,6 @@
+@media (prefers-contrast: more)
+{
+	#stamina_bar, #health_bar	{ background: linear-gradient(0deg, #f00 var(--percentValue), #ccc var(--percentValue)); }
+	#focus_bar, #energy_bar		{ background: linear-gradient(0deg, #ff0 var(--percentValue), #ccc var(--percentValue)); }
+	#hunger_bar					{ background: linear-gradient(0deg, #0f0 var(--percentValue), #ccc var(--percentValue)); }
+}

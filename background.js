@@ -433,7 +433,7 @@ function sendToLogger(windowID, myMessage)
 		return false;
 	
 	let currentText = logFileString.get(windowID);
-	logFileString.set(windowID, currentText + textOut + "\n");
+	logFileString.set(windowID, currentText + myMessage + "\n");
 	logFiles[gameTabLog.get(windowID)].logText = logFileString.get(windowID);
 	
 	chrome.storage.local.set({logFiles : logFiles}, function() {

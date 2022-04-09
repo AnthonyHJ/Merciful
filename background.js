@@ -6,9 +6,6 @@
 
 'use strict';
 
-var cookieUser = [];
-var cookiePass = [];
-
 var pageNames = {
 	'CM':'marrach',
 	'AE':'allegory',
@@ -371,6 +368,9 @@ function getLoginCookies(URL,gameCode)
 	chrome.cookies.getAll({'url':URL}, function(cookies){
 		console.log(cookies);
 		
+		let cookieUser = [];
+		let cookiePass = [];
+
 		//	cycle through the cookies to get 'user' and 'pass'
 		for (const thisCookie of cookies) {
 			if(thisCookie.name == 'user')

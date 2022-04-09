@@ -428,18 +428,7 @@ function sendToLogger(windowID, myMessage)
 
 	}
 	
-	if (fileExt == 'txt')
-	{
-		var tmp = document.createElement("DIV");
-		tmp.innerHTML = myMessage;
-		var textOut = tmp.textContent || tmp.innerText || "";
-	}
-	else
-	{
-		textOut = myMessage + '<br>';
-	}
-	
-	if ((textOut == "") && (fileExt == "txt"))
+	if ((myMessage == "") && (fileExt == "txt"))
 		return false;
 	
 	let currentText = logFileString.get(windowID);

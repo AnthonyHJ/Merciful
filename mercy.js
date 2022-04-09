@@ -1558,8 +1558,19 @@ function DeleteOldestNode()
 
 function sendToLogger(myMessage)
 {
+	if (clientVars.get('logFormat') == 'txt')
+	{
+		var tmp = document.createElement("DIV");
+		tmp.innerHTML = myMessage;
+		var textOut = tmp.textContent || tmp.innerText || "";
+	}
+	else
+	{
+		textOut = myMessage + '<br>';
+	}
+	
 	//	Sends logging to background.js
-	chrome.runtime.sendMessage({'logMessage': myMessage});
+	chrome.runtime.sendMessage({'logMessage': textOut});
 }
 
 function sendToLoggerBAK(myFilename, myMessage)

@@ -144,7 +144,7 @@ var clientVarsCore = {
 //	},
 	'echoInput' : {
 		'pretty' : 'Echo Input',
-		'defaultValue' : 0,
+		'defaultValue' : 1,
 		'pattern' : '(true|false)',
 		'desc' : 'This variable tells Merciful whether to show you the commands you typed in the main window or just their results. False means you will not see your typed commands in the log either.',
 		'type' : 'bool',

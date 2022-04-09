@@ -474,11 +474,13 @@ function SaveLogFile(windowID)
 	let file;
 	
 	if (logFileName.get(windowID).substr(-4) == 'html')
-		file = new Blob([logFileOutput], {type: 'text/html'});
+		file = 'data:text/html;base64,'+btoa(logFileOutput);
+//		file = new Blob([logFileOutput], {type: 'text/html'});
 	else
-		file = new Blob([logFileOutput], {type: 'text/plain'});
+		file = 'data:text/plain;base64,'+btoa(logFileOutput);
+//		file = new Blob([logFileOutput], {type: 'text/plain'});
 
-	chrome.downloads.download({ url : URL.createObjectURL(file), filename : logFileName.get(windowID), conflictAction : "uniquify" }, (newID) => { 
+	chrome.downloads.download({ url : file, filename : logFileName.get(windowID), conflictAction : "uniquify" }, (newID) => { 
 		logFileID.set(windowID, newID); 
 //		console.log ('Watching download with ID: ' + logFileID.get(windowID));
 	});

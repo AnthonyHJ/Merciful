@@ -32,41 +32,59 @@ chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.login)	//	login a character
 		{
-			//	Check for the character
-			let targetTab = 0;
-			
-			for (const [key, value] of gameTabs) {
-				if (value == request.login)
-					targetTab = key;
-			}
-			
-			//	If there is no tab with that character...
-			if (targetTab == 0)
+			chrome.storage.local.get(['gameTabs'], function(result) 
 			{
-				chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
-					console.log("Logging in " + request.login + " to " + request.game + ".");
-					gameTabs.set(tab.id, request.login);
-					gameTabLog.set(tab.id, request.login);
-				});
-			}
-			else //	Else switch to that tab...
-			{
-				chrome.tabs.update(targetTab,{highlighted:true});
+				let gameTabs = {};
 				
-				//	Now opens the window
-				chrome.tabs.get(targetTab,function (tab) {
-					//	Should check the windowId - if it's 'minimized' then set it to 'normal'
-					chrome.windows.get(tab.windowId, function (window) {
-						if (window.state == 'minimized')
-							chrome.windows.update(
-								tab.windowId,
-								{
-									state: 'normal'
-								}
-							)
-					})
-				});
-			}
+				if (result.gameTabs)
+					gameTabs = result.gameTabs;
+			
+				//	Check for the character
+				let targetTab = 0;
+				
+				for (const [key, value] of gameTabs) {
+					if (value == request.login)
+						targetTab = key;
+				}
+				
+				//	If there is no tab with that character...
+				if (targetTab == 0)
+				{
+					chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
+						console.log("Logging in " + request.login + " to " + request.game + ".");
+						
+						gameTabs[tab.id] = request.login;
+						chrome.storage.local.set({gameTabs : gameTabs});
+		
+						chrome.storage.local.get(['gameTabs'], function(result) {
+							let gameTabLog = {};
+							if (result.gameTabLog)
+								gameTabLog = result.gameTabLog;
+							
+							gameTabLog[tab.id] = request.login;
+							chrome.storage.local.set({gameTabLog : gameTabLog});
+						});
+					});
+				}
+				else //	Else switch to that tab...
+				{
+					chrome.tabs.update(targetTab,{highlighted:true});
+					
+					//	Now opens the window
+					chrome.tabs.get(targetTab,function (tab) {
+						//	Should check the windowId - if it's 'minimized' then set it to 'normal'
+						chrome.windows.get(tab.windowId, function (window) {
+							if (window.state == 'minimized')
+								chrome.windows.update(
+									tab.windowId,
+									{
+										state: 'normal'
+									}
+								)
+						})
+					});
+				}
+			});
 		}
 		else if (request.logMessage != null)	//	We're sending a log
 		{
@@ -176,6 +194,10 @@ chrome.runtime.onMessage.addListener(
 
 //	Startup script
 chrome.runtime.onStartup.addListener(function() {
+	chrome.storage.local.remove(['gameTabs'], function() {
+          console.log('Game tabs list unset');
+        });
+	
 	chrome.storage.local.remove(['cookieUser', 'cookiePass'], function() {
           console.log('default cookies unset');
         });

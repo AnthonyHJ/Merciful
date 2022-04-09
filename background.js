@@ -278,10 +278,11 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 });
 
 chrome.runtime.onInstalled.addListener(function(details) {
-	console.log(details);
-	
 	if (details.reason == "update")
 	{
+		if (details.previousVersion == chrome.runtime.getManifest().version)
+			return;
+	
 		chrome.tabs.create({"url": "ChangeLog.html", "active": true}, function (tab) {console.log(tab);});
 		
 		//	TODO: Fix your local variables

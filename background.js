@@ -76,18 +76,6 @@ chrome.runtime.onMessage.addListener(
 			}
 			else if (request.logMessage != null)	//	We're sending a log
 			{
-				if (request.logBAK)
-				{
-					results.logFileName['recoverLogs-' + sender.tab.id] = request.logFileName;
-					chrome.storage.local.set({logFileName : results.logFileName});
-					
-					results.logFileString.set['recoverLogs-' + sender.tab.id] = request.logMessage;
-					chrome.storage.local.set({logFileString : results.logFileString});
-					
-					SaveLogFile('recoverLogs-' + sender.tab.id);
-					return;
-				}
-				
 				sendToLogger(sender.tab.id, request.logMessage);
 			}
 			else if (request.saveLog)	//	We're sending a log

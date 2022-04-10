@@ -289,6 +289,8 @@ chrome.runtime.onStartup.addListener(function() {
  chrome.webNavigation.onCompleted.addListener(function(details) {
 //	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
+	console.log("Adding Merciful login links.");
+	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
 		files: ["insertMercyCM.js"],

@@ -576,18 +576,12 @@ function DownloadComplete(downloadDelta)
 			return;
 		}
 		
-	//	console.log("File with ID : " + downloadDelta.id + " has completed.");
-		
 		//	Once the file finishes downloading, reset the values
-	//	console.log("gameTabLog : " + gameTabLog.get(windowID));
 		
 		//	Reset the log
 		delete items.logFileName.windowID;
 		logFileString.delete(windowID);
 		logFileID.delete(windowID);
-		
-	//	console.log(windowID);
-	//	console.log(gameTabLog.get(windowID));
 		
 		delete items.logFiles[items.gameTabLog.windowID];
 		

@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener(
 				//	Check for the character
 				let targetTab = 0;
 				
-				for (const [key, value] of gameTabs) {
+				for (const [key, value] of Object.entries(gameTabs)) {
 					if (value == request.login)
 						targetTab = key;
 				}
@@ -150,10 +150,26 @@ chrome.runtime.onMessage.addListener(
 			/*
 			 * This should be handled in the originating window, surely...
 			 */
-			
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					delete result.gameTabs[sender.tab.id];
+					chrome.storage.local.set({gameTabs : result.gameTabs});
+				}
+			});
+	
 			//	Remove the window from list of active play sessions
-			if (gameTabs.has(sender.tab.id))
-				gameTabs.delete(sender.tab.id);
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					if (!result.gameTabs[tabId])
+						return;
+					
+					delete result.gameTabs[tabId];
+					chrome.storage.local.set({gameTabs : result.gameTabs});
+				}
+			});
+			
 			//	Open the login page in that window
 			chrome.tabs.update(sender.tab.id,{"url": request.loginURL});
 		}
@@ -161,14 +177,15 @@ chrome.runtime.onMessage.addListener(
 		{
 			console.log('updating log format from ' + fileExt + ' to ' + request.value);
 			
-			//	Save the old logs
-			if (gameTabs.size > 0)	//	if no windows exist, why update it?
-			{
-				//	foreach existing window, run SaveLogFile()
-				gameTabs.forEach((value, key, map) =>{
-					SaveLogFile(key);
-				});
-			}
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					for (const [key, value] of Object.entries(result.gameTabs)) {
+						//	Save the old logs
+						SaveLogFile(key);
+					}
+				}
+			});
 			
 			fileExt = request.value;
 		}
@@ -185,9 +202,14 @@ chrome.runtime.onMessage.addListener(
 		} 
 		else 	//	Pass a message to all active game windows (probably from options page)
 		{
-			for (const [key, value] of gameTabs) {
-			  chrome.tabs.sendMessage(key, request);
-			}
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					for (const [key, value] of Object.entries(result.gameTabs)) {
+					  chrome.tabs.sendMessage(key, request);
+					}
+				}
+			});
 		}
 	return true;
 	});
@@ -239,8 +261,9 @@ chrome.runtime.onStartup.addListener(function() {
 }, {url: [{urlPrefix : 'http://game.marrach.com:8080/SAM/Prop/'}]});
 
 //	Update login options
+//	TODO - this should be one function, not three
  chrome.webNavigation.onCompleted.addListener(function(details) {
-	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
+//	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -250,7 +273,7 @@ chrome.runtime.onStartup.addListener(function() {
  
 
  chrome.webNavigation.onCompleted.addListener(function(details) {
-	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
+//	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -260,7 +283,7 @@ chrome.runtime.onStartup.addListener(function() {
  
 
  chrome.webNavigation.onCompleted.addListener(function(details) {
-	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
+//	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -291,11 +314,18 @@ chrome.runtime.onStartup.addListener(function() {
 //	Need to check EVERY SINGLE TIME a window was shut?
 //	Use script to send message to background?
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-	if (!gameTabs.has(tabId))
-		return;
-	
-	SaveLogFile(tabId);
-	gameTabs.delete(tabId);
+	chrome.storage.local.get(['gameTabs'], function(result) {
+		if (result.gameTabs)
+		{
+			if (!result.gameTabs[tabId])
+				return;
+			
+			delete result.gameTabs[tabId];
+			chrome.storage.local.set({gameTabs : result.gameTabs});
+			
+			SaveLogFile(tabId);
+		}
+	});
 });
 
 chrome.runtime.onInstalled.addListener(function(details) {

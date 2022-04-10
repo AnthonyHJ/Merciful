@@ -17,202 +17,201 @@ var pageNames = {
 //	var gameTabLog = new Map();	//	List of tabs which may have an active log-file
 
 //	Logging
-//	var logFileName = new Map();
 //	var logFileString = new Map();
 //	var logFileID = new Map();
-
-//	var fileExt = "txt";
 
 //	var logFiles = new Object();
 
 //	Recieves messages and passes them along
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		if (request.login)	//	login a character
-		{
-			chrome.storage.local.get(['gameTabs'], function(result) 
+		chrome.storage.local.get(['logFileName'], function (results) {
+			if (request.login)	//	login a character
 			{
-				let gameTabs = {};
-				
-				if (result.gameTabs)
-					gameTabs = result.gameTabs;
-			
-				//	Check for the character
-				let targetTab = 0;
-				
-				for (const [key, value] of Object.entries(gameTabs)) {
-					if (value == request.login)
-						targetTab = key;
-				}
-				
-				//	If there is no tab with that character...
-				if (targetTab == 0)
+				chrome.storage.local.get(['gameTabs'], function(result) 
 				{
-					chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
-						console.log("Logging in " + request.login + " to " + request.game + ".");
-						
-						gameTabs[tab.id] = request.login;
-						chrome.storage.local.set({gameTabs : gameTabs});
-		
-						chrome.storage.local.get(['gameTabs'], function(result) {
-							let gameTabLog = {};
-							if (result.gameTabLog)
-								gameTabLog = result.gameTabLog;
+					let gameTabs = {};
+					
+					if (result.gameTabs)
+						gameTabs = result.gameTabs;
+				
+					//	Check for the character
+					let targetTab = 0;
+					
+					for (const [key, value] of Object.entries(gameTabs)) {
+						if (value == request.login)
+							targetTab = key;
+					}
+					
+					//	If there is no tab with that character...
+					if (targetTab == 0)
+					{
+						chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
+							console.log("Logging in " + request.login + " to " + request.game + ".");
 							
-							gameTabLog[tab.id] = request.login;
-							chrome.storage.local.set({gameTabLog : gameTabLog});
+							gameTabs[tab.id] = request.login;
+							chrome.storage.local.set({gameTabs : gameTabs});
+			
+							chrome.storage.local.get(['gameTabs'], function(result) {
+								let gameTabLog = {};
+								if (result.gameTabLog)
+									gameTabLog = result.gameTabLog;
+								
+								gameTabLog[tab.id] = request.login;
+								chrome.storage.local.set({gameTabLog : gameTabLog});
+							});
 						});
-					});
-				}
-				else //	Else switch to that tab...
-				{
-					chrome.tabs.update(targetTab,{highlighted:true});
-					
-					//	Now opens the window
-					chrome.tabs.get(targetTab,function (tab) {
-						//	Should check the windowId - if it's 'minimized' then set it to 'normal'
-						chrome.windows.get(tab.windowId, function (window) {
-							if (window.state == 'minimized')
-								chrome.windows.update(
-									tab.windowId,
-									{
-										state: 'normal'
-									}
-								)
-						})
-					});
-				}
-			});
-		}
-		else if (request.logMessage != null)	//	We're sending a log
-		{
-			if (request.logBAK)
-			{
-				logFileName.set('recoverLogs-' + sender.tab.id, request.logFileName);
-				logFileString.set('recoverLogs-' + sender.tab.id, request.logMessage);
-				SaveLogFile('recoverLogs-' + sender.tab.id);
-				return;
-			}
-			
-			sendToLogger(sender.tab.id, request.logMessage);
-		}
-		else if (request.saveLog)	//	We're sending a log
-		{
-			SaveLogFile(sender.tab.id);
-		}
-		else if (request.charList)	//	login page trying to update character list
-		{
-			console.log(request.charList);
-			
-			//	console.log(request.charList);
-			let charList = new Map();
-			
-			chrome.storage.local.get(['charList'], function(result) {
-				let cookieUser = "";
-				
-				console.log(request.game);
-				
-				chrome.storage.local.get(['cookieUser'+request.game], function(resultC) {
-					cookieUser = resultC['cookieUser'+request.game];
-					
-					console.log(cookieUser);
-					console.log(charList);
+					}
+					else //	Else switch to that tab...
+					{
+						chrome.tabs.update(targetTab,{highlighted:true});
 						
-					if (result.charList)
-					{
-						//	read in existing values
-						for (const [key, value] of Object.entries(result.charList)) {
-							if (value != cookieUser)
-								charList.set(key,value);
-							};
+						//	Now opens the window
+						chrome.tabs.get(targetTab,function (tab) {
+							//	Should check the windowId - if it's 'minimized' then set it to 'normal'
+							chrome.windows.get(tab.windowId, function (window) {
+								if (window.state == 'minimized')
+									chrome.windows.update(
+										tab.windowId,
+										{
+											state: 'normal'
+										}
+									)
+							})
+						});
 					}
-					
-					//	read in new values and override
-					for (const key of request.charList) {
-						console.log(key + "," + cookieUser);
-						charList.set(key,cookieUser);
-						charList.set(key,{'user': cookieUser, 'game': request.game});
-						};
-					
-					let charListObj = Object.fromEntries(charList);
-					chrome.storage.local.set({charList : charListObj});
-					
-					console.log(charListObj);
 				});
-			});
-		}
-		else if (request.badHash)	//	Authentication error: BAD HASH
-		{
-			console.log("Got a badHash");
-			
-			/*
-			 * This should be handled in the originating window, surely...
-			 */
-			chrome.storage.local.get(['gameTabs'], function(result) {
-				if (result.gameTabs)
+			}
+			else if (request.logMessage != null)	//	We're sending a log
+			{
+				if (request.logBAK)
 				{
-					delete result.gameTabs[sender.tab.id];
-					chrome.storage.local.set({gameTabs : result.gameTabs});
+					results.logFileName['recoverLogs-' + sender.tab.id] = request.logFileName;
+					chrome.storage.local.set({logFileName : results.logFileName});
+					
+					logFileString.set('recoverLogs-' + sender.tab.id, request.logMessage);
+					SaveLogFile('recoverLogs-' + sender.tab.id);
+					return;
 				}
-			});
-	
-			//	Remove the window from list of active play sessions
-			chrome.storage.local.get(['gameTabs'], function(result) {
-				if (result.gameTabs)
-				{
-					if (result.gameTabs[tabId])
-					{
-						delete result.gameTabs[tabId];
-						chrome.storage.local.set({gameTabs : result.gameTabs});	
-					}
-				}
-			});
-			
-			//	Open the login page in that window
-			chrome.tabs.update(sender.tab.id,{"url": request.loginURL});
-		}
-		else if (request.clientVar == 'logFormat')	//	change to the file extension
-		{
-			console.log('updating log format from ' + fileExt + ' to ' + request.value);
-			
-			chrome.storage.local.get(['gameTabs'], function(result) {
-				if (result.gameTabs)
-				{
-					for (const [key, value] of Object.entries(result.gameTabs)) {
-						//	Save the old logs
-						SaveLogFile(key);
-					}
-				}
-			});
-			
-			fileExt = request.value;
-		}
-		else if (request.htmlStyles)
-		{
-			let styleSheet =	"body { " + request.htmlStyles.colours + request.htmlStyles.fonts + " }\n" +
-								"a { " + request.htmlStyles.links + " }";
-			
-			chrome.storage.local.get(['logFileStyle'], function(result) {
-				if (!result.logFileStyle)
-					result.logFileStyle = {};
 				
-				result.logFileStyle[sender.tab.id] = styleSheet
-				chrome.storage.local.set({logFileStyle : result.logFileStyle});	
-			});
-		}
-		else 	//	Pass a message to all active game windows (probably from options page)
-		{
-			chrome.storage.local.get(['gameTabs'], function(result) {
-				if (result.gameTabs)
-				{
-					for (const [key, value] of Object.entries(result.gameTabs)) {
-					  chrome.tabs.sendMessage(key, request);
+				sendToLogger(sender.tab.id, request.logMessage);
+			}
+			else if (request.saveLog)	//	We're sending a log
+			{
+				SaveLogFile(sender.tab.id);
+			}
+			else if (request.charList)	//	login page trying to update character list
+			{
+				console.log(request.charList);
+				
+				//	console.log(request.charList);
+				let charList = new Map();
+				
+				chrome.storage.local.get(['charList'], function(result) {
+					let cookieUser = "";
+					
+					console.log(request.game);
+					
+					chrome.storage.local.get(['cookieUser'+request.game], function(resultC) {
+						cookieUser = resultC['cookieUser'+request.game];
+						
+						console.log(cookieUser);
+						console.log(charList);
+							
+						if (result.charList)
+						{
+							//	read in existing values
+							for (const [key, value] of Object.entries(result.charList)) {
+								if (value != cookieUser)
+									charList.set(key,value);
+								};
+						}
+						
+						//	read in new values and override
+						for (const key of request.charList) {
+							console.log(key + "," + cookieUser);
+							charList.set(key,cookieUser);
+							charList.set(key,{'user': cookieUser, 'game': request.game});
+							};
+						
+						let charListObj = Object.fromEntries(charList);
+						chrome.storage.local.set({charList : charListObj});
+						
+						console.log(charListObj);
+					});
+				});
+			}
+			else if (request.badHash)	//	Authentication error: BAD HASH
+			{
+				console.log("Got a badHash");
+				
+				/*
+				 * This should be handled in the originating window, surely...
+				 */
+				chrome.storage.local.get(['gameTabs'], function(result) {
+					if (result.gameTabs)
+					{
+						delete result.gameTabs[sender.tab.id];
+						chrome.storage.local.set({gameTabs : result.gameTabs});
 					}
-				}
-			});
-		}
-	return true;
-	});
+				});
+		
+				//	Remove the window from list of active play sessions
+				chrome.storage.local.get(['gameTabs'], function(result) {
+					if (result.gameTabs)
+					{
+						if (result.gameTabs[tabId])
+						{
+							delete result.gameTabs[tabId];
+							chrome.storage.local.set({gameTabs : result.gameTabs});	
+						}
+					}
+				});
+				
+				//	Open the login page in that window
+				chrome.tabs.update(sender.tab.id,{"url": request.loginURL});
+			}
+			else if (request.clientVar == 'logFormat')	//	change to the file extension
+			{
+				console.log('updating log format to ' + request.value);
+				
+				chrome.storage.local.get(['gameTabs'], function(result) {
+					if (result.gameTabs)
+					{
+						for (const [key, value] of Object.entries(result.gameTabs)) {
+							//	Save the old logs
+							SaveLogFile(key);
+						}
+					}
+				});
+			}
+			else if (request.htmlStyles)
+			{
+				let styleSheet =	"body { " + request.htmlStyles.colours + request.htmlStyles.fonts + " }\n" +
+									"a { " + request.htmlStyles.links + " }";
+				
+				chrome.storage.local.get(['logFileStyle'], function(result) {
+					if (!result.logFileStyle)
+						result.logFileStyle = {};
+					
+					result.logFileStyle[sender.tab.id] = styleSheet
+					chrome.storage.local.set({logFileStyle : result.logFileStyle});	
+				});
+			}
+			else 	//	Pass a message to all active game windows (probably from options page)
+			{
+				chrome.storage.local.get(['gameTabs'], function(result) {
+					if (result.gameTabs)
+					{
+						for (const [key, value] of Object.entries(result.gameTabs)) {
+						  chrome.tabs.sendMessage(key, request);
+						}
+					}
+				});
+			}
+		return true;
+		});
+});
 
 //	Startup script
 chrome.runtime.onStartup.addListener(function() {
@@ -243,13 +242,6 @@ chrome.runtime.onStartup.addListener(function() {
 	chrome.storage.local.remove(['cookieUserLP', 'cookiePassLP'], function() {
           console.log('Lazarus Project cookies unset');
         });
-	
-	//	Log file extension
-	chrome.storage.local.get(['logFormat'], function(result) 
-	{
-		if (result.logFormat)
-			fileExt = result.logFormat;
-	});
 });
 
 //	Update scrolls 
@@ -448,152 +440,168 @@ function sendToLogger(windowID, myMessage)
 //	if (localCharacter == 'null')
 //		return;
 	
-	var timeNow = new Date ();
-	
-	if ((!logFileName.has(windowID))||(!logFileString.has(windowID)))
-	{
-		//	Create a new logFileName
-		logFileName.set(windowID, "Log-" + gameTabLog.get(windowID) + "-" + 
-			timeNow.getFullYear() + "." + 
-			("0" + (timeNow.getMonth()+1)).slice(-2) + "." + 
-			("0" + timeNow.getDate()).slice(-2) + "-" + 
-			("0" + timeNow.getHours()).slice(-2) + "." + 
-			("0" + timeNow.getMinutes()).slice(-2) + "." + 
-			fileExt);
+	chrome.storage.local.get(['clientVars','gameTabLog','logFileName','logFileString'], function (results) {
+		console.log(results);
+		var timeNow = new Date ();
 		
-		logFileString.set(windowID, '');
+		if (!results.logFileName)
+			results.logFileName = {};
 		
-		if (true)
+		if (!results.logFileString)
+			results.logFileString = {};
+		
+		if ((!results.logFileName.windowID)||(!logFileString.has(windowID)))
 		{
-			console.log("The log is now called: " + logFileName.get(windowID));
-			console.log("Local character is " + gameTabLog.get(windowID));
-		}
-		
-		if (!logFiles[gameTabLog.get(windowID)])
-		{
-			logFiles[gameTabLog.get(windowID)] = new Object();			
-		}
-		
-		logFiles[gameTabLog.get(windowID)].logName = logFileName.get(windowID);
-		
-		chrome.storage.local.set({logFiles : logFiles}, function() {});
+			//	Create a new logFileName
+			results.logFileName.windowID = "Log-" + gameTabLog.get(windowID) + "-" + 
+				timeNow.getFullYear() + "." + 
+				("0" + (timeNow.getMonth()+1)).slice(-2) + "." + 
+				("0" + timeNow.getDate()).slice(-2) + "-" + 
+				("0" + timeNow.getHours()).slice(-2) + "." + 
+				("0" + timeNow.getMinutes()).slice(-2) + "." + 
+				results.clientVars.core.logFormat;
+				
+				chrome.storage.local.set({logFileName : results.logFileName});
+			
+			logFileString.set(windowID, '');
+			
+			if (true)
+			{
+				console.log("The log is now called: " + results.logFileName.windowID);
+				console.log("Local character is " + gameTabLog.get(windowID));
+			}
+			
+			if (!logFiles[gameTabLog.get(windowID)])
+			{
+				logFiles[gameTabLog.get(windowID)] = new Object();			
+			}
+			
+			logFiles[gameTabLog.get(windowID)].logName = results.logFileName.windowID;
+			
+			chrome.storage.local.set({logFiles : logFiles}, function() {});
 
-	}
-	
-	if ((myMessage == "") && (fileExt == "txt"))
-		return false;
-	
-	let currentText = logFileString.get(windowID);
-	logFileString.set(windowID, currentText + myMessage + "\n");
-	logFiles[gameTabLog.get(windowID)].logText = logFileString.get(windowID);
-	
-	chrome.storage.local.set({logFiles : logFiles}, function() {
-          if (chrome.runtime.lastError)
-		  {
-			  //  The storage cannot hold it!
-			  SaveLogFile(windowID);
-		  }
-        });
+		}
+		
+		if (myMessage == "")
+			return false;
+		
+		let currentText = logFileString.get(windowID);
+		logFileString.set(windowID, currentText + myMessage + "\n");
+		logFiles[gameTabLog.get(windowID)].logText = logFileString.get(windowID);
+		
+		chrome.storage.local.set({logFiles : logFiles}, function() {
+			  if (chrome.runtime.lastError)
+			  {
+				  //  The storage cannot hold it!
+				  SaveLogFile(windowID);
+			  }
+			});
+	});
 }
 
 function SaveLogFile(windowID)
 {	
-	if (logFileID.has(windowID))
-	{
-		console.log("Download already in progress!");
-		return;
-	}
-	
-	if ((!logFileName.has(windowID))||(!logFileString.has(windowID)))
-	{
-		if (!logFileString.has(windowID))
-			console.log("Log is empty.");
-		return;
-	}
-	
-	logFileID.set(windowID, -1);
-	
-	//	save logFileString to logFileName;
-	console.log("Saving: " + logFileName.get(windowID));
-	
-	let logFileOutput = logFileString.get(windowID);
-	
-	if (logFileName.get(windowID).substr(-4) == 'html')
-	{
-		chrome.storage.local.get(['logFileStyle'], function(result) {
-			if (result.logFileStyle)
-			{
-				if (result.logFileStyle[windowID])
-					logFileOutput = "<html><body>" + logFileOutput + "<style>" + result.logFileStyle[windowID] + "</style></body></html>";
+	chrome.storage.local.get(['logFileName'], function (items) {
+		if (logFileID.has(windowID))
+		{
+			console.log("Download already in progress!");
+			return;
+		}
+		
+		if ((!items.logFileName.windowID)||(!logFileString.has(windowID)))
+		{
+			if (!logFileString.has(windowID))
+				console.log("Log is empty.");
+			return;
+		}
+		
+		logFileID.set(windowID, -1);
+		
+		//	save logFileString to logFileName;
+		console.log("Saving: " + items.logFileName.windowID);
+		
+		let logFileOutput = logFileString.get(windowID);
+		
+		if (items.logFileName.windowID.substr(-4) == 'html')
+		{
+			chrome.storage.local.get(['logFileStyle'], function(result) {
+				if (result.logFileStyle)
+				{
+					if (result.logFileStyle[windowID])
+						logFileOutput = "<html><body>" + logFileOutput + "<style>" + result.logFileStyle[windowID] + "</style></body></html>";
+					else
+						logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
+				}
 				else
 					logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
-			}
-			else
-				logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
-			
-			let file = 'data:text/html;base64,'+btoa(logFileOutput);
-			chrome.downloads.download({ url : file, filename : logFileName.get(windowID), conflictAction : "uniquify" }, (newID) => { 
+				
+				let file = 'data:text/html;base64,'+btoa(logFileOutput);
+				chrome.downloads.download({ url : file, filename : items.logFileName.windowID, conflictAction : "uniquify" }, (newID) => { 
+					logFileID.set(windowID, newID); 
+				});
+			});
+		}
+		else
+		{
+			let file = 'data:text/plain;base64,'+btoa(logFileOutput);
+
+			chrome.downloads.download({ url : file, filename : items.logFileName.windowID, conflictAction : "uniquify" }, (newID) => { 
 				logFileID.set(windowID, newID); 
 			});
-		});
-	}
-	else
-	{
-		let file = 'data:text/plain;base64,'+btoa(logFileOutput);
-
-		chrome.downloads.download({ url : file, filename : logFileName.get(windowID), conflictAction : "uniquify" }, (newID) => { 
-			logFileID.set(windowID, newID); 
-		});
-	}
+		}
+	});
 }
 
 chrome.downloads.onChanged.addListener(DownloadComplete);
 
 function DownloadComplete(downloadDelta) 
 {	
-	let windowID;
-	
-	//	Find the windowID
-	logFileID.forEach((value, key, map) =>{
-		if (value == downloadDelta.id)
-			windowID = key;
-	});
-	
-	if ((!windowID) || (downloadDelta.state == null))
-		return;
-	
-	if (downloadDelta.state.current == "in_progress")
-		return;
-	
-	if (downloadDelta.state.current == "interrupted")
-	{
-		//	Something stopped the download!
+	chrome.storage.local.get(['logFileName','logFiles'], function (items) {
+		let windowID;
+		
+		//	Find the windowID
+		logFileID.forEach((value, key, map) =>{
+			if (value == downloadDelta.id)
+				windowID = key;
+		});
+		
+		if ((!windowID) || (downloadDelta.state == null))
+			return;
+		
+		if (downloadDelta.state.current == "in_progress")
+			return;
+		
+		if (downloadDelta.state.current == "interrupted")
+		{
+			//	Something stopped the download!
+			logFileID.delete(windowID);
+			//	reportClientMessage('Your attempt to download the log has been cancelled.', 'error');
+			//	TODO: We need to be able to send an error back...
+			return;
+		}
+		
+	//	console.log("File with ID : " + downloadDelta.id + " has completed.");
+		
+		//	Once the file finishes downloading, reset the values
+	//	console.log("gameTabLog : " + gameTabLog.get(windowID));
+		
+		//	Reset the log
+		delete items.logFileName.windowID;
+		logFileString.delete(windowID);
 		logFileID.delete(windowID);
-		//	reportClientMessage('Your attempt to download the log has been cancelled.', 'error');
-		//	TODO: We need to be able to send an error back...
-		return;
-	}
-	
-//	console.log("File with ID : " + downloadDelta.id + " has completed.");
-	
-	//	Once the file finishes downloading, reset the values
-//	console.log("gameTabLog : " + gameTabLog.get(windowID));
-	
-	//	Reset the log
-	logFileName.delete(windowID);
-	logFileString.delete(windowID);
-	logFileID.delete(windowID);
-	
-//	console.log(windowID);
-//	console.log(gameTabLog.get(windowID));
-	
-	delete logFiles[gameTabLog.get(windowID)];
-	
-	chrome.storage.local.set({logFiles : logFiles});
+		
+	//	console.log(windowID);
+	//	console.log(gameTabLog.get(windowID));
+		
+		delete items.logFiles[gameTabLog.get(windowID)];
+		
+		chrome.storage.local.set({logFiles : items.logFiles});
+		chrome.storage.local.set({logFileName : items.logFileName});
+	});
 }
 
 //	TODO: Check for rescued log data and save it to disk.
-chrome.storage.local.get('logFiles', function (items) {
+chrome.storage.local.get(['logFileName','logFiles'], function (items) {
 	if (items['logFiles'])
 	{
 		logFiles = items.logFiles;
@@ -616,7 +624,8 @@ chrome.storage.local.get('logFiles', function (items) {
 				let windowID = 'recoverLogs-' + logData;
 			
 				gameTabLog.set(windowID, logData);
-				logFileName.set(windowID, items.logFiles[logData].logName);
+				items.logFileName[windowID] = items.logFiles[logData].logName;
+				chrome.storage.local.set({'logFileName': items.logFileName});
 				
 				logFileString.set(windowID, items.logFiles[logData].logText);
 				SaveLogFile(windowID);

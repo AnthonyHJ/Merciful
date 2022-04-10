@@ -14,10 +14,6 @@ var pageNames = {
 	'LP':'lazarus',
 	};
 
-//	Logging
-//	var logFileString = new Map();
-//	var logFileID = new Map();
-
 //	Recieves messages and passes them along
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
@@ -85,7 +81,9 @@ chrome.runtime.onMessage.addListener(
 					results.logFileName['recoverLogs-' + sender.tab.id] = request.logFileName;
 					chrome.storage.local.set({logFileName : results.logFileName});
 					
-					logFileString.set('recoverLogs-' + sender.tab.id, request.logMessage);
+					results.logFileString.set['recoverLogs-' + sender.tab.id] = request.logMessage;
+					chrome.storage.local.set({logFileString : results.logFileString});
+					
 					SaveLogFile('recoverLogs-' + sender.tab.id);
 					return;
 				}
@@ -446,10 +444,10 @@ function sendToLogger(windowID, myMessage)
 		if (!results.logFileString)
 			results.logFileString = {};
 		
-		if ((!results.logFileName.windowID)||(!logFileString.has(windowID)))
+		if ((!results.logFileName[windowID])||(!results.logFileString[windowID]))
 		{
 			//	Create a new logFileName
-			results.logFileName.windowID = "Log-" + gameTabLog[windowID] + "-" + 
+			results.logFileName[windowID] = "Log-" + gameTabLog[windowID] + "-" + 
 				timeNow.getFullYear() + "." + 
 				("0" + (timeNow.getMonth()+1)).slice(-2) + "." + 
 				("0" + timeNow.getDate()).slice(-2) + "-" + 
@@ -459,7 +457,7 @@ function sendToLogger(windowID, myMessage)
 				
 				chrome.storage.local.set({logFileName : results.logFileName});
 			
-			logFileString.set(windowID, '');
+			results.logFileString[windowID] = '';
 			
 			if (true)
 			{
@@ -472,7 +470,7 @@ function sendToLogger(windowID, myMessage)
 				results.logFiles[gameTabLog.get(windowID)] = new Object();			
 			}
 			
-			results.logFiles[gameTabLog.get(windowID)].logName = results.logFileName.windowID;
+			results.logFiles[gameTabLog.get(windowID)].logName = results.logFileName[windowID];
 			
 			chrome.storage.local.set({logFiles : results.logFiles}, function() {});
 
@@ -481,10 +479,11 @@ function sendToLogger(windowID, myMessage)
 		if (myMessage == "")
 			return false;
 		
-		let currentText = logFileString.get(windowID);
-		logFileString.set(windowID, currentText + myMessage + "\n");
-		results.logFiles[gameTabLog.get(windowID)].logText = logFileString.get(windowID);
+		let currentText = results.logFileString[windowID];
+		results.logFileString[windowID] = currentText + myMessage + "\n";
+		results.logFiles[gameTabLog.get(windowID)].logText = results.logFileString[windowID];
 		
+		chrome.storage.local.set({logFileString : results.logFileString});
 		chrome.storage.local.set({logFiles : results.logFiles}, function() {
 			  if (chrome.runtime.lastError)
 			  {
@@ -497,28 +496,29 @@ function sendToLogger(windowID, myMessage)
 
 function SaveLogFile(windowID)
 {	
-	chrome.storage.local.get(['logFileName'], function (items) {
-		if (logFileID.has(windowID))
+	chrome.storage.local.get(['logFileID','logFileName','logFileString'], function (items) {
+		if (items.logFileID[windowID])
 		{
 			console.log("Download already in progress!");
 			return;
 		}
 		
-		if ((!items.logFileName.windowID)||(!logFileString.has(windowID)))
+		if ((!items.logFileName[windowID])||(!items.logFileString[windowID]))
 		{
 			if (!logFileString.has(windowID))
 				console.log("Log is empty.");
 			return;
 		}
 		
-		logFileID.set(windowID, -1);
+		items.logFileID[windowID] = -1; 
+		chrome.storage.local.set({logFileID : items.logFileID});
 		
 		//	save logFileString to logFileName;
-		console.log("Saving: " + items.logFileName.windowID);
+		console.log("Saving: " + items.logFileName[windowID]);
 		
-		let logFileOutput = logFileString.get(windowID);
+		let logFileOutput = items.logFileString[windowID];
 		
-		if (items.logFileName.windowID.substr(-4) == 'html')
+		if (items.logFileName[windowID].substr(-4) == 'html')
 		{
 			chrome.storage.local.get(['logFileStyle'], function(result) {
 				if (result.logFileStyle)
@@ -532,8 +532,9 @@ function SaveLogFile(windowID)
 					logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
 				
 				let file = 'data:text/html;base64,'+btoa(logFileOutput);
-				chrome.downloads.download({ url : file, filename : items.logFileName.windowID, conflictAction : "uniquify" }, (newID) => { 
-					logFileID.set(windowID, newID); 
+				chrome.downloads.download({ url : file, filename : items.logFileName[windowID], conflictAction : "uniquify" }, (newID) => { 
+					items.logFileID[windowID] = newID; 
+					chrome.storage.local.set({logFileID : items.logFileID});
 				});
 			});
 		}
@@ -541,8 +542,9 @@ function SaveLogFile(windowID)
 		{
 			let file = 'data:text/plain;base64,'+btoa(logFileOutput);
 
-			chrome.downloads.download({ url : file, filename : items.logFileName.windowID, conflictAction : "uniquify" }, (newID) => { 
-				logFileID.set(windowID, newID); 
+			chrome.downloads.download({ url : file, filename : items.logFileName[windowID], conflictAction : "uniquify" }, (newID) => { 
+				items.logFileID[windowID] = newID; 
+				chrome.storage.local.set({logFileID : items.logFileID});
 			});
 		}
 	});
@@ -552,11 +554,11 @@ chrome.downloads.onChanged.addListener(DownloadComplete);
 
 function DownloadComplete(downloadDelta) 
 {	
-	chrome.storage.local.get(['logFileName','logFiles'], function (items) {
+	chrome.storage.local.get(['logFileID','logFileName','logFiles'], function (items) {
 		let windowID;
 		
 		//	Find the windowID
-		logFileID.forEach((value, key, map) =>{
+		for (const [key, value] of Object.entries(items.logFileID)) {
 			if (value == downloadDelta.id)
 				windowID = key;
 		});
@@ -570,7 +572,8 @@ function DownloadComplete(downloadDelta)
 		if (downloadDelta.state.current == "interrupted")
 		{
 			//	Something stopped the download!
-			logFileID.delete(windowID);
+			delete items.logFileID[windowID];
+			chrome.storage.local.set({logFileID : items.logFileID});
 			//	reportClientMessage('Your attempt to download the log has been cancelled.', 'error');
 			//	TODO: We need to be able to send an error back...
 			return;
@@ -579,19 +582,20 @@ function DownloadComplete(downloadDelta)
 		//	Once the file finishes downloading, reset the values
 		
 		//	Reset the log
-		delete items.logFileName.windowID;
-		logFileString.delete(windowID);
-		logFileID.delete(windowID);
+		delete items.logFileName[windowID];
+		delete items.logFileString[windowID];
+		delete items.logFileID[windowID];
+		delete items.logFiles[items.gameTabLog[windowID]];
 		
-		delete items.logFiles[items.gameTabLog.windowID];
-		
-		chrome.storage.local.set({logFiles : items.logFiles});
 		chrome.storage.local.set({logFileName : items.logFileName});
+		chrome.storage.local.set({logFileString : items.logFileString});
+		chrome.storage.local.set({logFileID : items.logFileID});
+		chrome.storage.local.set({logFiles : items.logFiles});
 	});
 }
 
 //	TODO: Check for rescued log data and save it to disk.
-chrome.storage.local.get(['gameTabLog','logFileName','logFiles'], function (items) {
+chrome.storage.local.get(['gameTabLog','logFileName','logFiles','logFileString'], function (items) {
 	if (items['logFiles'])
 	{
 		logFiles = items.logFiles;
@@ -615,10 +619,12 @@ chrome.storage.local.get(['gameTabLog','logFileName','logFiles'], function (item
 			
 				items.gameTabLog[windowID] = logData;
 				items.logFileName[windowID] = items.logFiles[logData].logName;
+				items.logFileString[windowID] = items.logFiles[logData].logText;
+				
 				chrome.storage.local.set({'gameTabLog': items.gameTabLog});
 				chrome.storage.local.set({'logFileName': items.logFileName});
+				chrome.storage.local.set({'logFileString': items.logFileString});
 				
-				logFileString.set(windowID, items.logFiles[logData].logText);
 				SaveLogFile(windowID);
 			})
 		}

@@ -6,26 +6,25 @@
   "description": "A less-zealous client for Skotos-Tech games",
   
   "icons": {
-    "16": "images/Merciful_16.png",
-    "32": "images/Merciful_32.png",
-    "48": "images/Merciful_48.png",
-    "128": "images/Merciful_128.png"
+    "16": "images/t_Merciful_16.png",
+    "32": "images/t_Merciful_32.png",
+    "48": "images/t_Merciful_48.png",
+    "128": "images/t_Merciful_128.png"
   },
   
-  "browser_action": {
+  "action": {
     "default_title": "Merciful Client",
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "images/Merciful_16.png",
-      "32": "images/Merciful_32.png",
-      "48": "images/Merciful_48.png",
-      "128": "images/Merciful_128.png"
+      "16": "images/t_Merciful_16.png",
+      "32": "images/t_Merciful_32.png",
+      "48": "images/t_Merciful_48.png",
+      "128": "images/t_Merciful_128.png"
     }
   },
   
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
   "externally_connectable": {
     "matches": ["*://*.marrach.com/*","*://*.multirev.net/*","*://*.allegoryofempires.com/*"]
@@ -34,12 +33,15 @@
   "permissions": [
             "cookies", 
 			"downloads", 
+			"scripting", 
             "storage", 
-            "webNavigation",
+            "webNavigation"
+            ],
+  "host_permissions": [
             "*://*.marrach.com/*",
 			"*://*.multirev.net/*",
 			"*://*.allegoryofempires.com/*"
             ],
     
-  "manifest_version": 2
+  "manifest_version": 3
 }

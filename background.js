@@ -17,178 +17,182 @@ var pageNames = {
 //	Recieves messages and passes them along
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		chrome.storage.local.get(['logFileName'], function (results) {
-			if (request.login)	//	login a character
+		if (request.login)	//	login a character
+		{
+			chrome.storage.local.get(['gameTabs'], function(result) 
 			{
-				chrome.storage.local.get(['gameTabs'], function(result) 
-				{
-					let gameTabs = {};
-					
-					if (result.gameTabs)
-						gameTabs = result.gameTabs;
+				let gameTabs = {};
 				
-					//	Check for the character
-					let targetTab = 0;
-					
-					for (const [key, value] of Object.entries(gameTabs)) {
-						if (value == request.login)
-							targetTab = key;
-					}
-					
-					//	If there is no tab with that character...
-					if (targetTab == 0)
-					{
-						chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
-							console.log("Logging in " + request.login + " to " + request.game + ".");
-							
-							gameTabs[tab.id] = request.login;
-							chrome.storage.local.set({gameTabs : gameTabs});
+				if (result.gameTabs)
+					gameTabs = result.gameTabs;
 			
-							chrome.storage.local.get(['gameTabs'], function(result) {
-								let gameTabLog = {};
-								if (result.gameTabLog)
-									gameTabLog = result.gameTabLog;
-								
-								gameTabLog[tab.id] = request.login;
-								chrome.storage.local.set({gameTabLog : gameTabLog});
-							});
-						});
-					}
-					else //	Else switch to that tab...
-					{
-						chrome.tabs.update(targetTab,{highlighted:true});
-						
-						//	Now opens the window
-						chrome.tabs.get(targetTab,function (tab) {
-							//	Should check the windowId - if it's 'minimized' then set it to 'normal'
-							chrome.windows.get(tab.windowId, function (window) {
-								if (window.state == 'minimized')
-									chrome.windows.update(
-										tab.windowId,
-										{
-											state: 'normal'
-										}
-									)
-							})
-						});
-					}
-				});
-			}
-			else if (request.saveLog)	//	We're sending a log
-			{
-				SaveLogFile(sender.tab.id);
-			}
-			else if (request.charList)	//	login page trying to update character list
-			{
-				console.log(request.charList);
+				//	Check for the character
+				let targetTab = 0;
 				
-				//	console.log(request.charList);
-				let charList = new Map();
+				for (const [key, value] of Object.entries(gameTabs)) {
+					if (value == request.login)
+						targetTab = key;
+				}
 				
-				chrome.storage.local.get(['charList'], function(result) {
-					let cookieUser = "";
-					
-					console.log(request.game);
-					
-					chrome.storage.local.get(['cookieUser'+request.game], function(resultC) {
-						cookieUser = resultC['cookieUser'+request.game];
+				//	If there is no tab with that character...
+				if (targetTab == 0)
+				{
+					chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
+						console.log("Logging in " + request.login + " to " + request.game + ".");
 						
-						console.log(cookieUser);
-						console.log(charList);
-							
-						if (result.charList)
-						{
-							//	read in existing values
-							for (const [key, value] of Object.entries(result.charList)) {
-								if (value != cookieUser)
-									charList.set(key,value);
-								};
-						}
-						
-						//	read in new values and override
-						for (const key of request.charList) {
-							console.log(key + "," + cookieUser);
-							charList.set(key,cookieUser);
-							charList.set(key,{'user': cookieUser, 'game': request.game});
-							};
-						
-						let charListObj = Object.fromEntries(charList);
-						chrome.storage.local.set({charList : charListObj});
-						
-						console.log(charListObj);
-					});
-				});
-			}
-			else if (request.badHash)	//	Authentication error: BAD HASH
-			{
-				console.log("Got a badHash");
-				
-				/*
-				 * This should be handled in the originating window, surely...
-				 */
-				chrome.storage.local.get(['gameTabs'], function(result) {
-					if (result.gameTabs)
-					{
-						delete result.gameTabs[sender.tab.id];
-						chrome.storage.local.set({gameTabs : result.gameTabs});
-					}
-				});
+						gameTabs[tab.id] = request.login;
+						chrome.storage.local.set({gameTabs : gameTabs});
 		
-				//	Remove the window from list of active play sessions
-				chrome.storage.local.get(['gameTabs'], function(result) {
-					if (result.gameTabs)
-					{
-						if (result.gameTabs[tabId])
-						{
-							delete result.gameTabs[tabId];
-							chrome.storage.local.set({gameTabs : result.gameTabs});	
-						}
-					}
-				});
-				
-				//	Open the login page in that window
-				chrome.tabs.update(sender.tab.id,{"url": request.loginURL});
-			}
-			else if (request.clientVar == 'logFormat')	//	change to the file extension
-			{
-				console.log('updating log format to ' + request.value);
-				
-				chrome.storage.local.get(['gameTabs'], function(result) {
-					if (result.gameTabs)
-					{
-						for (const [key, value] of Object.entries(result.gameTabs)) {
-							//	Save the old logs
-							SaveLogFile(key);
-						}
-					}
-				});
-			}
-			else if (request.htmlStyles)
-			{
-				let styleSheet =	"body { " + request.htmlStyles.colours + request.htmlStyles.fonts + " }\n" +
-									"a { " + request.htmlStyles.links + " }";
-				
-				chrome.storage.local.get(['logFileStyle'], function(result) {
-					if (!result.logFileStyle)
-						result.logFileStyle = {};
+						chrome.storage.local.get(['gameTabs'], function(result) {
+							let gameTabLog = {};
+							if (result.gameTabLog)
+								gameTabLog = result.gameTabLog;
+							
+							gameTabLog[tab.id] = request.login;
+							chrome.storage.local.set({gameTabLog : gameTabLog});
+						});
+					});
+				}
+				else //	Else switch to that tab...
+				{
+					console.log("Trying to get tab: " + targetTab);
 					
-					result.logFileStyle[sender.tab.id] = styleSheet
-					chrome.storage.local.set({logFileStyle : result.logFileStyle});	
-				});
-			}
-			else 	//	Pass a message to all active game windows (probably from options page)
-			{
-				chrome.storage.local.get(['gameTabs'], function(result) {
-					if (result.gameTabs)
+					chrome.tabs.get(targetTab, function (tab) {
+						console.log(tab);
+					})
+					
+					chrome.tabs.update(targetTab,{highlighted:true});
+					
+					//	Now opens the window
+					chrome.tabs.get(targetTab,function (tab) {
+						//	Should check the windowId - if it's 'minimized' then set it to 'normal'
+						chrome.windows.get(tab.windowId, function (window) {
+							if (window.state == 'minimized')
+								chrome.windows.update(
+									tab.windowId,
+									{
+										state: 'normal'
+									}
+								)
+						})
+					});
+				}
+			});
+		}
+		else if (request.saveLog)	//	We're sending a log
+		{
+			SaveLogFile(sender.tab.id);
+		}
+		else if (request.charList)	//	login page trying to update character list
+		{
+			console.log(request.charList);
+			
+			//	console.log(request.charList);
+			let charList = new Map();
+			
+			chrome.storage.local.get(['charList'], function(result) {
+				let cookieUser = "";
+				
+				console.log(request.game);
+				
+				chrome.storage.local.get(['cookieUser'+request.game], function(resultC) {
+					cookieUser = resultC['cookieUser'+request.game];
+					
+					console.log(cookieUser);
+					console.log(charList);
+						
+					if (result.charList)
 					{
-						for (const [key, value] of Object.entries(result.gameTabs)) {
-						  chrome.tabs.sendMessage(key, request);
-						}
+						//	read in existing values
+						for (const [key, value] of Object.entries(result.charList)) {
+							if (value != cookieUser)
+								charList.set(key,value);
+							};
 					}
+					
+					//	read in new values and override
+					for (const key of request.charList) {
+						console.log(key + "," + cookieUser);
+						charList.set(key,cookieUser);
+						charList.set(key,{'user': cookieUser, 'game': request.game});
+						};
+					
+					let charListObj = Object.fromEntries(charList);
+					chrome.storage.local.set({charList : charListObj});
+					
+					console.log(charListObj);
 				});
-			}
-		return true;
-		});
+			});
+		}
+		else if (request.badHash)	//	Authentication error: BAD HASH
+		{
+			console.log("Got a badHash");
+			
+			/*
+			 * This should be handled in the originating window, surely...
+			 */
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					delete result.gameTabs[sender.tab.id];
+					chrome.storage.local.set({gameTabs : result.gameTabs});
+				}
+			});
+	
+			//	Remove the window from list of active play sessions
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					if (result.gameTabs[tabId])
+					{
+						delete result.gameTabs[tabId];
+						chrome.storage.local.set({gameTabs : result.gameTabs});	
+					}
+				}
+			});
+			
+			//	Open the login page in that window
+			chrome.tabs.update(sender.tab.id,{"url": request.loginURL});
+		}
+		else if (request.clientVar == 'logFormat')	//	change to the file extension
+		{
+			console.log('updating log format to ' + request.value);
+			
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					for (const [key, value] of Object.entries(result.gameTabs)) {
+						//	Save the old logs
+						SaveLogFile(key);
+					}
+				}
+			});
+		}
+		else if (request.htmlStyles)
+		{
+			let styleSheet =	"body { " + request.htmlStyles.colours + request.htmlStyles.fonts + " }\n" +
+								"a { " + request.htmlStyles.links + " }";
+			
+			chrome.storage.local.get(['logFileStyle'], function(result) {
+				if (!result.logFileStyle)
+					result.logFileStyle = {};
+				
+				result.logFileStyle[sender.tab.id] = styleSheet
+				chrome.storage.local.set({logFileStyle : result.logFileStyle});	
+			});
+		}
+		else 	//	Pass a message to all active game windows (probably from options page)
+		{
+			chrome.storage.local.get(['gameTabs'], function(result) {
+				if (result.gameTabs)
+				{
+					for (const [key, value] of Object.entries(result.gameTabs)) {
+					  chrome.tabs.sendMessage(key, request);
+					}
+				}
+			});
+		}
+	return true;
 });
 
 //	Startup script
@@ -297,7 +301,6 @@ chrome.runtime.onStartup.addListener(function() {
 	})
 }, {url: [{urlMatches : 'http://game.marrach.com/?$'}]});
  
-
  chrome.webNavigation.onCompleted.addListener(function(details) {
 //	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
@@ -307,7 +310,6 @@ chrome.runtime.onStartup.addListener(function() {
 	})
 }, {url: [{urlMatches : 'http://game.allegoryofempires.com/SAM/Prop/Allegory:Theatre:Theatre/Index?$'}]});
  
-
  chrome.webNavigation.onCompleted.addListener(function(details) {
 //	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
@@ -508,7 +510,7 @@ function SaveLogFile(windowID)
 		items.logFileID[windowID] = -1; 
 		chrome.storage.local.set({logFileID : items.logFileID});
 		
-		//	save logFileString to logFileName;
+		//	save log to file
 		console.log("Saving: " + items.logFiles[items.gameTabLog[windowID]].logName);
 		
 		let logFileOutput = items.logFiles[items.gameTabLog[windowID]].logText;

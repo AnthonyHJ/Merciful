@@ -14,13 +14,9 @@ var pageNames = {
 	'LP':'lazarus',
 	};
 
-//	var gameTabLog = new Map();	//	List of tabs which may have an active log-file
-
 //	Logging
 //	var logFileString = new Map();
 //	var logFileID = new Map();
-
-//	var logFiles = new Object();
 
 //	Recieves messages and passes them along
 chrome.runtime.onMessage.addListener(
@@ -453,7 +449,7 @@ function sendToLogger(windowID, myMessage)
 		if ((!results.logFileName.windowID)||(!logFileString.has(windowID)))
 		{
 			//	Create a new logFileName
-			results.logFileName.windowID = "Log-" + gameTabLog.get(windowID) + "-" + 
+			results.logFileName.windowID = "Log-" + gameTabLog[windowID] + "-" + 
 				timeNow.getFullYear() + "." + 
 				("0" + (timeNow.getMonth()+1)).slice(-2) + "." + 
 				("0" + timeNow.getDate()).slice(-2) + "-" + 
@@ -468,17 +464,17 @@ function sendToLogger(windowID, myMessage)
 			if (true)
 			{
 				console.log("The log is now called: " + results.logFileName.windowID);
-				console.log("Local character is " + gameTabLog.get(windowID));
+				console.log("Local character is " + results.logFiles[windowID]);
 			}
 			
-			if (!logFiles[gameTabLog.get(windowID)])
+			if (!results.logFiles[gameTabLog.get(windowID)])
 			{
-				logFiles[gameTabLog.get(windowID)] = new Object();			
+				results.logFiles[gameTabLog.get(windowID)] = new Object();			
 			}
 			
-			logFiles[gameTabLog.get(windowID)].logName = results.logFileName.windowID;
+			results.logFiles[gameTabLog.get(windowID)].logName = results.logFileName.windowID;
 			
-			chrome.storage.local.set({logFiles : logFiles}, function() {});
+			chrome.storage.local.set({logFiles : results.logFiles}, function() {});
 
 		}
 		
@@ -487,9 +483,9 @@ function sendToLogger(windowID, myMessage)
 		
 		let currentText = logFileString.get(windowID);
 		logFileString.set(windowID, currentText + myMessage + "\n");
-		logFiles[gameTabLog.get(windowID)].logText = logFileString.get(windowID);
+		results.logFiles[gameTabLog.get(windowID)].logText = logFileString.get(windowID);
 		
-		chrome.storage.local.set({logFiles : logFiles}, function() {
+		chrome.storage.local.set({logFiles : results.logFiles}, function() {
 			  if (chrome.runtime.lastError)
 			  {
 				  //  The storage cannot hold it!
@@ -593,7 +589,7 @@ function DownloadComplete(downloadDelta)
 	//	console.log(windowID);
 	//	console.log(gameTabLog.get(windowID));
 		
-		delete items.logFiles[gameTabLog.get(windowID)];
+		delete items.logFiles[items.gameTabLog.windowID];
 		
 		chrome.storage.local.set({logFiles : items.logFiles});
 		chrome.storage.local.set({logFileName : items.logFileName});
@@ -601,7 +597,7 @@ function DownloadComplete(downloadDelta)
 }
 
 //	TODO: Check for rescued log data and save it to disk.
-chrome.storage.local.get(['logFileName','logFiles'], function (items) {
+chrome.storage.local.get(['gameTabLog','logFileName','logFiles'], function (items) {
 	if (items['logFiles'])
 	{
 		logFiles = items.logFiles;
@@ -623,8 +619,9 @@ chrome.storage.local.get(['logFileName','logFiles'], function (items) {
 				
 				let windowID = 'recoverLogs-' + logData;
 			
-				gameTabLog.set(windowID, logData);
+				items.gameTabLog[windowID] = logData;
 				items.logFileName[windowID] = items.logFiles[logData].logName;
+				chrome.storage.local.set({'gameTabLog': items.gameTabLog});
 				chrome.storage.local.set({'logFileName': items.logFileName});
 				
 				logFileString.set(windowID, items.logFiles[logData].logText);

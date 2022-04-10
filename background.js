@@ -196,10 +196,6 @@ chrome.runtime.onMessage.addListener(
 			
 			logFileStyle.set(sender.tab.id, styleSheet);
 		}
-		else if (gameTabs.size == 0)	//	if there are no gametabs, there's nowhere to send a message to
-		{
-			return;
-		} 
 		else 	//	Pass a message to all active game windows (probably from options page)
 		{
 			chrome.storage.local.get(['gameTabs'], function(result) {

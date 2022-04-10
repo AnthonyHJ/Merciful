@@ -1122,7 +1122,7 @@ function rebuildStyleSheet()
 						'color : ' + themeText + ';';
 	myStyles.links = 'color : ' + themeLink + ';';
 	
-	chrome.runtime.sendMessage({'htmlStyles': myStyles});
+	chrome.runtime.sendMessage({'htmlStyles': myStyles}, () => {return true;});
 		
 	lineHeight = getComputedStyle(inputGhost)['height'];
 //	debugLog("Line height = " + lineHeight.toString());
@@ -1489,7 +1489,7 @@ function parseMessage(text)
 	{
 		reportMessage("Cannot log in. Redirecting...");
 		debugLog('Sending \'badHash: true\'');
-		chrome.runtime.sendMessage({badHash: true, loginURL: loginURL});
+		chrome.runtime.sendMessage({badHash: true, loginURL: loginURL}, () => {return true;});
 	}
 	else if (text.substring(0,6) === "SKOOT ")
 	{
@@ -1600,7 +1600,7 @@ function sendToLogger(myMessage)
 function SaveLogFile()
 {
 	//	Sends logging to background.js
-	chrome.runtime.sendMessage({'saveLog': true});
+	chrome.runtime.sendMessage({'saveLog': true}, () => {return true;});
 	logFileName = "";
 	logFileString = "";
 }

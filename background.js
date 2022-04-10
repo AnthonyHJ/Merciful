@@ -194,6 +194,51 @@ chrome.runtime.onMessage.addListener(
 //	Startup script
 
 chrome.runtime.onStartup.addListener(function() {
+	//	TODO: Check for rescued log data and save it to disk.
+	chrome.storage.local.get(['gameTabLog','logFiles'], function (items) {
+		if (items['logFiles'])
+		{
+			if (items['logFiles'] == null)
+				return;
+			
+			console.log("Recovering logs.");
+			console.log(items.logFiles);
+			
+			if (!items['gameTabLog'])
+				items['gameTabLog'] = {};
+			
+			let logFiles = items.logFiles;
+		
+			for (const logData in items.logFiles) {
+				let filenameMatch = new Object();
+				filenameMatch.filenameRegex = items.logFiles[logData].logName;
+				
+				console.log("Log found for: " + logData);
+				
+				chrome.downloads.search(filenameMatch, function(result)
+				{
+					if (result.length > 0)
+					{
+						if (result[0].state == 'complete')
+						{
+							//	Back to loop
+							return;
+						}
+					}
+					
+					let windowID = 'recoverLogs-' + logData;
+				
+					console.log (items);
+				
+					items.gameTabLog[windowID] = logData;
+					
+					chrome.storage.local.set({'gameTabLog': items.gameTabLog});
+					
+					SaveLogFile(windowID);
+				})
+			}
+		}
+	});
 
 //	These should all be session variables
 
@@ -531,49 +576,3 @@ function DownloadComplete(downloadDelta)
 		chrome.storage.local.set({logFiles : items.logFiles});
 	});
 }
-
-//	TODO: Check for rescued log data and save it to disk.
-chrome.storage.local.get(['gameTabLog','logFiles'], function (items) {
-	if (items['logFiles'])
-	{
-		if (items['logFiles'] == null)
-			return;
-		
-		console.log("Recovering logs.");
-		console.log(items.logFiles);
-		
-		if (!items['gameTabLog'])
-			items['gameTabLog'] = {};
-		
-		let logFiles = items.logFiles;
-	
-		for (const logData in items.logFiles) {
-			let filenameMatch = new Object();
-			filenameMatch.filenameRegex = items.logFiles[logData].logName;
-			
-			console.log("Log found for: " + logData);
-			
-			chrome.downloads.search(filenameMatch, function(result)
-			{
-				if (result.length > 0)
-				{
-					if (result[0].state == 'complete')
-					{
-						//	Back to loop
-						return;
-					}
-				}
-				
-				let windowID = 'recoverLogs-' + logData;
-			
-				console.log (items);
-			
-				items.gameTabLog[windowID] = logData;
-				
-				chrome.storage.local.set({'gameTabLog': items.gameTabLog});
-				
-				SaveLogFile(windowID);
-			})
-		}
-	}
-});

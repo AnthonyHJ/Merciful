@@ -14,14 +14,12 @@ var pageNames = {
 	'LP':'lazarus',
 	};
 
-//	var gameTabs = new Map();	//	List of active tabs
 //	var gameTabLog = new Map();	//	List of tabs which may have an active log-file
 
 //	Logging
 //	var logFileName = new Map();
 //	var logFileString = new Map();
 //	var logFileID = new Map();
-//	var logFileStyle = new Map();
 
 //	var fileExt = "txt";
 
@@ -194,7 +192,13 @@ chrome.runtime.onMessage.addListener(
 			let styleSheet =	"body { " + request.htmlStyles.colours + request.htmlStyles.fonts + " }\n" +
 								"a { " + request.htmlStyles.links + " }";
 			
-			logFileStyle.set(sender.tab.id, styleSheet);
+			chrome.storage.local.get(['logFileStyle'], function(result) {
+				if (!result.logFileStyle)
+					result.logFileStyle = {};
+				
+				result.logFileStyle[sender.tab.id] = styleSheet
+				chrome.storage.local.set({logFileStyle : result.logFileStyle});	
+			});
 		}
 		else 	//	Pass a message to all active game windows (probably from options page)
 		{
@@ -516,22 +520,31 @@ function SaveLogFile(windowID)
 	
 	if (logFileName.get(windowID).substr(-4) == 'html')
 	{
-		logFileOutput = "<html><body>" + logFileOutput + "<style>" + logFileStyle.get(windowID) + "</style></body></html>";
+		chrome.storage.local.get(['logFileStyle'], function(result) {
+			if (result.logFileStyle)
+			{
+				if (result.logFileStyle[windowID])
+					logFileOutput = "<html><body>" + logFileOutput + "<style>" + result.logFileStyle[windowID] + "</style></body></html>";
+				else
+					logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
+			}
+			else
+				logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
+			
+			let file = 'data:text/html;base64,'+btoa(logFileOutput);
+			chrome.downloads.download({ url : file, filename : logFileName.get(windowID), conflictAction : "uniquify" }, (newID) => { 
+				logFileID.set(windowID, newID); 
+			});
+		});
 	}
-	
-	let file;
-	
-	if (logFileName.get(windowID).substr(-4) == 'html')
-		file = 'data:text/html;base64,'+btoa(logFileOutput);
-//		file = new Blob([logFileOutput], {type: 'text/html'});
 	else
-		file = 'data:text/plain;base64,'+btoa(logFileOutput);
-//		file = new Blob([logFileOutput], {type: 'text/plain'});
+	{
+		let file = 'data:text/plain;base64,'+btoa(logFileOutput);
 
-	chrome.downloads.download({ url : file, filename : logFileName.get(windowID), conflictAction : "uniquify" }, (newID) => { 
-		logFileID.set(windowID, newID); 
-//		console.log ('Watching download with ID: ' + logFileID.get(windowID));
-	});
+		chrome.downloads.download({ url : file, filename : logFileName.get(windowID), conflictAction : "uniquify" }, (newID) => { 
+			logFileID.set(windowID, newID); 
+		});
+	}
 }
 
 chrome.downloads.onChanged.addListener(DownloadComplete);

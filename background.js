@@ -74,10 +74,6 @@ chrome.runtime.onMessage.addListener(
 					}
 				});
 			}
-			else if (request.logMessage != null)	//	We're sending a log
-			{
-				sendToLogger(sender.tab.id, request.logMessage);
-			}
 			else if (request.saveLog)	//	We're sending a log
 			{
 				SaveLogFile(sender.tab.id);

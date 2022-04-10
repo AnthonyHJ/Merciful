@@ -463,7 +463,7 @@ function sendToLogger(windowID, myMessage)
 			
 			if (true)
 			{
-				console.log("The log is now called: " + results.logFileName.windowID);
+				console.log("The log is now called: " + results.logFileName[windowID]);
 				console.log("Local character is " + results.logFiles[windowID]);
 			}
 			

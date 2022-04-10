@@ -273,7 +273,7 @@ chrome.runtime.onStartup.addListener(function() {
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
-		files: ["insertMercyCM.js"],
+		files: ["insertMercyAoE.js"],
 	})
 }, {url: [{urlMatches : 'http://game.allegoryofempires.com/SAM/Prop/Allegory:Theatre:Theatre/Index?$'}]});
  
@@ -283,7 +283,7 @@ chrome.runtime.onStartup.addListener(function() {
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
-		files: ["insertMercyCM.js"]
+		files: ["insertMercyMR.js"]
 	})
 }, {url: [{urlMatches : 'http://game.multirev.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}]});
  

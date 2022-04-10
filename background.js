@@ -338,14 +338,23 @@ chrome.runtime.onStartup.addListener(function() {
 //	Need to check EVERY SINGLE TIME a window was shut?
 //	Use script to send message to background?
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
+	console.log('Window closed with ID: ' + tabId);
+	console.log(removeInfo);
+	
 	chrome.storage.local.get(['gameTabs'], function(result) {
 		if (result.gameTabs)
 		{
 			if (!result.gameTabs[tabId])
 				return;
 			
+			console.log('Window was a game tab.');
+			
+			console.log(result.gameTabs);
+			
 			delete result.gameTabs[tabId];
 			chrome.storage.local.set({gameTabs : result.gameTabs});
+			
+			console.log(result.gameTabs);
 			
 			SaveLogFile(tabId);
 		}

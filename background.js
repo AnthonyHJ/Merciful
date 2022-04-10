@@ -488,13 +488,14 @@ function SaveLogFile(windowID)
 		
 		if (!items.gameTabLog[windowID])
 		{
-			console.error("Cannot find a name for this character!");
+			console.error("Cannot find a name for this character! WindowID: " + windowID);
+			console.error(items.gameTabLog);
 			return;
 		}
 		
 		if (!items.logFiles[items.gameTabLog[windowID]])
 		{
-			console.error("Cannot find a log for this character!");
+			console.error("Cannot find a log for this character! Name: " + items.gameTabLog[windowID]);
 			return;
 		}
 		

@@ -162,11 +162,11 @@ chrome.runtime.onMessage.addListener(
 			chrome.storage.local.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
 				{
-					if (!result.gameTabs[tabId])
-						return;
-					
-					delete result.gameTabs[tabId];
-					chrome.storage.local.set({gameTabs : result.gameTabs});
+					if (result.gameTabs[tabId])
+					{
+						delete result.gameTabs[tabId];
+						chrome.storage.local.set({gameTabs : result.gameTabs});	
+					}
 				}
 			});
 			

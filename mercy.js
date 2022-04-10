@@ -289,21 +289,6 @@ function init()
 		});
 	})
 	
-	//	Check for rescued log data and save it to disk.
-	//	This should mop up any remaining files.
-	
-	let logVar = gamePrefix + localCharacter + 'LogName';
-	let logStr = gamePrefix + localCharacter + 'LogString';
-	
-	chrome.storage.local.get([logVar, logStr], function (items) {
-		if (items[logVar] && items[logStr])
-		{
-			debugLog("Found an old log!");
-			sendToLoggerBAK(items[logVar], items[logStr]);
-			SaveLogFile();
-		}
-	});
-	
 	//	Add menu
 	let menuArea = document.getElementById("menu_area");
 	
@@ -1556,8 +1541,26 @@ function DeleteOldestNode()
 
 //	Logging
 
+/*
+	Changes between MV2 and MV3 mean moving 90% of the logging back into the client window. 
+	Background process should only be used for rescuing logs now.
+*/
+
 function sendToLogger(myMessage)
 {
+	var timeNow = new Date ();
+	
+	if (logFileName == "")
+	{
+		logFileName= "Log-" + localCharacter + "-" + 
+				timeNow.getFullYear() + "." + 
+				("0" + (timeNow.getMonth()+1)).slice(-2) + "." + 
+				("0" + timeNow.getDate()).slice(-2) + "-" + 
+				("0" + timeNow.getHours()).slice(-2) + "." + 
+				("0" + timeNow.getMinutes()).slice(-2) + "." + 
+				clientVars.get('logFormat');
+	}
+	
 	if (clientVars.get('logFormat') == 'txt')
 	{
 		var tmp = document.createElement("DIV");
@@ -1569,20 +1572,37 @@ function sendToLogger(myMessage)
 		textOut = myMessage + '<br>';
 	}
 	
-	//	Sends logging to background.js
-	chrome.runtime.sendMessage({'logMessage': textOut});
-}
-
-function sendToLoggerBAK(myFilename, myMessage)
-{
-	//	Sends logging to background.js
-	chrome.runtime.sendMessage({'logBAK': true, 'logMessage' : myMessage , 'logFileName' : myFilename});
+	logFileString += textOut + '\n';
+	
+	chrome.storage.local.get(['logFiles'], function (results) {
+		if (!results.logFiles)
+			results.logFiles = {};
+		
+		if (!results.logFiles[localCharacter])
+			results.logFiles[localCharacter] = {};
+		
+		results.logFiles[localCharacter].logName = logFileName;
+		results.logFiles[localCharacter].logText = logFileString;
+		
+		chrome.storage.local.set({logFiles : results.logFiles}, () => {
+			if (chrome.runtime.lastError)
+			{
+				//  The storage cannot hold it!
+				SaveLogFile();
+			}
+		});
+	});
+	
+//	//	Sends logging to background.js
+//	chrome.runtime.sendMessage({'logMessage': textOut});
 }
 
 function SaveLogFile()
 {
 	//	Sends logging to background.js
 	chrome.runtime.sendMessage({'saveLog': true});
+	logFileName = "";
+	logFileString = "";
 }
 
 function debugLog(message)

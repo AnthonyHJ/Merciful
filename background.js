@@ -17,7 +17,30 @@ var pageNames = {
 //	Recieves messages and passes them along
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		if (request.login)	//	login a character
+		if (request.registerTab)	//	login a character
+		{
+			chrome.storage.local.get(['gameTabLog','gameTabs'], function(result) 
+			{
+				console.log("Registering " + request.login + " to tab id: " + sender.tab.id);
+				let gameTabs = {};
+				let gameTabLog = {};
+				
+				if (result.gameTabs)
+					gameTabs = result.gameTabs;
+			
+				if (result.gameTabLog)
+					gameTabLog = result.gameTabLog;
+			
+				if (!gameTabs[sender.tab.id])
+				{
+					gameTabs[sender.tab.id] = request.login;
+					gameTabLog[sender.tab.id] = request.login;
+					chrome.storage.local.set({gameTabs : gameTabs, gameTabLog : gameTabLog});
+				}
+			}
+			)
+		}
+		else if (request.login)	//	login a character
 		{
 			chrome.storage.local.get(['gameTabs'], function(result) 
 			{

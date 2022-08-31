@@ -188,6 +188,9 @@ function init()
 				let localCharacterCap = localCharacter.substring(0,1).toUpperCase() + 
 										localCharacter.substring(1,localCharacter.length).toLowerCase();
 				window.document.title = localCharacterCap + " - " + client.name + " " + client.version
+				
+				//	Ensure the Web Worker knows about this tab
+				chrome.runtime.sendMessage({'registerTab': true, 'login': localCharacter}, () => {return true;});
 			}
 		});
 	}

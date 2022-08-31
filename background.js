@@ -116,34 +116,26 @@ chrome.runtime.onMessage.addListener(
 			chrome.storage.local.get(['charList'], function(result) {
 				let cookieUser = "";
 				
-				console.log(request.game);
-				
 				chrome.storage.local.get(['cookieUser'+request.game], function(resultC) {
 					cookieUser = resultC['cookieUser'+request.game];
 					
-					console.log(cookieUser);
-					console.log(charList);
-						
 					if (result.charList)
 					{
 						//	read in existing values
 						for (const [key, value] of Object.entries(result.charList)) {
-							if (value != cookieUser)
+							if ((value.user != cookieUser) || (value.game != request.game))
 								charList.set(key,value);
-							};
+						};
 					}
 					
 					//	read in new values and override
 					for (const key of request.charList) {
-						console.log(key + "," + cookieUser);
 						charList.set(key,cookieUser);
 						charList.set(key,{'user': cookieUser, 'game': request.game});
 						};
 					
 					let charListObj = Object.fromEntries(charList);
 					chrome.storage.local.set({charList : charListObj});
-					
-					console.log(charListObj);
 				});
 			});
 		}
@@ -219,7 +211,6 @@ chrome.runtime.onMessage.addListener(
 });
 
 //	Startup script
-
 chrome.runtime.onStartup.addListener(function() {
 	//	TODO: Check for rescued log data and save it to disk.
 	chrome.storage.local.get(['gameTabLog','logFiles'], function (items) {

@@ -1548,6 +1548,10 @@ function DeleteOldestNode()
 
 function sendToLogger(myMessage)
 {
+	//	Disable logging for characters who don't want a log
+	if (clientVars.get('logging') == 0)
+		return;
+	
 	var timeNow = new Date ();
 	
 	if (logFileName == "")

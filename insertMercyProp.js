@@ -58,6 +58,8 @@ function textVariables(input)
 	output = output.replace("%day%", marrachTime.day);
 	output = output.replace("%moon%", marrachTime.moon);
 	output = output.replace("%yra%", marrachTime.yra);
+	output = output.replace("%day_p%", marrachTime.day.toString().padStart(2, '0'));
+	output = output.replace("%moon_p%", marrachTime.moon.toString().padStart(2, '0'));
 	
 //	output = timeYear.toString().substring(2,4) + "YRA " + timeMoon + "M " + timeDate + "D; TOPIC"
 	

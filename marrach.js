@@ -83,7 +83,8 @@ var audioTriggersFixed = new Map([
   ['startUpSound', 'sound/startup.wav'],
   ['notifySound', 'sound/notify.wav'],
   ['shutDownSound', 'sound/shutdown.wav'],
-  ['mistSound', 'sound/sinister.wav'],
+//['mistSound', 'sound/sinister.wav'],
+  ['ghastSound', 'sound/sinister.wav'],
   ['badSound', 'sound/sinister.wav'],
   ['courierSound', 'sound/notify.wav'],
   ['healersSound', 'sound/silverwhistle.wav'],
@@ -96,6 +97,7 @@ var audioTriggersFixed = new Map([
 
 var audioTriggers = new Map([
 //	['mistSound', /^A frigid chill runs throughout your core as the icy white mists coarse over you./],
+	['ghastSound', /^((?!&quot;).)*(ghast).((?!&quot;).)*$/],
 	['badSound', /^[^\"]+?You encounter monsters!/],
 	['healersSound', /^You suddenly hear an urgent harmonious note in the distance/],
 	['healersSound2', /^You hear a short light harmonious note in the distance/],

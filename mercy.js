@@ -317,43 +317,53 @@ function loadClientVars()
 {
 	//	If you can get it from chrome.storage.local then do so.
 	chrome.storage.local.get(['clientVars'], function(result) {
-		if (result.clientVars)
+		let _changed = false;
+		
+		if (!result.clientVars)
+			result.clientVars == {};
+		
+		if (!result.clientVars.core)
+			result.clientVars.core == {};
+		
+		//	read in core values and override
+		for (const [key, value] of Object.entries(result.clientVars.core)) {
+			clientVars.set(key,value);
+			};
+		
+		if (!result.clientVars.game)
+			result.clientVars.game == {};
+		
+		if (!result.clientVars.game[gamePrefix])
+			result.clientVars.game[gamePrefix] == {};
+		
+		//	read in game values and override
+		for (const [key, value] of Object.entries(result.clientVars.game[gamePrefix])) {
+			clientVars.set(key,value);
+			};
+		
+		if (!result.clientVars.char)
+			result.clientVars.char == {};
+		
+		if (!result.clientVars.char[gamePrefix])
+			result.clientVars.char[gamePrefix] == {};
+		
+		if (!result.clientVars.char[gamePrefix][localCharacter])
 		{
-			//	read in core values and override
-			for (const [key, value] of Object.entries(result.clientVars.core)) {
-				clientVars.set(key,value);
-				};
-			
-			//	read in game values and override
-			if (result.clientVars.game)
-				if (result.clientVars.game[gamePrefix])
-				{
-					for (const [key, value] of Object.entries(result.clientVars.game[gamePrefix])) {
-						clientVars.set(key,value);
-						};
-				}
-			
-			//	read in player values and override
-			if (result.clientVars.char)
-			{
-				if (result.clientVars.char[gamePrefix])
-					if (result.clientVars.char[gamePrefix][localCharacter])
-					{
-						for (const [key, value] of Object.entries(result.clientVars.char[gamePrefix][localCharacter])) {
-							clientVars.set(key,value);
-							};
-					}
-			}
-			
-			console.log("Loaded preferences");
+			result.clientVars.char[gamePrefix][localCharacter] = {};
+			_changed = true;
 		}
+		
+		//	read in player values and override
+		for (const [key, value] of Object.entries(result.clientVars.char[gamePrefix][localCharacter])) {
+			clientVars.set(key,value);
+			};
+		
+		if (_changed)
+			chrome.storage.local.set({clientVars : result.clientVars}, function(){
+				console.log("Created preferences entry for " + localCharacter); 
+			});
 		else
-		{
-			//	If there is no object there, save the local (default) values to it
-			let clientVarsObj = Object.fromEntries(clientVars);
-			
-			console.log("Created new preferences entry");
-		}
+			console.log("Loaded preferences");
 	
 		if (gamePrefix == 'AE')
 		{
@@ -365,68 +375,57 @@ function loadClientVars()
   
 	//	If you can get it from chrome.storage.local then do so.
 	chrome.storage.local.get(['macros'], function(result) {
-		if (result.macros)
+		let _changed = false;
+		
+		//	No macros stored?
+		if (!result.macros)
+			result.macros = {};
+		
+		//	No macros stored for any game?
+		if (!result.macros.game)
+			result.macros.game = {};
+		
+		//	No macros stored for this game?
+		if (!result.macros.game[gamePrefix])
+			result.macros.game[gamePrefix] = {};
+		
+		//	No core macros stored for this game?
+		if (!result.macros.game[gamePrefix].core)
+		result.macros.game[gamePrefix].core = {};
+		
+		//	Load game-specific macros
+		for (const [key, value] of Object.entries(result.macros.game[gamePrefix].core)) 
 		{
-			
-			//	read in char values and override
-			if (result.macros.game)
-				if (result.macros.game[gamePrefix])
-					if (result.macros.game[gamePrefix].char)
-					{
-						if (result.macros.game[gamePrefix].char[localCharacter])
-						{
-							for (const [key, value] of Object.entries(result.macros.game[gamePrefix].char[localCharacter])) {
-								macros.set(key,value);
-								};
-						}
-						else if (result.macros.game[gamePrefix].core)
-						{	
-							for (const [key, value] of Object.entries(result.macros.game[gamePrefix].core)) 
-								{
-								macros.set(key,value);
-								};
-							
-							if (result.macros.game[gamePrefix].core)
-							{
-								var macrosImported = result.macros;
-								macrosImported.game[gamePrefix].char[localCharacter] = result.macros.game[gamePrefix].core;
-								
-								chrome.storage.local.set({macros : macrosImported});
-							}
-						}
-					}
-					else
-					{	
-						for (const [key, value] of Object.entries(result.macros.game[gamePrefix].core)) 
-							{
-							macros.set(key,value);
-							};
-						
-						if (result.macros.game[gamePrefix].core)
-						{
-							var macrosImported = result.macros;
-							macrosImported.game[gamePrefix].char = {};
-							macrosImported.game[gamePrefix].char[localCharacter] = result.macros.game[gamePrefix].core;
-							
-							chrome.storage.local.set({macros : macrosImported});
-						}
-					}
-			
-			console.log("Loaded macros");
+			macros.set(key,value);
+		};
+		
+		//	No macros stored for any character in this game?
+		if (!result.macros.game[gamePrefix].char)
+			result.macros.game[gamePrefix].char = {};
+		
+		//	No macros stored for this character?
+		if (!result.macros.game[gamePrefix].char[localCharacter])
+		{
+			_changed = true;
+			result.macros.game[gamePrefix].char[localCharacter] = result.macros.game[gamePrefix].core;
 		}
+		
+		//	Load character-specific macros
+		for (const [key, value] of Object.entries(result.macros.game[gamePrefix].char[localCharacter])) {
+			macros.set(key,value);
+		};
+		
+		if(Object.keys(result.macros.game[gamePrefix].core).length == 0)
+			delete result.macros.game[gamePrefix].core;
+		
+		if (_changed)
+			chrome.storage.local.set({macros : result.macros}, function(){
+				console.log("Created macros entry for " + localCharacter); 
+			});
 		else
-		{
-			//	If there is no object there, save the local (default) values to it
-			let macrosObj = Object.fromEntries(macros);
-			
-			console.log("Created new macros entry");
-		}
+			console.log("Loaded macros");
 	});
- 
-	//	Load game-specific macros
- 
-	//	Load character-specific macros
-}
+ }
 
 function serverConnect()
 {

@@ -33,8 +33,9 @@ var helperArea = document.getElementById("helper_area");
 var menuArea = document.getElementById("menu_area");
 var styleSheet = document.getElementsByTagName("style")[0];
 var voteBar;
-var inputGhost;
-var inputWindow;
+var inputGhost = new Array();
+var inputWindow = new Array();
+var inputActive = 0;
 var debugWindow;
 
 var lineHeight = -1;
@@ -77,14 +78,25 @@ var shiftDown = false;
 
 function init()
 {
-	inputWindow = document.getElementById("commandinput");
-	inputGhost = document.getElementById("ghostinput");
-	
-	inputGhost.innerText = " ";
-	
-	inputGhost.style.width = window.getComputedStyle(inputWindow).getPropertyValue('width');
-	
-	//	copy style and size to 'inputGhost'
+	//	TODO - For loops to add new ones if the player wants more than one.
+	var _tempThisInputNo = 0;
+	{
+		inputWindow[_tempThisInputNo] = document.getElementById("commandinput");
+		inputGhost[_tempThisInputNo] = document.getElementById("ghostinput");
+		
+		//	if you click on an inputWindow, make that one the active one.
+		inputWindow[_tempThisInputNo].addEventListener('focus', event => {
+			inputActive = _tempThisInputNo;
+		});
+		
+		inputGhost[_tempThisInputNo].innerText = " ";
+		
+		inputGhost[_tempThisInputNo].style.width = window.getComputedStyle(inputWindow[inputActive]).getPropertyValue('width');
+		
+		//	copy style and size to 'inputGhost[X]'
+		inputGhost[_tempThisInputNo].style.border = window.getComputedStyle(inputWindow[inputActive]).getPropertyValue('border');
+		inputGhost[_tempThisInputNo].style.padding = window.getComputedStyle(inputWindow[inputActive]).getPropertyValue('padding');
+	}
 	
 	//	Create the debug window
 	if (isDevMode())
@@ -131,13 +143,14 @@ function init()
 		
 		if (targ.id.substring(0,6) == 'player')
 		{
-			if ((inputWindow.value.length > 0)&&(inputWindow.value[inputWindow.value.length-1] != " "))
-				inputWindow.value += " ";
+			//	this should be the active window
+			if ((inputWindow[inputActive].value.length > 0)&&(inputWindow[inputActive].value[inputWindow[inputActive].value.length-1] != " "))
+				inputWindow[inputActive].value += " ";
 			
 //			debugLog(targ.innerText);
-			inputWindow.value += targ.innerText;
+			inputWindow[inputActive].value += targ.innerText;
 			
-			inputWindow.focus();
+			inputWindow[inputActive].focus();
 		}
 	});
 	
@@ -164,7 +177,11 @@ function init()
 		if (scrollToBottom)
 			mainTXT.scrollTop = mainTXT.scrollHeight - mainTXT.clientHeight;
 		
-		inputGhost.style.width = window.getComputedStyle(inputWindow).getPropertyValue('width');
+		//	TODO: need to loop all entries
+		for (let _tempThisInputNo = 0; _tempThisInputNo < inputWindow.length; _tempThisInputNo++) 
+		{
+			inputGhost[_tempThisInputNo].style.width = window.getComputedStyle(inputWindow[_tempThisInputNo]).getPropertyValue('width');
+		}
 	
 //		debugLog('The window resized');
 	});
@@ -302,8 +319,12 @@ function init()
 	logButton.addEventListener("click", menuClick);
 
 	//	Some nice handlers
-	inputWindow.addEventListener("keydown", keyPress);
-	inputWindow.addEventListener("keyup", keyUp);
+	
+	inputWindow.forEach((_tempThisInput) => {
+		_tempThisInput.addEventListener("keydown", keyPress);
+		_tempThisInput.addEventListener("keyup", keyUp);
+	});
+	
 	mainTXT.addEventListener("click", inputGiveFocus);
 	window.addEventListener("beforeunload", closeServer);
 	
@@ -461,15 +482,17 @@ function serverHandshake(event)
 	if (event.data)
 		serverMessage(event);
 	
-	inputWindow.className = inputWindow.className.replace(/\bdisabled\b/,'');
-	inputWindow.placeholder = "Enter a command...";
-
-	inputWindow.disabled = false;
+	inputWindow.forEach((_tempThisInput) => {
+		_tempThisInput.className = inputWindow[inputActive].className.replace(/\bdisabled\b/,'');
+		_tempThisInput.placeholder = "Enter a command...";
+		
+		inputWindow[inputActive].disabled = false;
+	});
 
 	if (useALICE)
 		sendMessage("SKOTOS " + client.name + " " + client.version);
 	
-	inputWindow.focus();
+	inputWindow[0].focus();
 }
 
 //	Drawing to the screen
@@ -859,6 +882,10 @@ chrome.runtime.onMessage.addListener(
 		else 
 		{
 			//	I think there has been an error here...
+			console.warn("chrome.runtime.onMessage.addListener(request, sender, sendResponse) gave me a result I didn't expect!");
+			console.warn(request);
+			console.warn(sender);
+			console.warn(sendResponse);
 		}
   });
   
@@ -1126,7 +1153,7 @@ function rebuildStyleSheet()
 	
 	chrome.runtime.sendMessage({'htmlStyles': myStyles}, () => {return true;});
 		
-	lineHeight = getComputedStyle(inputGhost)['height'];
+	lineHeight = getComputedStyle(inputGhost[0])['height'];
 //	debugLog("Line height = " + lineHeight.toString());
 }
 
@@ -1156,6 +1183,7 @@ var clientVars = new Map([
   ['timeZone', 'local'],
   ['markDawn', 0],
   ['useDarkMode', 'Default'],
+  ['inputWindowCount', 1],
 ]);
 
 var macros = new Map();
@@ -1191,14 +1219,26 @@ function updateMacros(key, value, game)
 
 //	Input pane
 
+//	Should use the length of inputWindow array
+let tempinputWindowCount = 1;
+
 var commandHistory = new Array();
-var commandHistoryLoc = 0;
-var commandHistoryTemp = "";
+var commandHistoryLoc = new Array();
+var commandHistoryTemp = new Array();
+
+while (tempinputWindowCount > 0)
+{
+	tempinputWindowCount--;
+	
+	commandHistory[tempinputWindowCount] = new Array();
+	commandHistoryLoc[tempinputWindowCount] = 0;
+	commandHistoryTemp[tempinputWindowCount] = "";
+}
 
 function inputGiveFocus(e)
 {
 	if(window.getSelection().isCollapsed)
-		inputWindow.focus();
+		inputWindow[inputActive].focus();
 }
 
 function sendMessage(text)
@@ -1237,7 +1277,10 @@ function sendMessage(text)
 	{
 		//	Correct for default style
 		mainTXT.style = null;
-		inputWindow.style = null;
+		//	TODO: loop through all inputWindow entities
+		inputWindow.forEach((_tempThisInput) => {
+			_tempThisInput.style = null;
+		});
 		helperArea.style = null;
 		rightBar.style = null;
 		
@@ -1263,12 +1306,12 @@ function keyPress(e)
 		case 'ArrowDown':
 			setTimeout(function(oldStart, oldEnd) {
 				//	if at least one value has changed, don't jump!
-				if ((inputWindow.selectionStart == oldStart)&&(inputWindow.selectionEnd == oldEnd))
+				if ((inputWindow[inputActive].selectionStart == oldStart)&&(inputWindow[inputActive].selectionEnd == oldEnd))
 					nextCommand();
-				else if ((inputWindow.selectionStart == inputWindow.selectionEnd) && (inputWindow.selectionStart == inputWindow.value.length))
+				else if ((inputWindow[inputActive].selectionStart == inputWindow[inputActive].selectionEnd) && (inputWindow[inputActive].selectionStart == inputWindow[inputActive].value.length))
 					nextCommand();
 				
-			}, 0, inputWindow.selectionStart, inputWindow.selectionEnd);
+			}, 0, inputWindow[inputActive].selectionStart, inputWindow[inputActive].selectionEnd);
 			
 			break;
 		case 'PageDown':
@@ -1278,11 +1321,11 @@ function keyPress(e)
 		case 'ArrowUp':
 			setTimeout(function(oldStart, oldEnd) {
 				//	if at least one value has changed, don't jump!
-				if ((inputWindow.selectionStart == oldStart)&&(inputWindow.selectionEnd == oldEnd))
+				if ((inputWindow[inputActive].selectionStart == oldStart)&&(inputWindow[inputActive].selectionEnd == oldEnd))
 					prevCommand();
-				else if ((inputWindow.selectionStart == inputWindow.selectionEnd) && (inputWindow.selectionStart == 0))
+				else if ((inputWindow[inputActive].selectionStart == inputWindow[inputActive].selectionEnd) && (inputWindow[inputActive].selectionStart == 0))
 					prevCommand();
-			}, 0, inputWindow.selectionStart, inputWindow.selectionEnd);
+			}, 0, inputWindow[inputActive].selectionStart, inputWindow[inputActive].selectionEnd);
 			
 			break;
 		case 'PageUp':
@@ -1295,7 +1338,7 @@ function keyPress(e)
 			if (shiftDown)
 				break;
 			
-			sendInputWindow();
+			sendinputWindow();
 			e.preventDefault();
 			break;
 		case 'Spacebar':
@@ -1333,57 +1376,57 @@ function keyUp(e)
 	
 	//	&zwnj; is used to force a newline in the invisible 
 	
-	inputGhost.innerHTML = inputWindow.value.replace(/\n/g, '<br>') + '&zwnj;';
-	inputGhost.style.width = window.getComputedStyle(inputWindow).getPropertyValue('width');
+	inputGhost[inputActive].innerHTML = inputWindow[inputActive].value.replace(/\n/g, '<br>') + '&zwnj;';
+	inputGhost[inputActive].style.width = window.getComputedStyle(inputWindow[inputActive]).getPropertyValue('width');
 		
-	let lines = parseInt(getComputedStyle(inputGhost)['height']) / parseInt(lineHeight);
+	let lines = parseInt(getComputedStyle(inputGhost[inputActive])['height']) / parseInt(lineHeight);
 	
-	if (inputWindow.rows != Math.max(lines, 2))
+	if (inputWindow[inputActive].rows != Math.max(lines[inputActive], 2))
 	{
 		//	scroll down to end?
 		if (scrollToBottom)
 			mainTXT.scrollTop = mainTXT.scrollHeight - mainTXT.clientHeight;
 		
-		inputWindow.rows = Math.max(lines, 2);
+		inputWindow[inputActive].rows = Math.max(lines, 2);
 	}
 }
 
 function nextCommand()
 {
-	if(commandHistory.length == commandHistoryLoc)
+	if(commandHistory[inputActive].length == commandHistoryLoc[inputActive])
 	{
 		return;
 	}
 	
-	commandHistoryLoc++;
-	if (commandHistoryLoc > commandHistory.length -1)
-		commandHistoryLoc = commandHistory.length;
+	commandHistoryLoc[inputActive]++;
+	if (commandHistoryLoc[inputActive] > commandHistory[inputActive].length -1)
+		commandHistoryLoc[inputActive] = commandHistory[inputActive].length;
 	
-	if (commandHistory[commandHistoryLoc])
-		inputWindow.value = commandHistory[commandHistoryLoc];
+	if (commandHistory[inputActive][commandHistoryLoc[inputActive]])
+		inputWindow[inputActive].value = commandHistory[inputActive][commandHistoryLoc[inputActive]];
 	else 
-		inputWindow.value = commandHistoryTemp;
+		inputWindow[inputActive].value = commandHistoryTemp[inputActive];
 }
 
 function prevCommand()
 {
-	if(commandHistory.length == 0)
+	if(commandHistory[inputActive].length == 0)
 	{
 		return;
 	}
 	
 	//	Save what we have right now
-	if ((commandHistoryLoc == commandHistory.length)&&(inputWindow.value != commandHistory[commandHistoryLoc-1]))
-		commandHistoryTemp = inputWindow.value;
+	if ((commandHistoryLoc[inputActive] == commandHistory[inputActive].length)&&(inputWindow[inputActive].value != commandHistory[inputActive][commandHistoryLoc[inputActive]-1]))
+		commandHistoryTemp[inputActive] = inputWindow[inputActive].value;
 	
-	commandHistoryLoc--;
-	if (commandHistoryLoc < 0)
-		commandHistoryLoc = 0;
+	commandHistoryLoc[inputActive]--;
+	if (commandHistoryLoc[inputActive] < 0)
+		commandHistoryLoc[inputActive] = 0;
 	
-	if (commandHistory[commandHistoryLoc])
-		inputWindow.value = commandHistory[commandHistoryLoc];
+	if (commandHistory[inputActive][commandHistoryLoc[inputActive]])
+		inputWindow[inputActive].value = commandHistory[inputActive][commandHistoryLoc[inputActive]];
 	else 
-		inputWindow.value = "";
+		inputWindow[inputActive].value = "";
 }
 
 function checkForMacro()
@@ -1392,8 +1435,8 @@ function checkForMacro()
 	if (macros.size < 1)
 		return false;
 	
-	//	inputWindow.value
-	let wordArray = inputWindow.value.split(/\s/);
+	//	inputWindow[inputActive].value
+	let wordArray = inputWindow[inputActive].value.split(/\s/);
 	let thisWord = wordArray[wordArray.length-1];
 	
 	for (let [key, value] of macros) 
@@ -1424,28 +1467,26 @@ function checkForMacro()
 		
 //		debugLog(key + " => " + tempValue);
 		
-		inputWindow.value = inputWindow.value.substring(0, inputWindow.value.length - thisWord.length) + tempValue;
+		inputWindow[inputActive].value = inputWindow[inputActive].value.substring(0, inputWindow[inputActive].value.length - thisWord.length) + tempValue;
 	}
 }
 
-function sendInputWindow()
+function sendinputWindow()
 {
-	sendMessage(inputWindow.value);
+	sendMessage(inputWindow[inputActive].value);
 	//	Add some logging of previous commands.
 	
-	if ((inputWindow.value != commandHistory[commandHistory.length-1])&&(inputWindow.value.length > clientVars.get('minCharHistory')-1))
-		commandHistory.push(inputWindow.value);
+	if ((inputWindow[inputActive].value != commandHistory[inputActive][commandHistory[inputActive].length-1])&&(inputWindow[inputActive].value.length > clientVars.get('minCharHistory')-1))
+		commandHistory[inputActive].push(inputWindow[inputActive].value);
 	
-	if (commandHistory.length > clientVars.get('commandHistory'))
+	if (commandHistory[inputActive].length > clientVars.get('commandHistory'))
 	{
-		commandHistory.shift();
-		
-//		debugLog("Command history filled. Deleting oldest member.");
+		commandHistory[inputActive].shift();
 	}
 	
-	commandHistoryLoc = commandHistory.length;
-	inputWindow.value = "";
-	commandHistoryTemp = "";
+	commandHistoryLoc[inputActive] = commandHistory[inputActive].length;
+	inputWindow[inputActive].value = "";
+	commandHistoryTemp[inputActive] = "";
 }
 
 //	Parsing server data

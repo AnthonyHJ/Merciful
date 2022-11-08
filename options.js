@@ -19,7 +19,7 @@ const fontCheck = new Set([
   'Athelas ', 'Bookerly', 'Caecilia',
 ].sort());
 
-var optionCategories = ['Logging', 'Sounds', 'Interface', 'AutoText', 'Macros'/*, 'Experimental'*/];
+var optionCategories = ['Logging', 'Sounds', 'Interface', 'AutoText', 'Macros', 'Experimental'];
 
 //	Default values
 var clientVarsCore = {
@@ -226,6 +226,16 @@ var clientVarsChar = {
 		'desc' : 'This variable decides whether you want to save your logs automatically. Manual saving will still work regardless.',
 		'type' : 'bool',
 		'category' : 'Logging',
+		'specificity' : 'char'
+	},
+	'inputWindowCount' : {
+		'pretty' : 'Input buffers',
+		'defaultValue' : 1,
+		'desc' : 'How many input buffers do you want? Useful for preparing emotes in combat or just having some commands ready to go.',
+		'min' : '1',
+		'max' : '4',
+		'type' : 'number',
+		'category' : 'Experimental',
 		'specificity' : 'char'
 	}
 };

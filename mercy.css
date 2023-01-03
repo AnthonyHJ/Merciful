@@ -28,7 +28,7 @@ span { font-size: 100%; }
 }
 .inputwrapper {width:calc(100% - 6px);}
 #commandinput {width:100%; min-height:1em; border:2px inset #aaa; overflow:hidden; resize:none; font: inherit;}
-#ghostinput {white-space:pre-wrap; font: inherit; visibility: hidden; position: absolute; z-index: -1; word-break: normal; }
+#ghostinput {white-space:pre-wrap; font: inherit; visibility: hidden; position: absolute; z-index: -1; word-break: normal; pointer-events: none; }
 .selectable {
 	          user-select: text;
 }

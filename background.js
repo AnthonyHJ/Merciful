@@ -534,7 +534,7 @@ function SaveLogFile(windowID)
 				else
 					logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
 				
-				let file = 'data:text/html;base64,'+btoa(logFileOutput);
+				let file = 'data:text/plain,'+logFileOutput;
 				chrome.downloads.download({ url : file, filename : items.logFiles[items.gameTabLog[windowID]].logName, conflictAction : "uniquify" }, (newID) => { 
 					items.logFileID[windowID] = newID; 
 					chrome.storage.local.set({logFileID : items.logFileID});
@@ -543,7 +543,7 @@ function SaveLogFile(windowID)
 		}
 		else
 		{
-			let file = 'data:text/plain;base64,'+btoa(logFileOutput);
+			let file = 'data:text/plain,'+logFileOutput;
 
 			chrome.downloads.download({ url : file, filename : items.logFiles[items.gameTabLog[windowID]].logName, conflictAction : "uniquify" }, (newID) => { 
 				items.logFileID[windowID] = newID; 

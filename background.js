@@ -110,7 +110,6 @@ chrome.runtime.onMessage.addListener(
 		{
 			console.log("[Merciful] Character List["+request.game+"]: "+request.charList.join(", "));
 			
-			//	console.log(request.charList);
 			let charList = new Map();
 			
 			chrome.storage.local.get(['charList'], function(result) {

@@ -12,13 +12,6 @@ function isDevMode() {
     return !('update_url' in chrome.runtime.getManifest());
 }
 
-//	Strip a value from local storage
-//	chrome.storage.local.remove("minCharHistory");
-
-//chrome.storage.local.get((contents) => {
-//	debugLog(contents);
-//});
-
 //	Logging
 var logFileName = "";
 var logFileString = "";
@@ -147,7 +140,6 @@ function init()
 			if ((inputWindow[inputActive].value.length > 0)&&(inputWindow[inputActive].value[inputWindow[inputActive].value.length-1] != " "))
 				inputWindow[inputActive].value += " ";
 			
-//			debugLog(targ.innerText);
 			inputWindow[inputActive].value += targ.innerText;
 			
 			inputWindow[inputActive].focus();
@@ -159,8 +151,6 @@ function init()
 		{
 			window.document.title = window.document.title.substring(2,window.document.title.length);
 		}
-		
-//		debugLog('The tab is now in focus');
 	});
 	
 	mainTXT.addEventListener('scroll', event => {
@@ -168,8 +158,6 @@ function init()
 			snapToBottom();
 		else
 			unSnapWindow();
-		
-//		debugLog('The window scrolled');
 	});
 	
 	window.addEventListener('resize', event => {
@@ -182,8 +170,6 @@ function init()
 		{
 			inputGhost[_tempThisInputNo].style.width = window.getComputedStyle(inputWindow[_tempThisInputNo]).getPropertyValue('width');
 		}
-	
-//		debugLog('The window resized');
 	});
 	
 	var findArgs = document.URL.split("?")[1];
@@ -230,7 +216,6 @@ function init()
 			
 			//	Update currentDateString in LocalStorage
 			chrome.storage.local.set({[currentDateString] : currentDate}, function() {
-				//  console.log('currentDate is set to ' + currentDate);
 				});
 		}
 	});
@@ -693,8 +678,6 @@ function dropNotification(name)
 
 function parseServerEvent(text)
 {
-//	debugLog(">" + text + "<");
-
 	var lines = text.split('\r\n');
 	
 	lines.forEach(parseMessage);
@@ -903,8 +886,6 @@ function serverMessage(event)
 			
 		default:
 	}
-	
-//	debugLog(event.data);
 }
 
 function serverError(event)
@@ -982,7 +963,6 @@ function rotateColour (colourIn)
 		b = (b + 128) % 256;
 		
 		var colourOut = "#" + g.toString(16) + b.toString(16) + r.toString(16);
-//		debugLog(colourIn + " => " + colourOut);
 		return colourOut;
 	}
 }
@@ -1154,7 +1134,6 @@ function rebuildStyleSheet()
 	chrome.runtime.sendMessage({'htmlStyles': myStyles}, () => {return true;});
 		
 	lineHeight = getComputedStyle(inputGhost[0])['height'];
-//	debugLog("Line height = " + lineHeight.toString());
 }
 
 //	Options
@@ -1465,8 +1444,6 @@ function checkForMacro()
 			debugLog("checkForMacro(): " + myArray[0] + " => " + randReplace[randEntry]);
 		}
 		
-//		debugLog(key + " => " + tempValue);
-		
 		inputWindow[inputActive].value = inputWindow[inputActive].value.substring(0, inputWindow[inputActive].value.length - thisWord.length) + tempValue;
 	}
 }
@@ -1577,7 +1554,7 @@ function DeleteOldestNode()
 		var iconTray = document.querySelector("#icon_tray");
 		var oldestNode = iconTray.children[0];
 		
-		debugLog (oldestNode);
+		debugLog(oldestNode);
 		
 		oldestNode.remove();
 }
@@ -1639,9 +1616,6 @@ function sendToLogger(myMessage)
 			}
 		});
 	});
-	
-//	//	Sends logging to background.js
-//	chrome.runtime.sendMessage({'logMessage': textOut});
 }
 
 function SaveLogFile()
@@ -1705,7 +1679,6 @@ function playSound(soundEffect)
 		tempSound = soundMap.get(soundEffect);
 	}
 	
-//	debugLog("PlaySound: " + soundEffect);
 	tempSound.volume = clientVars.get("soundVolume") / 10;
 	tempSound.play();
 	

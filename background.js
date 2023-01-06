@@ -230,7 +230,7 @@ chrome.runtime.onStartup.addListener(function() {
 				let filenameMatch = new Object();
 				filenameMatch.filenameRegex = items.logFiles[logData].logName;
 				
-				console.log("Log found for: " + logData);
+				console.log("[Merciful] Log found for: " + logData);
 				
 				chrome.downloads.search(filenameMatch, function(result)
 				{
@@ -260,36 +260,36 @@ chrome.runtime.onStartup.addListener(function() {
 //	These should all be session variables
 
 	chrome.storage.local.remove(['gameTabs'], function() {
-          console.log('Game tabs list unset');
+          console.log('[Merciful] Game tabs list unset');
         });
 	chrome.storage.local.remove(['gameTabLog'], function() {
-          console.log('Game tabs list unset');
+          console.log('[Merciful] Game tabs log list unset');
         });
 
 	chrome.storage.local.remove(['logFileID'], function() {
-          console.log('Game tabs list unset');
+          console.log('[Merciful] Logfile ID list unset');
         });
 	chrome.storage.local.remove(['logFileStyle'], function() {
-          console.log('Game tabs list unset');
+          console.log('[Merciful] Logfile style list unset');
         });
 	
 	chrome.storage.local.remove(['cookieUser', 'cookiePass'], function() {
-          console.log('default cookies unset');
+          console.log('[Merciful] default cookies unset');
         });
 	chrome.storage.local.remove(['cookieUserCM', 'cookiePassCM'], function() {
-          console.log('Castle Marrach cookies unset');
+          console.log('[Merciful] Castle Marrach cookies unset');
         });
 	chrome.storage.local.remove(['cookieUserAE', 'cookiePassAE'], function() {
-          console.log('Allegory of Empires cookies unset');
+          console.log('[Merciful] Allegory of Empires cookies unset');
         });
 	chrome.storage.local.remove(['cookieUserMR', 'cookiePassMR'], function() {
-          console.log('Multiverse Revelations cookies unset');
+          console.log('[Merciful] Multiverse Revelations cookies unset');
         });
 	chrome.storage.local.remove(['cookieUserEC', 'cookiePassEC'], function() {
-          console.log('Eternal City cookies unset');
+          console.log('[Merciful] Eternal City cookies unset');
         });
 	chrome.storage.local.remove(['cookieUserLP', 'cookiePassLP'], function() {
-          console.log('Lazarus Project cookies unset');
+          console.log('[Merciful] Lazarus Project cookies unset');
         });
 });
 
@@ -306,7 +306,7 @@ chrome.runtime.onStartup.addListener(function() {
  chrome.webNavigation.onCompleted.addListener(function(details) {
 //	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
-	console.log("Adding Merciful login links.");
+	console.log("[Merciful] Adding Merciful login links.");
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -482,20 +482,20 @@ function SaveLogFile(windowID)
 	chrome.storage.local.get(['gameTabLog','logFileID','logFiles','logFileStyle'], function (items) {
 		if (!items.gameTabLog)
 		{
-			console.error("Cannot find gameTabLog!");
+			console.error("[Merciful] Cannot find gameTabLog!");
 			return;
 		}
 		
 		if (!items.gameTabLog[windowID])
 		{
-			console.error("Cannot find a name for this character! WindowID: " + windowID);
+			console.error("[Merciful] Cannot find a name for this character! WindowID: " + windowID);
 			console.error(items.gameTabLog);
 			return;
 		}
 		
 		if (!items.logFiles[items.gameTabLog[windowID]])
 		{
-			console.error("Cannot find a log for this character! Name: " + items.gameTabLog[windowID]);
+			console.error("[Merciful] Cannot find a log for this character! Name: " + items.gameTabLog[windowID]);
 			return;
 		}
 		
@@ -504,7 +504,7 @@ function SaveLogFile(windowID)
 		
 		if (items.logFileID[windowID])
 		{
-			console.log("Download already in progress!");
+			console.log("[Merciful] Download already in progress!");
 			return;
 		}
 		
@@ -512,7 +512,7 @@ function SaveLogFile(windowID)
 		chrome.storage.local.set({logFileID : items.logFileID});
 		
 		//	save log to file
-		console.log("Saving: " + items.logFiles[items.gameTabLog[windowID]].logName);
+		console.log("[Merciful] Saving: " + items.logFiles[items.gameTabLog[windowID]].logName);
 		
 		let logFileOutput = items.logFiles[items.gameTabLog[windowID]].logText.replaceAll('%','%25').replaceAll('#','%23');
 		

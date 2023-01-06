@@ -549,8 +549,6 @@ function reportMessage(myMessage)
 	}
 	else if ((clientVars.get('markDawn') == 1) && (currentDate != tempDate)) //	need to check for new days
 	{
-		debugLog('date changed from ' + currentDate + ' to ' + tempDate);
-		
 		marrachTime.updateTime();
 		
 		sendToLogger(" ");
@@ -566,8 +564,6 @@ function reportMessage(myMessage)
 	}
 	else if (currentDate != tempDate)
 	{
-		debugLog('date changed from ' + currentDate + ' to ' + tempDate);
-		
 		currentDate = tempDate;
 		
 		//	Update currentDateString in LocalStorage
@@ -618,18 +614,15 @@ function reportMessage(myMessage)
 		//	TODO: use audioTriggersFixed['notifySound']
 		if (clientVars.get('useNotifySound') == 'once')
 		{
-			//	debugLog('NotifyOnce');
 			playSound('notifySound');
 		}
 	}
 	else if (((!document.hasFocus())||(!scrollToBottom))&&(clientVars.get('useNotifySound') == 'always')&&(myMessage))
 	{
-		//	debugLog('NotifyAlways');
 		playSound('notifySound');
 	}
 	else if ((gotPage)&&(clientVars.get("notifyOnPage") == 1))
 	{
-		debugLog("New Page");
 		playSound('notifySound');
 	}
 	
@@ -698,8 +691,6 @@ function highlightVote()
 	if (voteBar)
 		return;
 	
-	debugLog('Creating the vote window.');
-	
 	voteBar = document.createElement("div");
 	voteBar.style="background-color:#FFFFAF; color:#1f1f1f; position:sticky; top:0;";
 	voteBar.innerHTML = "Don't forget to <a style=\"color:#333377; font-weight: bold;\" title=\"@vote\">@vote</a>!";
@@ -710,8 +701,6 @@ function highlightVote()
 
 function hideVote()
 {
-	debugLog('Hiding the vote window.');
-	
 	if (voteBar)
 		if (document.getElementById('vote_bar'))
 			document.getElementById('vote_bar').remove();
@@ -868,7 +857,6 @@ chrome.runtime.onMessage.addListener(
 			console.warn("["+gamePrefix+":"+localCharacter+"] " + "chrome.runtime.onMessage.addListener(request, sender, sendResponse) gave me a result I didn't expect!");
 			console.warn(request);
 			console.warn(sender);
-			console.warn(sendResponse);
 		}
   });
   
@@ -1501,7 +1489,6 @@ function parseMessage(text)
 			//	We need to delay this a few seconds
 			
 			if (result.autoRun)
-				debugLog(result.autoRun);
 				debugLog("parseMessage(): " + result.autoRun);
 		});
 	}
@@ -1532,7 +1519,7 @@ function parseMessage(text)
 	else if (text === "> ")
 	{
 		//	No need to print this, but it keeps the connection live
-		// debugLog('KEEPALIVE');
+		debugLog('parseMessage(): KEEPALIVE');
 	}
 	else	// if (text != "")
 	{

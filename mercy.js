@@ -904,7 +904,7 @@ function serverDisconnect(event)
 	
 	playSound('shutDownSound');
 	reportClientMessage("Disconnected", 'connection');
-	SaveLogFile();
+	SaveLogFile("");
 	hideVote();
 	
 //	Create a new UI element which calls serverConnect();
@@ -923,7 +923,7 @@ function serverDisconnect(event)
 
 function closeServer(event)
 {	
-	SaveLogFile();
+	SaveLogFile("");
 
 	if (socketObject.readyState == WebSocket.OPEN)
 	{
@@ -1213,7 +1213,7 @@ function sendMessage(text)
 	//	need to intercept some special values
 	if (text == "@log")
 	{
-		SaveLogFile();
+		SaveLogFile("");
 		return;
 	}
 	else if (text == "@reconnect")
@@ -1268,7 +1268,7 @@ function keyPress(e)
 	switch (e.key)
 	{
 		case 'Save':
-			SaveLogFile();
+			SaveLogFile("");
 			break;
 		case 'ArrowDown':
 			setTimeout(function(oldStart, oldEnd) {
@@ -1599,18 +1599,19 @@ function sendToLogger(myMessage)
 			if (chrome.runtime.lastError)
 			{
 				//  The storage cannot hold it!
-				SaveLogFile();
+				//	Send the output string to form the start of the new log
+				SaveLogFile(textOut);
 			}
 		});
 	});
 }
 
-function SaveLogFile()
+function SaveLogFile(overflowText)
 {
 	//	Sends logging to background.js
 	chrome.runtime.sendMessage({'saveLog': true}, () => {return true;});
 	logFileName = "";
-	logFileString = "";
+	logFileString = overflowText;
 }
 
 function debugLog(message)

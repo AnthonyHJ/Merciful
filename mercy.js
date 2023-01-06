@@ -25,7 +25,6 @@ var rightBar = document.getElementById("right");
 var helperArea = document.getElementById("helper_area");
 var menuArea = document.getElementById("menu_area");
 var styleSheet = document.getElementsByTagName("style")[0];
-var voteBar;
 var inputGhost = new Array();
 var inputWindow = new Array();
 var inputActive = 0;
@@ -516,12 +515,6 @@ function reportMessage(myMessage)
 	
 	var styleString = "";
 	
-	//	We need to handle all of the tags and other fun bits in here...
-	myMessage = myMessage.replace(/ @vote([ !])/g, function(match, p1, offset, string){
-		highlightVote();
-		return " <a xch_cmd=\"@vote\">@vote</a>" + p1;
-	});
-	
 	myMessage = myMessage.replace(/\"@(allow|deny) (\w+?)\"/g, "<a xch_cmd=\"@$1 $2\">@$1 $2</a>");
 	
 	myMessage = myMessage.replace(/<a xch_cmd=/g, "<a style=\"" + styleString + "\" title=");
@@ -684,28 +677,6 @@ function parseServerEvent(text)
 	//	scroll down to end?
 	if (scrollToBottom)
 		mainTXT.scrollTop = mainTXT.scrollHeight - mainTXT.clientHeight;
-}
-
-function highlightVote()
-{
-	if (voteBar)
-		return;
-	
-	voteBar = document.createElement("div");
-	voteBar.style="background-color:#FFFFAF; color:#1f1f1f; position:sticky; top:0;";
-	voteBar.innerHTML = "Don't forget to <a style=\"color:#333377; font-weight: bold;\" title=\"@vote\">@vote</a>!";
-	voteBar.id = 'vote_bar';
-	voteBar.className = 'message';
-	mainTXT.prepend(voteBar);
-}
-
-function hideVote()
-{
-	if (voteBar)
-		if (document.getElementById('vote_bar'))
-			document.getElementById('vote_bar').remove();
-	
-	voteBar = null;
 }
 
 function snapToBottom()
@@ -909,7 +880,6 @@ function serverDisconnect(event)
 	playSound('shutDownSound');
 	reportClientMessage("Disconnected", 'connection');
 	SaveLogFile("");
-	hideVote();
 	
 //	Create a new UI element which calls serverConnect();
 	//	Create new element
@@ -1240,10 +1210,6 @@ function sendMessage(text)
 //		//	This should never be sent to the server.
 //		return;
 //	}
-	else if (text.substring(0,5) == "@vote")
-	{
-		hideVote();
-	}
 	else if (text.substring(0,14) == "@profile theme")
 	{
 		//	Correct for default style
@@ -1513,12 +1479,6 @@ function parseMessage(text)
 	else if (text.substring(0,5) === "<body")
 	{
 		updateTheme(text.substring(5, text.length-1));
-	}
-	else if (((text.substring(22,16) === "Just a reminder!") 
-		|| (text.substring(22,12) === "You may now ")) &&(gameName == "Castle Marrach"))
-	{
-		highlightVote();
-		reportMessage(text);
 	}
 	else if (text === "> ")
 	{

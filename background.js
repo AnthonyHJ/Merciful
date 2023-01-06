@@ -460,8 +460,6 @@ chrome.runtime.onInstalled.addListener(function(details) {
 function getLoginCookies(URL,gameCode)
 {
 	chrome.cookies.getAll({'url':URL}, function(cookies){
-		console.log(cookies);
-		
 		let cookieUser = [];
 		let cookiePass = [];
 
@@ -474,10 +472,8 @@ function getLoginCookies(URL,gameCode)
 		}
 			
 		chrome.storage.local.set({['cookieUser' + gameCode]: cookieUser[gameCode]}, function() {
-		  console.log('cookieUser[\'' + gameCode + '\'] is set to ' + cookieUser[gameCode]);
 		});
 		chrome.storage.local.set({['cookiePass' + gameCode]: cookiePass[gameCode]}, function() {
-		  console.log('cookiePass[\'' + gameCode + '\'] is set to ' + cookiePass[gameCode]);
 		});
 	});
 }

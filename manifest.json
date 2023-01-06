@@ -1,8 +1,8 @@
 {
   "name": "Merciful Client",
   "short_name": "Merciful",
-  "version": "0.4.8",
-  "version_name": "0.4.8 - New Year Update",
+  "version": "0.4.8.1",
+  "version_name": "0.4.8.1 - Urgent Logging Bugfix",
   "description": "A less-zealous client for Skotos-Tech games",
   
   "icons": {

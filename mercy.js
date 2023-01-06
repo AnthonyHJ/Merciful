@@ -825,6 +825,10 @@ function unTagify(match)
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
+		//	Filter out messages meant for the background page
+		if (sender.tab)
+			return;
+
 		if (request.clientVar && request.value)
 		{
 			if (request.gameName)

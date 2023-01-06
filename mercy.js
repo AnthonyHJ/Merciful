@@ -192,7 +192,7 @@ function init()
 	if (findArgs)
 		args = findArgs.split("&");
 	
-	console.log("Initialising " + client.name + " " + client.version);
+	console.log("["+gamePrefix+":"+localCharacter+"] Initialising " + client.name + " " + client.version);
 	
 	if (args)
 	{
@@ -207,7 +207,7 @@ function init()
 				window.document.title = localCharacterCap + " - " + client.name + " " + client.version
 				
 				//	Ensure the Web Worker knows about this tab
-				chrome.runtime.sendMessage({'registerTab': true, 'login': localCharacter}, () => {return true;});
+				chrome.runtime.sendMessage({'registerTab': true, 'login': localCharacter, 'backgroundOnly': true}, () => {return true;});
 			}
 		});
 	}
@@ -381,10 +381,10 @@ function loadClientVars()
 		
 		if (_changed)
 			chrome.storage.local.set({clientVars : result.clientVars}, function(){
-				console.log("Created preferences entry for " + localCharacter); 
+				debugLog("loadClientVars(): Created preferences entry for " + localCharacter); 
 			});
 		else
-			console.log("Loaded preferences");
+			debugLog("loadClientVars(): Loaded preferences");
 	
 		if (gamePrefix == 'AE')
 		{
@@ -441,10 +441,10 @@ function loadClientVars()
 		
 		if (_changed)
 			chrome.storage.local.set({macros : result.macros}, function(){
-				console.log("Created macros entry for " + localCharacter); 
+				debugLog("loadClientVars(): Created macros entry for " + localCharacter); 
 			});
 		else
-			console.log("Loaded macros");
+			debugLog("loadClientVars(): Loaded macros");
 	});
  }
 
@@ -453,7 +453,7 @@ function serverConnect()
 	var connectStatus;
 	
 	var url = profile.protocol + "://" + profile.server + ":" + profile.port + profile.path;
-	console.log(url);
+	debugLog("serverConnect(): "+url);
 	
 	if (socketObject)
 		socketObject.close(1000, 'Reconnecting');
@@ -477,7 +477,7 @@ function serverConnect()
 
 function serverHandshake(event)
 {
-	debugLog("Handshake!");
+	debugLog("serverHandshake(): Handshake!");
 	
 	if (event.data)
 		serverMessage(event);
@@ -559,7 +559,7 @@ function reportMessage(myMessage)
 		
 		//	Update currentDateString in LocalStorage
 		chrome.storage.local.set({[currentDateString] : currentDate}, function() {
-			  console.log('currentDate is set to ' + currentDate);
+			debugLog('reportMessage(): currentDate is set to ' + currentDate);
 			});
 	}
 	else if ((clientVars.get('markDawn') == 1) && (currentDate != tempDate)) //	need to check for new days
@@ -576,7 +576,7 @@ function reportMessage(myMessage)
 		
 		//	Update currentDateString in LocalStorage
 		chrome.storage.local.set({[currentDateString] : currentDate}, function() {
-			  console.log('currentDate is set to ' + currentDate);
+			debugLog('reportMessage(): currentDate is set to ' + currentDate);
 			});
 	}
 	else if (currentDate != tempDate)
@@ -587,7 +587,7 @@ function reportMessage(myMessage)
 		
 		//	Update currentDateString in LocalStorage
 		chrome.storage.local.set({[currentDateString] : currentDate}, function() {
-			  console.log('currentDate is set to ' + currentDate);
+			debugLog('reportMessage(): currentDate is set to ' + currentDate);
 			});
 	}
 	
@@ -673,7 +673,7 @@ function dropNotification(name)
 	//	grab the entry if it exists
 	if (notifications.has(name))
 	{
-		debugLog("Found UI Object: " + name);
+		debugLog("dropNotification(): Found UI Object: " + name);
 		
 		debugLog(notifications.get(name));
 		
@@ -687,7 +687,7 @@ function dropNotification(name)
 			//	move them forward a position
 			//	reposition them
 	} else {
-		debugLog("Couldn't find UI Object: " + name);
+		debugLog("dropNotification(): Couldn't find UI Object: " + name);
 	}
 }
 
@@ -807,7 +807,7 @@ function cleanTags(dirtyTags)
 			var re = new RegExp("<(?:\/)*" + key + "(>| [^>]*>)", 'g');
 			cleanedTags = cleanedTags.replace(re, "");
 			
-			debugLog(key + " tag was hijacked by code.");
+			debugLog("cleanTags(): " + key + " tag was hijacked by code.");
 		})
 	}
 	
@@ -815,14 +815,14 @@ function cleanTags(dirtyTags)
 	{
 		tagsToStrip.forEach((value, key)=>{
 			//	send a message about removed tags
-			debugLog("Input: " + cleanedTags);
+			debugLog("cleanTags(): Input: " + cleanedTags);
 
 			var re = new RegExp("<(?:\/)*" + key + "(>| [^>]*>)", 'g');
 			cleanedTags = cleanedTags.replace(re, unTagify);
 			
 			//	send a message about removed tags
-			debugLog(key + " tag was stripped out for security reasons.");
-			debugLog("Output: " + cleanedTags);
+			debugLog("cleanTags(): " + key + " tag was stripped out for security reasons.");
+			debugLog("cleanTags(): Output: " + cleanedTags);
 		})
 	}
 	
@@ -882,7 +882,7 @@ chrome.runtime.onMessage.addListener(
 		else 
 		{
 			//	I think there has been an error here...
-			console.warn("chrome.runtime.onMessage.addListener(request, sender, sendResponse) gave me a result I didn't expect!");
+			console.warn("["+gamePrefix+":"+localCharacter+"] " + "chrome.runtime.onMessage.addListener(request, sender, sendResponse) gave me a result I didn't expect!");
 			console.warn(request);
 			console.warn(sender);
 			console.warn(sendResponse);
@@ -909,7 +909,7 @@ function serverMessage(event)
 
 function serverError(event)
 {
-	debugLog("Error!");
+	debugLog("serverError(): Error!");
 	switch(socketObject.binaryType)
 	{
 		case "blob":
@@ -930,7 +930,7 @@ function serverDisconnect(event)
 {
 	window.document.title = "DISCONNECTED " + window.document.title;
 
-	debugLog("Disco!");
+	debugLog("serverDisconnect(): Disco!");
 	debugLog(event);
 	
 	playSound('shutDownSound');
@@ -1024,7 +1024,7 @@ function halfColour (match, colourIn, offset, string)
 	
 	var colourOut = "#" + r + g + b;
 	
-	debugLog("halfColour: " + colourIn + " => " + colourOut);
+	debugLog("halfColour(): " + colourIn + " => " + colourOut);
 	
 	return "<font color=\"" + colourOut + "\">";
 }
@@ -1192,7 +1192,7 @@ function updateClientVars(key, value, game)
 {
 	clientVars.set(key, value);
 	
-	debugLog(key + " is now equal to " + value)
+	debugLog("updateClientVars(): " + key + " is now equal to " + value)
 	
 	if ((key == "font")||(key == "fontSize")||(key == 'outputMargin'))
 	{
@@ -1212,7 +1212,7 @@ function updateMacros(key, value, game)
 	else
 		macros.delete(key);
 	
-	debugLog(">" + key + "< is now mapped to >" + value + "<");
+	debugLog("updateMacros(): >" + key + "< is now mapped to >" + value + "<");
 	
 	debugLog(macros);
 }
@@ -1446,7 +1446,7 @@ function checkForMacro()
 		
 		if (typeof(value) != 'string')
 		{
-			console.log(typeof(value));
+			console.warn("["+gamePrefix+":"+localCharacter+"] checkForMacro(): Error; Expected string, got " + typeof(value));
 			continue;
 		}
 		
@@ -1462,7 +1462,7 @@ function checkForMacro()
 			
 			//	replace myArray[0] with  value from myArray[1]
 			tempValue = tempValue.replace(myArray[0], randReplace[randEntry]);
-			debugLog(myArray[0] + " => " + randReplace[randEntry]);
+			debugLog("checkForMacro(): " + myArray[0] + " => " + randReplace[randEntry]);
 		}
 		
 //		debugLog(key + " => " + tempValue);
@@ -1508,7 +1508,7 @@ function parseMessage(text)
 		var secret = text.substring(7, text.length);
 		var hash = hexMD5(cookieUser + cookiePass + secret);
 		
-		debugLog('Sending username...');
+		debugLog('parseMessage(): Sending username...');
 		sendMessage("USER " + cookieUser);
 		sendMessage("SECRET " + secret);
 		sendMessage("HASH " + hash);
@@ -1525,14 +1525,14 @@ function parseMessage(text)
 			
 			if (result.autoRun)
 				debugLog(result.autoRun);
-//				sendMessage(result.autoRun);
+				debugLog("parseMessage(): " + result.autoRun);
 		});
 	}
 	else if (text.substring(0,30) === "Authentication error: BAD HASH")
 	{
 		reportMessage("Cannot log in. Redirecting...");
-		debugLog('Sending \'badHash: true\'');
 		chrome.runtime.sendMessage({badHash: true, loginURL: loginURL}, () => {return true;});
+		debugLog('parseMessage(): Sending \'badHash: true\'');
 	}
 	else if (text.substring(0,6) === "SKOOT ")
 	{
@@ -1655,7 +1655,14 @@ function SaveLogFile()
 function debugLog(message)
 {
 	if (isDevMode())
-		console.log(message);
+	{
+		if (typeof message == "string"){
+			console.log("["+gamePrefix+":"+localCharacter+"] " + message);
+		} else {
+			console.log("["+gamePrefix+":"+localCharacter+"] ");
+			console.log(message);
+		}
+	}
 }
 
 //	Audio
@@ -1672,7 +1679,7 @@ function checkAudioTriggers(text)
 		if (value.exec(text))
 		{
 			if (!playSound(key))
-				debugLog("Unfulfilled audio trigger: " + key);
+				debugLog("checkAudioTriggers(): Unfulfilled audio trigger: " + key);
 		}
 	});
 }

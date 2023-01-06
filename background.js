@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(
 		{
 			chrome.storage.local.get(['gameTabLog','gameTabs'], function(result) 
 			{
-				console.log("Registering " + request.login + " to tab id: " + sender.tab.id);
+				console.log("[Merciful] Registering " + request.login + " to tab id: " + sender.tab.id);
 				let gameTabs = {};
 				let gameTabLog = {};
 				
@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener(
 				if (targetTab == 0)
 				{
 					chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
-						console.log("Logging in " + request.login + " to " + request.game + ".");
+						console.log("[Merciful] Logging in " + request.login + " to " + request.game + ".");
 						
 						gameTabs[tab.id] = request.login;
 						chrome.storage.local.set({gameTabs : gameTabs});
@@ -78,8 +78,8 @@ chrome.runtime.onMessage.addListener(
 				}
 				else //	Else switch to that tab...
 				{
-					console.log("Trying to get tab: " + targetTab);
 					
+					console.log("[Merciful] Trying to get tab: " + targetTab);
 					chrome.tabs.get(targetTab, function (tab) {
 						console.log(tab);
 					})
@@ -108,7 +108,7 @@ chrome.runtime.onMessage.addListener(
 		}
 		else if (request.charList)	//	login page trying to update character list
 		{
-			console.log(request.charList);
+			console.log("[Merciful] Character List["+request.game+"]: "+request.charList.join(", "));
 			
 			//	console.log(request.charList);
 			let charList = new Map();
@@ -141,7 +141,7 @@ chrome.runtime.onMessage.addListener(
 		}
 		else if (request.badHash)	//	Authentication error: BAD HASH
 		{
-			console.log("Got a badHash");
+			console.log("[Merciful] Got a badHash; can't log in");
 			
 			/*
 			 * This should be handled in the originating window, surely...
@@ -171,7 +171,7 @@ chrome.runtime.onMessage.addListener(
 		}
 		else if (request.clientVar == 'logFormat')	//	change to the file extension
 		{
-			console.log('updating log format to ' + request.value);
+			console.log('[Merciful] updating log format to ' + request.value);
 			
 			chrome.storage.local.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
@@ -219,7 +219,7 @@ chrome.runtime.onStartup.addListener(function() {
 			if (items['logFiles'] == null)
 				return;
 			
-			console.log("Recovering logs.");
+			console.log("[Merciful] Recovering logs.");
 			console.log(items.logFiles);
 			
 			if (!items['gameTabLog'])

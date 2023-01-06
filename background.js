@@ -78,12 +78,7 @@ chrome.runtime.onMessage.addListener(
 				}
 				else //	Else switch to that tab...
 				{
-					
 					console.log("[Merciful] Trying to get tab: " + targetTab);
-					chrome.tabs.get(targetTab, function (tab) {
-						console.log(tab);
-					})
-					
 					chrome.tabs.update(targetTab,{highlighted:true});
 					
 					//	Now opens the window

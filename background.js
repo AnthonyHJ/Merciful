@@ -147,27 +147,13 @@ chrome.runtime.onMessage.addListener(
 		else if (request.badHash)	//	Authentication error: BAD HASH
 		{
 			console.log("[Merciful] Got a badHash; can't log in");
-			
-			/*
-			 * This should be handled in the originating window, surely...
-			 */
+
+			//	Remove the window from list of active play sessions
 			chrome.storage.session.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
 				{
 					delete result.gameTabs[sender.tab.id];
 					chrome.storage.session.set({gameTabs : result.gameTabs});
-				}
-			});
-	
-			//	Remove the window from list of active play sessions
-			chrome.storage.session.get(['gameTabs'], function(result) {
-				if (result.gameTabs)
-				{
-					if (result.gameTabs[tabId])
-					{
-						delete result.gameTabs[tabId];
-						chrome.storage.session.set({gameTabs : result.gameTabs});	
-					}
 				}
 			});
 			

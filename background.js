@@ -56,7 +56,7 @@ chrome.runtime.onMessage.addListener(
 				
 				for (const [key, value] of Object.entries(gameTabs)) {
 					if (value == request.login)
-						targetTab = key;
+						targetTab = parseInt (key);
 				}
 				
 				//	If there is a tab with that character...

@@ -1547,7 +1547,7 @@ function sendToLogger(myMessage)
 		textOut = myMessage + '<br>';
 	}
 	
-	logFileString += textOut + '\n';
+	logFileString += textOut.replaceAll('%','%25').replaceAll('#','%23') + '\n';
 	
 	chrome.storage.local.get(['logFiles'], function (results) {
 		if (!results.logFiles)
@@ -1564,7 +1564,7 @@ function sendToLogger(myMessage)
 			{
 				//  The storage cannot hold it!
 				//	Send the output string to form the start of the new log
-				SaveLogFile(textOut);
+				SaveLogFile(textOut.replaceAll('%','%25').replaceAll('#','%23'));
 			}
 		});
 	});

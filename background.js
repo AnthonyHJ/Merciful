@@ -509,7 +509,7 @@ function SaveLogFile(windowID)
 		//	save log to file
 		console.log("[Merciful] Saving: " + items.logFiles[items.gameTabLog[windowID]].logName);
 		
-		let logFileOutput = items.logFiles[items.gameTabLog[windowID]].logText.replaceAll('%','%25').replaceAll('#','%23');
+		let logFileOutput = items.logFiles[items.gameTabLog[windowID]].logText;
 		
 		if (items.logFiles[items.gameTabLog[windowID]].logName.substr(-4) == 'html')
 		{

@@ -110,7 +110,7 @@ chrome.runtime.onMessage.addListener(
 			chrome.storage.local.get(['charList'], function(result) {
 				let cookieUser = "";
 				
-				chrome.storage.local.get(['cookieUser'+request.game], function(resultC) {
+				chrome.storage.session.get(['cookieUser'+request.game], function(resultC) {
 					cookieUser = resultC['cookieUser'+request.game];
 					
 					if (result.charList)
@@ -465,9 +465,9 @@ function getLoginCookies(URL,gameCode)
 				cookiePass[gameCode] = thisCookie.value;
 		}
 			
-		chrome.storage.local.set({['cookieUser' + gameCode]: cookieUser[gameCode]}, function() {
+		chrome.storage.session.set({['cookieUser' + gameCode]: cookieUser[gameCode]}, function() {
 		});
-		chrome.storage.local.set({['cookiePass' + gameCode]: cookiePass[gameCode]}, function() {
+		chrome.storage.session.set({['cookiePass' + gameCode]: cookiePass[gameCode]}, function() {
 		});
 	});
 }

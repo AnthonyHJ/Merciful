@@ -17,7 +17,7 @@ chrome.storage.local.get(['charList'], function(charListImported) {
 	 * TODO: cookieUserCM is a temp fix
 	 */
 	
-	chrome.storage.local.get(['cookieUserCM', 'cookieUserAE', 'cookieUserMR', 'cookieUserEC', 'cookieUserLP'], function(result) {
+	chrome.storage.session.get(['cookieUserCM', 'cookieUserAE', 'cookieUserMR', 'cookieUserEC', 'cookieUserLP'], function(result) {
 		let loginOptions = false;
 		
 		charList.innerHTML = "";

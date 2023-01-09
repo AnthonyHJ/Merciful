@@ -262,8 +262,6 @@ chrome.runtime.onStartup.addListener(function() {
 //	Update login options
 //	TODO - this should be one function, not three
  chrome.webNavigation.onCompleted.addListener(function(details) {
-//	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
-	
 	console.log("[Merciful] Adding Merciful login links.");
 	
 	chrome.scripting.executeScript({
@@ -273,7 +271,6 @@ chrome.runtime.onStartup.addListener(function() {
 }, {url: [{urlMatches : 'http://game.marrach.com/?$'}]});
  
  chrome.webNavigation.onCompleted.addListener(function(details) {
-//	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -282,7 +279,6 @@ chrome.runtime.onStartup.addListener(function() {
 }, {url: [{urlMatches : 'http://game.allegoryofempires.com/SAM/Prop/Allegory:Theatre:Theatre/Index?$'}]});
  
  chrome.webNavigation.onCompleted.addListener(function(details) {
-//	gameTabs.set(details.tabId, "");	//	if we are playing here, play here
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},

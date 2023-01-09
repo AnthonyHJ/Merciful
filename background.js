@@ -17,32 +17,34 @@ var pageNames = {
 //	Recieves messages and passes them along
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		if (request.registerTab)	//	login a character
-		{
-			chrome.storage.local.get(['gameTabLog','gameTabs'], function(result) 
+		if (request.registerTab){	//	login a character
+			chrome.storage.session.get(['gameTabs'], function(tabResult) 
 			{
-				console.log("[Merciful] Registering " + request.login + " to tab id: " + sender.tab.id);
-				let gameTabs = {};
-				let gameTabLog = {};
-				
-				if (result.gameTabs)
-					gameTabs = result.gameTabs;
-			
-				if (result.gameTabLog)
-					gameTabLog = result.gameTabLog;
-			
-				if (!gameTabs[sender.tab.id])
+				chrome.storage.local.get(['gameTabLog'], function(logResult) 
 				{
-					gameTabs[sender.tab.id] = request.login;
-					gameTabLog[sender.tab.id] = request.login;
-					chrome.storage.local.set({gameTabs : gameTabs, gameTabLog : gameTabLog});
-				}
-			}
-			)
+					console.log("[Merciful] Registering " + request.login + " to tab id: " + sender.tab.id);
+					let gameTabs = {};
+					let gameTabLog = {};
+					
+					if (tabResult.gameTabs)
+						gameTabs = tabResult.gameTabs;
+				
+					if (logResult.gameTabLog)
+						gameTabLog = logResult.gameTabLog;
+				
+					if (!gameTabs[sender.tab.id])
+					{
+						gameTabs[sender.tab.id] = request.login;
+						gameTabLog[sender.tab.id] = request.login;
+						chrome.storage.session.set({gameTabs : gameTabs});
+						chrome.storage.local.set({gameTabLog : gameTabLog});
+					}
+				});
+			});
 		}
 		else if (request.login)	//	login a character
 		{
-			chrome.storage.local.get(['gameTabs'], function(result) 
+			chrome.storage.session.get(['gameTabs'], function(result) 
 			{
 				let gameTabs = {};
 				
@@ -57,44 +59,54 @@ chrome.runtime.onMessage.addListener(
 						targetTab = key;
 				}
 				
-				//	If there is no tab with that character...
-				if (targetTab == 0)
-				{
-					chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
-						console.log("[Merciful] Logging in " + request.login + " to " + request.game + ".");
-						
-						gameTabs[tab.id] = request.login;
-						chrome.storage.local.set({gameTabs : gameTabs});
-		
-						chrome.storage.local.get(['gameTabLog'], function(result) {
-							let gameTabLog = {};
-							if (result.gameTabLog)
-								gameTabLog = result.gameTabLog;
-							
-							gameTabLog[tab.id] = request.login;
-							chrome.storage.local.set({gameTabLog : gameTabLog});
-						});
-					});
-				}
-				else //	Else switch to that tab...
+				//	If there is a tab with that character...
+				if (targetTab != 0)
 				{
 					console.log("[Merciful] Trying to get tab: " + targetTab);
 					chrome.tabs.update(targetTab,{highlighted:true});
-					
+
 					//	Now opens the window
 					chrome.tabs.get(targetTab,function (tab) {
-						//	Should check the windowId - if it's 'minimized' then set it to 'normal'
-						chrome.windows.get(tab.windowId, function (window) {
-							if (window.state == 'minimized')
-								chrome.windows.update(
-									tab.windowId,
-									{
-										state: 'normal'
-									}
-								)
-						})
+						if (chrome.runtime.lastError)
+						{
+							console.warn(chrome.runtime.lastError);
+							SaveLogFile(targetTab);
+							delete gameTabs[targetTab]
+							return;
+						}
+
+						chrome.tabs.update(targetTab,{highlighted:true});
+					
+						if(tab){
+							//	Should check the windowId - if it's 'minimized' then set it to 'normal'
+							chrome.windows.get(tab.windowId, function (window) {
+								if (window.state == 'minimized')
+									chrome.windows.update(
+										tab.windowId,
+										{
+											state: 'normal'
+										}
+									)
+							})
+						}
 					});
 				}
+
+				chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
+					console.log("[Merciful] Logging in " + request.login + " to " + request.game + ".");
+					
+					gameTabs[tab.id] = request.login;
+					chrome.storage.session.set({gameTabs : gameTabs});
+	
+					chrome.storage.local.get(['gameTabLog'], function(result) {
+						let gameTabLog = {};
+						if (result.gameTabLog)
+							gameTabLog = result.gameTabLog;
+						
+						gameTabLog[tab.id] = request.login;
+						chrome.storage.local.set({gameTabLog : gameTabLog});
+					});
+				});
 			});
 		}
 		else if (request.saveLog)	//	We're sending a log
@@ -140,22 +152,22 @@ chrome.runtime.onMessage.addListener(
 			/*
 			 * This should be handled in the originating window, surely...
 			 */
-			chrome.storage.local.get(['gameTabs'], function(result) {
+			chrome.storage.session.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
 				{
 					delete result.gameTabs[sender.tab.id];
-					chrome.storage.local.set({gameTabs : result.gameTabs});
+					chrome.storage.session.set({gameTabs : result.gameTabs});
 				}
 			});
 	
 			//	Remove the window from list of active play sessions
-			chrome.storage.local.get(['gameTabs'], function(result) {
+			chrome.storage.session.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
 				{
 					if (result.gameTabs[tabId])
 					{
 						delete result.gameTabs[tabId];
-						chrome.storage.local.set({gameTabs : result.gameTabs});	
+						chrome.storage.session.set({gameTabs : result.gameTabs});	
 					}
 				}
 			});
@@ -167,7 +179,7 @@ chrome.runtime.onMessage.addListener(
 		{
 			console.log('[Merciful] updating log format to ' + request.value);
 			
-			chrome.storage.local.get(['gameTabs'], function(result) {
+			chrome.storage.session.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
 				{
 					for (const [key, value] of Object.entries(result.gameTabs)) {
@@ -182,17 +194,17 @@ chrome.runtime.onMessage.addListener(
 			let styleSheet =	"body { " + request.htmlStyles.colours + request.htmlStyles.fonts + " }\n" +
 								"a { " + request.htmlStyles.links + " }";
 			
-			chrome.storage.local.get(['logFileStyle'], function(result) {
+			chrome.storage.session.get(['logFileStyle'], function(result) {
 				if (!result.logFileStyle)
 					result.logFileStyle = {};
 				
 				result.logFileStyle[sender.tab.id] = styleSheet
-				chrome.storage.local.set({logFileStyle : result.logFileStyle});	
+				chrome.storage.session.set({logFileStyle : result.logFileStyle});	
 			});
 		}
 		else 	//	Pass a message to all active game windows (probably from options page)
 		{
-			chrome.storage.local.get(['gameTabs'], function(result) {
+			chrome.storage.session.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
 				{
 					for (const [key, value] of Object.entries(result.gameTabs)) {
@@ -251,41 +263,6 @@ chrome.runtime.onStartup.addListener(function() {
 			}
 		}
 	});
-
-//	These should all be session variables
-
-	chrome.storage.local.remove(['gameTabs'], function() {
-          console.log('[Merciful] Game tabs list unset');
-        });
-	chrome.storage.local.remove(['gameTabLog'], function() {
-          console.log('[Merciful] Game tabs log list unset');
-        });
-
-	chrome.storage.local.remove(['logFileID'], function() {
-          console.log('[Merciful] Logfile ID list unset');
-        });
-	chrome.storage.local.remove(['logFileStyle'], function() {
-          console.log('[Merciful] Logfile style list unset');
-        });
-	
-	chrome.storage.local.remove(['cookieUser', 'cookiePass'], function() {
-          console.log('[Merciful] default cookies unset');
-        });
-	chrome.storage.local.remove(['cookieUserCM', 'cookiePassCM'], function() {
-          console.log('[Merciful] Castle Marrach cookies unset');
-        });
-	chrome.storage.local.remove(['cookieUserAE', 'cookiePassAE'], function() {
-          console.log('[Merciful] Allegory of Empires cookies unset');
-        });
-	chrome.storage.local.remove(['cookieUserMR', 'cookiePassMR'], function() {
-          console.log('[Merciful] Multiverse Revelations cookies unset');
-        });
-	chrome.storage.local.remove(['cookieUserEC', 'cookiePassEC'], function() {
-          console.log('[Merciful] Eternal City cookies unset');
-        });
-	chrome.storage.local.remove(['cookieUserLP', 'cookiePassLP'], function() {
-          console.log('[Merciful] Lazarus Project cookies unset');
-        });
 });
 
 //	Update scrolls 
@@ -350,15 +327,15 @@ chrome.runtime.onStartup.addListener(function() {
 //	Need to check EVERY SINGLE TIME a window was shut?
 //	Use script to send message to background?
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-	chrome.storage.local.get(['gameTabs'], function(result) {
+	chrome.storage.session.get(['gameTabs'], function(result) {
 		if (result.gameTabs)
 		{
 			if (!result.gameTabs[tabId])
 				return;
 			
 			delete result.gameTabs[tabId];
-			chrome.storage.local.set({gameTabs : result.gameTabs});
-			
+			chrome.storage.session.set({gameTabs : result.gameTabs});
+
 			SaveLogFile(tabId);
 		}
 	});
@@ -427,7 +404,6 @@ chrome.runtime.onInstalled.addListener(function(details) {
 						console.log(newVal);
 						chrome.storage.local.set(newVal);
 					}
-				
 				}
 			})
 		}
@@ -446,6 +422,12 @@ chrome.runtime.onInstalled.addListener(function(details) {
 				console.log(newVal);
 				chrome.storage.local.set(newVal);
 			})
+		}
+		else if ((parseFloat(details.previousVersion.slice(2)) < 5) && (details.previousVersion[0] == '0'))
+		{
+			//	Remove the variables now moved to session.
+			chrome.storage.local.remove(['gameTabs', 'logFileStyle', 'cookieUser', 'cookiePass', 'cookieUserCM', 'cookiePassCM', 'cookieUserAE', 'cookiePassAE', 'cookieUserMR', 'cookiePassMR', 'cookieUserEC', 'cookiePassEC', 'cookieUserLP', 'cookiePassLP'])
+				.then(a=>{console.log("Session variables removed from local storage.")});
 		}
 	}
 });
@@ -474,7 +456,7 @@ function getLoginCookies(URL,gameCode)
 
 function SaveLogFile(windowID)
 {	
-	chrome.storage.local.get(['gameTabLog','logFileID','logFiles','logFileStyle'], function (items) {
+	chrome.storage.local.get(['gameTabLog','logFileID','logFiles'], function (items) {
 		if (!items.gameTabLog)
 		{
 			console.error("[Merciful] Cannot find gameTabLog!");
@@ -513,7 +495,7 @@ function SaveLogFile(windowID)
 		
 		if (items.logFiles[items.gameTabLog[windowID]].logName.substr(-4) == 'html')
 		{
-			chrome.storage.local.get(['logFileStyle'], function(result) {
+			chrome.storage.session.get(['logFileStyle'], function(result) {
 				if (result.logFileStyle)
 				{
 					if (result.logFileStyle[windowID])

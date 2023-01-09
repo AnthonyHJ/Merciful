@@ -230,8 +230,6 @@ chrome.runtime.onStartup.addListener(function() {
 			if (!items['gameTabLog'])
 				items['gameTabLog'] = {};
 			
-			let logFiles = items.logFiles;
-		
 			for (const logData in items.logFiles) {
 				let filenameMatch = new Object();
 				filenameMatch.filenameRegex = items.logFiles[logData].logName;

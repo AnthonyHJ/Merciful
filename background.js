@@ -258,6 +258,9 @@ chrome.runtime.onStartup.addListener(function() {
 					SaveLogFile(windowID);
 				})
 			}
+		} else {
+			chrome.storage.local.remove(['gameTabLog',  'logFileID'])
+				.then(()=>{console.log('[Merciful] Game session data reset.');});
 		}
 	});
 });
@@ -519,6 +522,9 @@ function SaveLogFile(windowID)
 				chrome.storage.local.set({logFileID : items.logFileID});
 			});
 		}
+
+		delete items.gameTabLog[windowID];
+		chrome.storage.local.set({gameTabLog : items.gameTabLog});
 	});
 }
 

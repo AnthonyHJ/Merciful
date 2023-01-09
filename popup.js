@@ -18,24 +18,13 @@ chrome.storage.local.get(['charList'], function(charListImported) {
 	 */
 	
 	chrome.storage.local.get(['cookieUserCM', 'cookieUserAE', 'cookieUserMR', 'cookieUserEC', 'cookieUserLP'], function(result) {
-		/*
-		if (cookieUser == "")
-		{
-			charList.innerHTML = "Not logged in!";
-			
-			chrome.tabs.create({"url": "https://login.marrach.com/", "active": true}, function (tab) {
-				console.log("Account Login");
-				});
-			return;
-		}
-		*/
 		let loginOptions = false;
 		
 		charList.innerHTML = "";
 		
 		if (charListImported.charList != null)
 		{
-			console.log(charListImported.charList);
+			//	console.log({charList: charListImported.charList});
 		
 			for (const [key, value] of Object.entries(charListImported.charList)) {
 				for (const thisGame of pageNames) {
@@ -47,7 +36,7 @@ chrome.storage.local.get(['charList'], function(charListImported) {
 				}
 			};
 			
-			console.log (loginOptions);
+			//	console.log ("[Merciful->popup.js] Login?: "+loginOptions);
 		}
 				
 				

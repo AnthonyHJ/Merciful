@@ -539,7 +539,6 @@ function DownloadComplete(downloadDelta)
 			//	Something stopped the download!
 			delete items.logFileID[windowID];
 			chrome.storage.local.set({logFileID : items.logFileID});
-			//	reportClientMessage('Your attempt to download the log has been cancelled.', 'error');
 			//	TODO: We need to be able to send an error back...
 			return;
 		}

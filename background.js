@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener(
 			{
 				chrome.storage.local.get(['gameTabLog'], function(logResult) 
 				{
-					console.log("[Merciful] Registering " + request.login + " to tab id: " + sender.tab.id);
+					DebugLogger("Registering " + request.login + " to tab id: " + sender.tab.id);
 					let gameTabs = {};
 					let gameTabLog = {};
 					
@@ -62,13 +62,13 @@ chrome.runtime.onMessage.addListener(
 				//	If there is a tab with that character...
 				if (targetTab != 0)
 				{
-					console.log("[Merciful] Trying to get tab: " + targetTab);
+					DebugLogger("Trying to get tab: " + targetTab);
 
 					//	Now opens the window
 					chrome.tabs.get(targetTab,function (tab) {
 						if (chrome.runtime.lastError)
 						{
-							console.warn(chrome.runtime.lastError);
+							DebugLogger(chrome.runtime.lastError, "warn");
 							SaveLogFile(targetTab);
 							delete gameTabs[targetTab]
 							return;
@@ -92,7 +92,7 @@ chrome.runtime.onMessage.addListener(
 				}
 
 				chrome.tabs.create({"url": pageNames[request.game] + ".html?charName=" + request.login, "active": true}, function (tab) {
-					console.log("[Merciful] Logging in " + request.login + " to " + request.game + ".");
+					DebugLogger("Logging in " + request.login + " to " + request.game + ".");
 					
 					gameTabs[tab.id] = request.login;
 					chrome.storage.session.set({gameTabs : gameTabs});
@@ -114,7 +114,7 @@ chrome.runtime.onMessage.addListener(
 		}
 		else if (request.charList)	//	login page trying to update character list
 		{
-			console.log("[Merciful] Character List["+request.game+"]: "+request.charList.join(", "));
+			DebugLogger("Character List["+request.game+"]: "+request.charList.join(", "));
 			
 			let charList = new Map();
 			
@@ -146,7 +146,7 @@ chrome.runtime.onMessage.addListener(
 		}
 		else if (request.badHash)	//	Authentication error: BAD HASH
 		{
-			console.log("[Merciful] Got a badHash; can't log in");
+			DebugLogger("Got a badHash; can't log in");
 
 			//	Remove the window from list of active play sessions
 			chrome.storage.session.get(['gameTabs'], function(result) {
@@ -162,7 +162,7 @@ chrome.runtime.onMessage.addListener(
 		}
 		else if (request.clientVar == 'logFormat')	//	change to the file extension
 		{
-			console.log('[Merciful] updating log format to ' + request.value);
+			DebugLogger('[Merciful] updating log format to ' + request.value);
 			
 			chrome.storage.session.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
@@ -210,8 +210,8 @@ chrome.runtime.onStartup.addListener(function() {
 			if (items['logFiles'] == null)
 				return;
 			
-			console.log("[Merciful] Recovering logs.");
-			console.log(items.logFiles);
+			DebugLogger("Recovering logs.");
+			DebugLogger(items.logFiles);
 			
 			if (!items['gameTabLog'])
 				items['gameTabLog'] = {};
@@ -220,7 +220,7 @@ chrome.runtime.onStartup.addListener(function() {
 				let filenameMatch = new Object();
 				filenameMatch.filenameRegex = items.logFiles[logData].logName;
 				
-				console.log("[Merciful] Log found for: " + logData);
+				DebugLogger("Log found for: " + logData);
 				
 				chrome.downloads.search(filenameMatch, function(result)
 				{
@@ -235,7 +235,7 @@ chrome.runtime.onStartup.addListener(function() {
 					
 					let windowID = 'recoverLogs-' + logData;
 				
-					console.log (items);
+					DebugLogger (items);
 				
 					items.gameTabLog[windowID] = logData;
 					
@@ -246,7 +246,7 @@ chrome.runtime.onStartup.addListener(function() {
 			}
 		} else {
 			chrome.storage.local.remove(['gameTabLog',  'logFileID'])
-				.then(()=>{console.log('[Merciful] Game session data reset.');});
+				.then(()=>{DebugLogger('[Merciful] Game session data reset.');});
 		}
 	});
 });
@@ -262,7 +262,7 @@ chrome.runtime.onStartup.addListener(function() {
 //	Update login options
 //	TODO - this should be one function, not three
  chrome.webNavigation.onCompleted.addListener(function(details) {
-	console.log("[Merciful] Adding Merciful login links.");
+	DebugLogger("Adding Merciful login links.");
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -271,6 +271,7 @@ chrome.runtime.onStartup.addListener(function() {
 }, {url: [{urlMatches : 'http://game.marrach.com/?$'}]});
  
  chrome.webNavigation.onCompleted.addListener(function(details) {
+	DebugLogger("Adding Merciful login links.");
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -279,6 +280,7 @@ chrome.runtime.onStartup.addListener(function() {
 }, {url: [{urlMatches : 'http://game.allegoryofempires.com/SAM/Prop/Allegory:Theatre:Theatre/Index?$'}]});
  
  chrome.webNavigation.onCompleted.addListener(function(details) {
+	DebugLogger("Adding Merciful login links.");
 	
 	chrome.scripting.executeScript({
 		target: {tabId: details.tabId},
@@ -329,7 +331,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 		if (details.previousVersion == chrome.runtime.getManifest().version)
 			return;
 	
-		chrome.tabs.create({"url": "ChangeLog.html", "active": true}, function (tab) {console.log(tab);});
+		chrome.tabs.create({"url": "ChangeLog.html", "active": true}, function (tab) {DebugLogger(tab);});
 		
 		//	TODO: Fix your local variables
 		if ((parseFloat(details.previousVersion.slice(2)) < 4) && (details.previousVersion[0] == '0'))
@@ -348,7 +350,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 						let newVal = new Object();
 						newVal[key.substring(0, 12) + "CM-" + key.substring(12)] = value;
 						
-						console.log(newVal);
+						DebugLogger(newVal);
 						chrome.storage.local.set(newVal);
 					}
 				
@@ -369,7 +371,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 						newVal.clientVars.core = value;
 						
 						//	Save the 'fixed' version.
-						console.log(newVal);
+						DebugLogger(newVal);
 						chrome.storage.local.set(newVal);
 					}
 				
@@ -383,7 +385,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 						newVal.macros.game.CM.core = result;
 						
 						//	Save the 'fixed' version.
-						console.log(newVal);
+						DebugLogger(newVal);
 						chrome.storage.local.set(newVal);
 					}
 				}
@@ -401,7 +403,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 				newVal.macros.game.CM.core = result.macros.game.CM;
 				
 				//	Save the 'fixed' version.
-				console.log(newVal);
+				DebugLogger(newVal);
 				chrome.storage.local.set(newVal);
 			})
 		}
@@ -409,7 +411,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 		{
 			//	Remove the variables now moved to session.
 			chrome.storage.local.remove(['gameTabs', 'logFileStyle', 'cookieUser', 'cookiePass', 'cookieUserCM', 'cookiePassCM', 'cookieUserAE', 'cookiePassAE', 'cookieUserMR', 'cookiePassMR', 'cookieUserEC', 'cookiePassEC', 'cookieUserLP', 'cookiePassLP'])
-				.then(a=>{console.log("Session variables removed from local storage.")});
+				.then(a=>{DebugLogger("Session variables removed from local storage.")});
 		}
 	}
 });
@@ -441,20 +443,20 @@ function SaveLogFile(windowID)
 	chrome.storage.local.get(['gameTabLog','logFileID','logFiles'], function (items) {
 		if (!items.gameTabLog)
 		{
-			console.error("[Merciful] Cannot find gameTabLog!");
+			DebugLogger("Cannot find gameTabLog!", "error");
 			return;
 		}
 		
 		if (!items.gameTabLog[windowID])
 		{
-			console.error("[Merciful] Cannot find a name for this character! WindowID: " + windowID);
-			console.error(items.gameTabLog);
+			DebugLogger("Cannot find a name for this character! WindowID: " + windowID, "error");
+			DebugLogger(items.gameTabLog, "error");
 			return;
 		}
 		
 		if (!items.logFiles[items.gameTabLog[windowID]])
 		{
-			console.error("[Merciful] Cannot find a log for this character! Name: " + items.gameTabLog[windowID]);
+			DebugLogger("Cannot find a log for this character! Name: " + items.gameTabLog[windowID], "error");
 			return;
 		}
 		
@@ -463,7 +465,7 @@ function SaveLogFile(windowID)
 		
 		if (items.logFileID[windowID])
 		{
-			console.log("[Merciful] Download already in progress!");
+			DebugLogger("Download already in progress!");
 			return;
 		}
 		
@@ -471,7 +473,7 @@ function SaveLogFile(windowID)
 		chrome.storage.local.set({logFileID : items.logFileID});
 		
 		//	save log to file
-		console.log("[Merciful] Saving: " + items.logFiles[items.gameTabLog[windowID]].logName);
+		DebugLogger("Saving: " + items.logFiles[items.gameTabLog[windowID]].logName);
 		
 		let logFileOutput = items.logFiles[items.gameTabLog[windowID]].logText;
 		
@@ -551,4 +553,21 @@ function DownloadComplete(downloadDelta)
 		chrome.storage.local.set({logFileID : items.logFileID});
 		chrome.storage.local.set({logFiles : items.logFiles});
 	});
+}
+
+function DebugLogger(message, level="log")
+{
+	switch(level){
+		case "log":
+			console.log("[Merciful] ", message);
+			break;
+		case "warn":
+			console.warn("[Merciful] ", message);
+			break;
+		case "error":
+			console.error("[Merciful] ", message);
+			break;
+		default:
+			console.log("[Merciful] ", message);
+	}
 }

@@ -626,6 +626,11 @@ function reportMessage(myMessage)
 	}
 }
 
+/*
+ *	Notification code:
+ *
+ *	TODO: This needs rewriting to match new notification type
+ */
 function addNotification(windowObj, name)
 {
 	//	Create an array - [the notification window itself, its new position in the list]

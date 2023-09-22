@@ -177,8 +177,6 @@ function init()
 	if (findArgs)
 		args = findArgs.split("&");
 	
-	console.log("["+gamePrefix+":"+localCharacter+"] Initialising " + client.name + " " + client.version);
-	
 	if (args)
 	{
 		args.forEach(function(item, index) {
@@ -196,6 +194,8 @@ function init()
 			}
 		});
 	}
+	
+	console.log("["+gamePrefix+":"+localCharacter+"] Initialising " + client.name + " " + client.version);
 	
 	currentDateString = 'currentDate-' + gamePrefix + '-' + localCharacter;
 	

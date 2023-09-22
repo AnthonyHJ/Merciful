@@ -1585,8 +1585,7 @@ function debugLog(message)
 		if (typeof message == "string"){
 			console.log("["+gamePrefix+":"+localCharacter+"] " + message);
 		} else {
-			console.log("["+gamePrefix+":"+localCharacter+"] ");
-			console.log(message);
+			console.log("["+gamePrefix+":"+localCharacter+"]", message);
 		}
 	}
 }

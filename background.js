@@ -313,9 +313,13 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
 	getLoginCookies('https://login.allegoryofempires.com/','AE');
 }, {url: [{urlMatches : 'https://login.allegoryofempires.com/overview.php'}]});
  
+chrome.webNavigation.onCompleted.addListener(function() {
+   //	try to get the username and password cookies
+   getLoginCookies('https://login.lazarus-project.net/','LP');
+}, {url: [{urlMatches : 'https://login.lazarus-project.net/overview.php'}]});
+ 
 //	TODO: Other games
 	//	Eternal City
-	//	Lazarus Project
 		
 //	Need to check EVERY SINGLE TIME a window was shut?
 //	Use script to send message to background?

@@ -279,14 +279,23 @@ chrome.runtime.onStartup.addListener(function() {
 	})
 }, {url: [{urlMatches : 'http://game.allegoryofempires.com/SAM/Prop/Allegory:Theatre:Theatre/Index?$'}]});
  
- chrome.webNavigation.onCompleted.addListener(function(details) {
-	DebugLogger("Adding Merciful login links.");
-	
-	chrome.scripting.executeScript({
-		target: {tabId: details.tabId},
-		files: ["insertMercyMR.js"]
-	})
+chrome.webNavigation.onCompleted.addListener(function(details) {
+   DebugLogger("Adding Merciful login links.");
+   
+   chrome.scripting.executeScript({
+	   target: {tabId: details.tabId},
+	   files: ["insertMercyMR.js"]
+   })
 }, {url: [{urlMatches : 'http://game.multirev.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}]});
+ 
+chrome.webNavigation.onCompleted.addListener(function(details) {
+   DebugLogger("Adding Merciful login links.");
+   
+   chrome.scripting.executeScript({
+	   target: {tabId: details.tabId},
+	   files: ["insertMercyLP.js"]
+   })
+}, {url: [{urlMatches : 'http://game.lazarus-project.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}]});
  
  //	Grab login cookies
  chrome.webNavigation.onCompleted.addListener(function() {

@@ -27,7 +27,7 @@
     "service_worker": "background.js"
   },
   "externally_connectable": {
-    "matches": ["*://*.marrach.com/*","*://*.multirev.net/*","*://*.allegoryofempires.com/*"]
+    "matches": ["*://*.marrach.com/*","*://*.multirev.net/*","*://*.allegoryofempires.com/*","*://*.lazarus-project.net/*"]
     },
   "options_page": "options.html",
   "permissions": [
@@ -40,7 +40,8 @@
   "host_permissions": [
             "*://*.marrach.com/*",
 			"*://*.multirev.net/*",
-			"*://*.allegoryofempires.com/*"
+			"*://*.allegoryofempires.com/*",
+			"*://*.lazarus-project.net/*"
             ],
     
   "manifest_version": 3

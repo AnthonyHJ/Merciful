@@ -139,6 +139,8 @@ function populateSkoot()
 //		myRequest = new Request('http://game.allegoryofempires.com/Theatre/Flash/index.sam');
 	else if (gameName == "Multiverse Revelations")
 		myRequest = new Request('http://game.multirev.net/Theatre/Flash/index.sam');
+	else if (gameName == "The Lazarus Project")
+		myRequest = new Request('http://game.lazarus-project.net/Theatre/Flash/index.sam');
 	else
 		return;
 	

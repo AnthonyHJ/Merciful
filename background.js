@@ -279,14 +279,23 @@ chrome.runtime.onStartup.addListener(function() {
 	})
 }, {url: [{urlMatches : 'http://game.allegoryofempires.com/SAM/Prop/Allegory:Theatre:Theatre/Index?$'}]});
  
- chrome.webNavigation.onCompleted.addListener(function(details) {
-	DebugLogger("Adding Merciful login links.");
-	
-	chrome.scripting.executeScript({
-		target: {tabId: details.tabId},
-		files: ["insertMercyMR.js"]
-	})
+chrome.webNavigation.onCompleted.addListener(function(details) {
+   DebugLogger("Adding Merciful login links.");
+   
+   chrome.scripting.executeScript({
+	   target: {tabId: details.tabId},
+	   files: ["insertMercyMR.js"]
+   })
 }, {url: [{urlMatches : 'http://game.multirev.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}]});
+ 
+chrome.webNavigation.onCompleted.addListener(function(details) {
+   DebugLogger("Adding Merciful login links.");
+   
+   chrome.scripting.executeScript({
+	   target: {tabId: details.tabId},
+	   files: ["insertMercyLP.js"]
+   })
+}, {url: [{urlMatches : 'http://game.lazarus-project.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}]});
  
  //	Grab login cookies
  chrome.webNavigation.onCompleted.addListener(function() {
@@ -304,9 +313,13 @@ chrome.runtime.onStartup.addListener(function() {
 	getLoginCookies('https://login.allegoryofempires.com/','AE');
 }, {url: [{urlMatches : 'https://login.allegoryofempires.com/overview.php'}]});
  
+chrome.webNavigation.onCompleted.addListener(function() {
+   //	try to get the username and password cookies
+   getLoginCookies('https://login.lazarus-project.net/','LP');
+}, {url: [{urlMatches : 'https://login.lazarus-project.net/overview.php'}]});
+ 
 //	TODO: Other games
 	//	Eternal City
-	//	Lazarus Project
 		
 //	Need to check EVERY SINGLE TIME a window was shut?
 //	Use script to send message to background?

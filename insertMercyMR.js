@@ -23,7 +23,7 @@ function insertMercy()
 		
 		console.log(thisTable.innerHTML);
 		
-		let searchRegEx = /lazarus\.htm\?charName=(.*?)\%27/g;
+		let searchRegEx = /\.htm\?charName=(\w*)/g;
 		let newChar, personArray;
 		
 		if (personArray = searchRegEx.exec(thisTable.href))

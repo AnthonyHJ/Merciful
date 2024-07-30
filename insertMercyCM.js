@@ -27,7 +27,7 @@ function insertMercy()
 		for (let row of rows) {
 			let cells = row.getElementsByTagName("td");
 			
-			let searchRegEx = /<a href="http:\/\/client.marrach.com\/marrach\/marrach.htm\?charName=(.*?)">Orchil<\/a>/g;
+			let searchRegEx = /\.htm\?charName=(\w*)/g;
 			
 			if (personArray = searchRegEx.exec(cells[0].innerHTML))
 				newChar = personArray[1];

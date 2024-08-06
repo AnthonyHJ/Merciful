@@ -516,8 +516,16 @@ function reportMessage(myMessage)
 	var styleString = "";
 	
 	myMessage = myMessage.replace(/\"@(allow|deny) (\w+?)\"/g, "<a xch_cmd=\"@$1 $2\">@$1 $2</a>");
-	
-	myMessage = myMessage.replace(/<a xch_cmd=/g, "<a style=\"" + styleString + "\" title=");
+
+	//	Rework link text to function correctly even if it contains quotes
+	let linkText;
+	let regEx = /<a xch_cmd=\'(.*?)\'>/g;
+
+	while ((linkText = regEx.exec(myMessage)) !== null){
+		console.log(linkText);
+		let linkURI = linkText[1].replaceAll("\'", "\"");
+		myMessage = myMessage.replace(/<a xch_cmd=\'(.*?)\'>/, "<a style=\"" + styleString + "\" title=\'" + linkURI + "\'>");
+	}
 
 	var timeNow = new Date ();
 	var timeServer = new Date ();

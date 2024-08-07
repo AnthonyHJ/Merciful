@@ -348,10 +348,10 @@ function loadClientVars()
 		let _changed = false;
 		
 		if (!result.clientVars)
-			result.clientVars == {};
+			result.clientVars = {};
 		
 		if (!result.clientVars.core)
-			result.clientVars.core == {};
+			result.clientVars.core = {};
 		
 		//	read in core values and override
 		for (const [key, value] of Object.entries(result.clientVars.core)) {
@@ -359,10 +359,10 @@ function loadClientVars()
 			};
 		
 		if (!result.clientVars.game)
-			result.clientVars.game == {};
+			result.clientVars.game = {};
 		
 		if (!result.clientVars.game[gamePrefix])
-			result.clientVars.game[gamePrefix] == {};
+			result.clientVars.game[gamePrefix] = {};
 		
 		//	read in game values and override
 		for (const [key, value] of Object.entries(result.clientVars.game[gamePrefix])) {
@@ -370,10 +370,10 @@ function loadClientVars()
 			};
 		
 		if (!result.clientVars.char)
-			result.clientVars.char == {};
+			result.clientVars.char = {};
 		
 		if (!result.clientVars.char[gamePrefix])
-			result.clientVars.char[gamePrefix] == {};
+			result.clientVars.char[gamePrefix] = {};
 		
 		if (!result.clientVars.char[gamePrefix][localCharacter])
 		{

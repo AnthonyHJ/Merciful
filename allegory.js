@@ -5,6 +5,7 @@ var gameName = "Allegory of Empires";
 var loginURL = 'https://login.allegoryofempires.com';
 var runOnStart = true;
 
+var mapSize = {width: 468, height: 468};
 var popupSize = {width: 800, height: 600};
 
 var forceLightMode = window.matchMedia('(prefers-color-scheme: light)').matches;

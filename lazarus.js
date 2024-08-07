@@ -6,6 +6,7 @@ var loginURL = 'https://login.lazarus-project.net';
 var runOnStart = false;
 var forceLightMode = false;
 
+var mapSize = {width: 800, height: 533};
 var popupSize = {width: 790, height: 575};
 
 var profile = {

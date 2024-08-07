@@ -126,11 +126,32 @@ function init()
 		
 		if (targ.id == 'map_area')
 		{
-			mapPopUp = window.open(fullMapURL, 'Map', 'width=468, height=468');
-			if (!mapPopUp)
-				reportClientMessage('I just tried to open a new window, but I seem to have failed.', 'error');
-			else 
-				mapPopUp.focus();
+			chrome.windows.create(
+				{
+					focused : true,
+					height : mapSize.height,
+					type : "popup",	//	"popup" | "panel"
+					url : fullMapURL,
+					width : mapSize.width
+				},
+				(window) => {
+					if (!window)
+						reportClientMessage('I just tried to open a map window, but I seem to have failed.', 'error');
+					
+					console.log(window?.tabs[0].height, window?.tabs[0].width);
+
+					let newHeight = window?.tabs[0].height + 2 * (mapSize.height - window?.tabs[0].height);
+					let newWidth = window?.tabs[0].width + 2 * (mapSize.width - window?.tabs[0].width);
+
+					chrome.windows.update(
+						window?.id,
+						{
+							height: newHeight,
+							width: newWidth,
+						}
+					  )
+				}
+			);
 		}
 		
 		if (targ.id.substring(0,6) == 'player')

@@ -6,6 +6,7 @@ var loginURL = 'https://login.multirev.net';
 var runOnStart = false;
 var forceLightMode = false;
 
+var mapSize = {width: 468, height: 468};
 var popupSize = {width: 800, height: 600};
 
 var profile = {

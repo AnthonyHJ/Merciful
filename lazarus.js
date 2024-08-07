@@ -6,6 +6,8 @@ var loginURL = 'https://login.lazarus-project.net';
 var runOnStart = false;
 var forceLightMode = false;
 
+var popupSize = {width: 790, height: 575};
+
 var profile = {
 		"method":   "websocket",
 		"protocol": "ws",

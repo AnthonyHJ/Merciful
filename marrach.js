@@ -6,6 +6,8 @@ var loginURL = 'https://login.marrach.com';
 var runOnStart = false;
 var forceLightMode = false;
 
+var popupSize = {width: 800, height: 600};
+
 var profile = {
 		"method":   "websocket",
 		"protocol": "ws",

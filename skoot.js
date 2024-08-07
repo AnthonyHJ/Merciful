@@ -237,22 +237,22 @@ function doSKOOT(rawSKOOT)
 			chrome.windows.create(
 				{
 					focused : true,
-					height : 600,
+					height : popupSize.h,
 					type : "popup",	//	"popup" | "panel"
 					url : skootText,
-					width : 800
+					width : popupSize.w
 				},
-				(w) => {
-					console.log(w?.tabs[0].height, w?.tabs[0].width);
+				(window) => {
+					console.log(window?.tabs[0].height, window?.tabs[0].width);
 
-					let newH = w?.tabs[0].height + 2 * (575 - w?.tabs[0].height);
-					let newW = w?.tabs[0].width + 2 * (790 - w?.tabs[0].width);
+					let newHeight = window?.tabs[0].height + 2 * (popupSize.height - window?.tabs[0].height);
+					let newWidth = window?.tabs[0].width + 2 * (popupSize.width - window?.tabs[0].width);
 
 					chrome.windows.update(
-						w?.id,
+						window?.id,
 						{
-							height: newH,
-							width: newW,
+							height: newHeight,
+							width: newWidth,
 						}
 					  )
 				}

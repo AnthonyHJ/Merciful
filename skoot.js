@@ -243,6 +243,9 @@ function doSKOOT(rawSKOOT)
 					width : popupSize.w
 				},
 				(window) => {
+					if (!window)
+						reportClientMessage('I just tried to open a new window, but I seem to have failed.', 'error');
+
 					console.log(window?.tabs[0].height, window?.tabs[0].width);
 
 					let newHeight = window?.tabs[0].height + 2 * (popupSize.height - window?.tabs[0].height);

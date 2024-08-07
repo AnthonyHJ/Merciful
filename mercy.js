@@ -135,8 +135,10 @@ function init()
 					width : mapSize.width
 				},
 				(window) => {
-					if (!window)
+					if (!window){
 						reportClientMessage('I just tried to open a map window, but I seem to have failed.', 'error');
+						return;
+					}
 					
 					console.log(window?.tabs[0].height, window?.tabs[0].width);
 

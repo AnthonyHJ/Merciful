@@ -234,11 +234,29 @@ function doSKOOT(rawSKOOT)
 		case 6:
 			//	Open a new window - 800x600
 			console.log("Show a page in a 800x600 box: " + skootText);
-			popUp = window.open(skootText, 'Castle Marrach', 'width=800, height=600');
-			if (!popUp)
-				reportError('I just tried to open a new window, but I seem to have failed.');
-			else 
-				popUp.focus();
+			chrome.windows.create(
+				{
+					focused : true,
+					height : 600,
+					type : "popup",	//	"popup" | "panel"
+					url : skootText,
+					width : 800
+				},
+				(w) => {
+					console.log(w?.tabs[0].height, w?.tabs[0].width);
+
+					let newH = w?.tabs[0].height + 2 * (575 - w?.tabs[0].height);
+					let newW = w?.tabs[0].width + 2 * (790 - w?.tabs[0].width);
+
+					chrome.windows.update(
+						w?.id,
+						{
+							height: newH,
+							width: newW,
+						}
+					  )
+				}
+			);
 			break;
 		
 		case 7:

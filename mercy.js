@@ -135,11 +135,13 @@ function init()
 					width : mapSize.width
 				},
 				(window) => {
-					if (!window){
+					if (!window?.tabs[0]){
 						reportClientMessage('I just tried to open a map window, but I seem to have failed.', 'error');
+						console.log (fullMapURL, window?.tabs[0]);
 						return;
 					}
 					
+					console.log(window);
 					console.log(window?.tabs[0].height, window?.tabs[0].width);
 
 					let newHeight = window?.tabs[0].height + 2 * (mapSize.height - window?.tabs[0].height);

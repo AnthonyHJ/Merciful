@@ -30,7 +30,7 @@ var roomExits = new Array();
 var compassPoints = new Map();
 
 var miniMap = document.getElementById("map_area");
-var fullMapURL;
+var fullMapURL = "images/Merciful_128.png";
 
 var popUp, mapPopUp, artPopUp;
 
@@ -243,7 +243,7 @@ function doSKOOT(rawSKOOT)
 					width : popupSize.w
 				},
 				(window) => {
-					if (!window){
+					if (!window?.tabs[0]){
 						reportClientMessage('I just tried to open a new window, but I seem to have failed.', 'error');
 						return;
 					}

@@ -849,7 +849,7 @@ chrome.runtime.onMessage.addListener(
 					return;
 				
 			//	It is a new clientVar value
-			updateClientVars(request.clientVar, request.value, request.game);
+			updateClientVars(request.clientVar, request.value);
 		}
 		else if (request.trigger)
 		{
@@ -862,7 +862,7 @@ chrome.runtime.onMessage.addListener(
 					return;
 				
 			//	It is a new macro value
-			updateMacros(request.trigger, request.command, request.game);
+			updateMacros(request.trigger, request.command);
 		}
 		else 
 		{
@@ -1167,7 +1167,7 @@ var clientVars = new Map([
 
 var macros = new Map();
 
-function updateClientVars(key, value, game)
+function updateClientVars(key, value)
 {
 	clientVars.set(key, value);
 	
@@ -1184,7 +1184,7 @@ function updateClientVars(key, value, game)
 	}
 }
 
-function updateMacros(key, value, game)
+function updateMacros(key, value)
 {
 	if (value)
 		macros.set(key, value);

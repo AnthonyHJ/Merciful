@@ -68,6 +68,9 @@ var shiftDown = false;
 
 //	Initialising
 
+/**
+ * Initialise the game window
+ */
 function init()
 {
 	//	TODO - For loops to add new ones if the player wants more than one.
@@ -314,6 +317,9 @@ function init()
 	RunOnStart();
 }
 
+/**
+ * Read the client variables from local storage
+ */
 function loadClientVars()
 {
 	//	If you can get it from chrome.storage.local then do so.
@@ -428,6 +434,9 @@ function loadClientVars()
 	});
  }
 
+ /**
+  * Connect to the server
+  */
 function serverConnect()
 {
 	var connectStatus;
@@ -477,11 +486,20 @@ function serverHandshake(event)
 
 //	Drawing to the screen
 
+/**
+ * Send a message to the player in the main window. 
+ * @param {string} myMessage The message to draw to the screen
+ * @param {string} className The css class for the message
+ */
 function reportClientMessage(myMessage, className)
 {
 	newMessages += "<div class='" + className + " themeMain'>" + myMessage + "</div>";
 }
 
+/**
+ * Accept a new message and draw it to the screen. Also adds to log if loggibng is turned on.
+ * @param {string} myMessage The latest message (usually) from the server
+ */
 function reportMessage(myMessage)
 {
 	let startPre = /\<pre\>/;
@@ -671,6 +689,10 @@ function dropNotification(name)
 	}
 }
 
+/**
+ * Accept new messages from the server and send them line by line to parseMessage()
+ * @param {string} text Raw message from the server
+ */
 function parseServerEvent(text)
 {
 	var lines = text.split('\r\n');
@@ -712,6 +734,12 @@ function unSnapWindow()
 	snapButton.style.display = "block";
 }
 
+/**
+ * Draw a new pop-up window; will automatically correct the internal width to your target values.
+ * @param {string} targetURL URL to open
+ * @param {int} targetHeight window height in pixels
+ * @param {int} targetWidth window width in pixels
+ */
 function drawPopup(targetURL, targetHeight, targetWidth){
 	chrome.windows.create(
 		{
@@ -743,6 +771,11 @@ function drawPopup(targetURL, targetHeight, targetWidth){
 
 //	Clean output
 
+/**
+ * Strips out and corrects any HTML tags and characters which need to be processed before adding them to the main window
+ * @param {string} dirtyTags The raw output for the main window
+ * @returns Cleaned and sanitised version
+ */
 function cleanTags(dirtyTags)
 {
 	//	Check a whole load of <TAG>, </TAG>, and <TAG /> against the 'clean' list and discard the others
@@ -950,6 +983,11 @@ function menuClick(event)
 
 //	Themes
 
+/**
+ * Tries to create a complementary colour to go with the given input.
+ * @param {string} colourIn A colour as an HTML hex code
+ * @returns {string} Complementary colour
+ */
 function rotateColour (colourIn)
 {
 	if (colourIn.length == 7)
@@ -967,7 +1005,14 @@ function rotateColour (colourIn)
 	}
 }
 
-//"<font color=\"" + halfColour("$1") + "\">"
+/**
+ * A helper that gets passed to a string.replace() function to make a colour darker than 50% to suit light-mode users in games without functioning themes.
+ * @param {string} match Full matched substring
+ * @param {string} colourIn First captured group
+ * @param {int} offset Offset of the first capture group in characters
+ * @param {string} string Entire string tested
+ * @returns 
+ */
 function halfColour (match, colourIn, offset, string)
 {
 	if (colourIn.length == 7)
@@ -1009,6 +1054,10 @@ function halfColour (match, colourIn, offset, string)
 	return "<font color=\"" + colourOut + "\">";
 }
 
+/**
+ * Sets the icons on the screen to black on a light background or black on a light one.
+ * @param {string} colourIn Theme background colour to be checked against
+ */
 function iconColour (colourIn)
 {
 	//	TODO: This should literally recolour the icons
@@ -1038,6 +1087,10 @@ function iconColour (colourIn)
 	}
 }
 
+/**
+ * Updates the theming data to match values in the <body> tag. This is how the games set themes.
+ * @param {string} bodyTag The full HTML <body> tag sent from the server
+ */
 function updateTheme(bodyTag)
 {
 	if (gameName == "Allegory of Empires")
@@ -1072,6 +1125,9 @@ function updateTheme(bodyTag)
 	rebuildStyleSheet()
 }
 
+/**
+ * Rebuild the styles for the page to match the current theme
+ */
 function rebuildStyleSheet()
 {
 	//	Should actually just assign these values to current maintext DIV once I create that functionality
@@ -1167,6 +1223,11 @@ var clientVars = new Map([
 
 var macros = new Map();
 
+/**
+ * Updates client variables, usually set from the options page
+ * @param {string} key ClientVar to be changed
+ * @param {*} value New value
+ */
 function updateClientVars(key, value)
 {
 	clientVars.set(key, value);
@@ -1184,6 +1245,11 @@ function updateClientVars(key, value)
 	}
 }
 
+/**
+ * Update the macros list, usually after they were updated in the options window
+ * @param {string} key 
+ * @param {string} value 
+ */
 function updateMacros(key, value)
 {
 	if (value)
@@ -1220,6 +1286,11 @@ function inputGiveFocus(e)
 		inputWindow[inputActive].focus();
 }
 
+/**
+ * Interpret text the player enters; some goes to the server, some is processed locally
+ * @param {string} text The command sent by the player
+ * @returns 
+ */
 function sendMessage(text)
 {
 	//	need to intercept some special values
@@ -1270,6 +1341,10 @@ function sendMessage(text)
 	socketObject.send(text.normalize("NFD") + "\n");
 }
 
+/**
+ * Handles keydown events so that we can use shortcuts and send on enter
+ * @param {event} e keydown event
+ */
 function keyPress(e)
 {
 	switch (e.key)
@@ -1332,6 +1407,10 @@ function keyPress(e)
 	}
 }
 
+/**
+ * Handles keydown events to cancel shift and ctrl modifiers
+ * @param {event} e keyup event
+ */
 function keyUp(e)
 {
 	switch (e.key)
@@ -1365,6 +1444,10 @@ function keyUp(e)
 	}
 }
 
+/**
+ * Finds the next command in commandHistory array
+ * @returns Next command in commandHistory array
+ */
 function nextCommand()
 {
 	if(commandHistory[inputActive].length == commandHistoryLoc[inputActive])
@@ -1382,6 +1465,10 @@ function nextCommand()
 		inputWindow[inputActive].value = commandHistoryTemp[inputActive];
 }
 
+/**
+ * Finds the previous command in commandHistory array
+ * @returns Previous command in commandHistory array
+ */
 function prevCommand()
 {
 	if(commandHistory[inputActive].length == 0)
@@ -1403,6 +1490,9 @@ function prevCommand()
 		inputWindow[inputActive].value = "";
 }
 
+/**
+ * Update the input box with replacements for any macros
+ */
 function checkForMacro()
 {
 	//	give up if there are no macros
@@ -1443,6 +1533,9 @@ function checkForMacro()
 	}
 }
 
+/**
+ * Sends the contents of the input window
+ */
 function sendinputWindow()
 {
 	sendMessage(inputWindow[inputActive].value);
@@ -1463,6 +1556,10 @@ function sendinputWindow()
 
 //	Parsing server data
 
+/**
+ * Checks the response from a server so we know what to do with it
+ * @param {string} text Response from the server
+ */
 function parseMessage(text)
 {
 	//	Need to strip off backspace characters
@@ -1537,6 +1634,9 @@ function parseMessage(text)
 		checkCourierTriggers(text);
 }
 
+/**
+ * Remove the oldest messge from the main pane
+ */
 function DeleteOldestNode()
 {
 		var iconTray = document.querySelector("#icon_tray");
@@ -1554,6 +1654,10 @@ function DeleteOldestNode()
 	Background process should only be used for rescuing logs now.
 */
 
+/**
+ * Adds a new message to the log-file and makes sure it's in the right format
+ * @param {string} myMessage Message to add to the log
+ */
 function sendToLogger(myMessage)
 {
 	//	Disable logging for characters who don't want a log
@@ -1607,6 +1711,10 @@ function sendToLogger(myMessage)
 	});
 }
 
+/**
+ * Tells background.js to save out the log file
+ * @param {string} overflowText Text to keep in the current log file when all the rest is output and deleted; used when the variable gets too big for Chrome and we need to output it or lose data
+ */
 function SaveLogFile(overflowText)
 {
 	//	Sends logging to background.js
@@ -1615,6 +1723,10 @@ function SaveLogFile(overflowText)
 	logFileString = overflowText;
 }
 
+/**
+ * Print to the console log if we are in developer mode
+ * @param {*} message What to send to the console log
+ */
 function debugLog(message)
 {
 	if (isDevMode())
@@ -1631,6 +1743,10 @@ function debugLog(message)
 
 var soundMap = new Map();
 
+/**
+ * Check whether the input string contains any audio triggers and sends them to playSound() if so
+ * @param {string} text String to check
+ */
 function checkAudioTriggers(text)
 {
    var tmp = document.createElement("DIV");
@@ -1646,6 +1762,11 @@ function checkAudioTriggers(text)
 	});
 }
 
+/**
+ * Takes in the internal name of a sound effect, looks up the file, and then plays it
+ * @param {string} soundEffect Name of the sound effect to play
+ * @returns 
+ */
 function playSound(soundEffect)
 {
 	if ((clientVars.get("useSound") == 0)||(clientVars.get("soundVolume") == 0))

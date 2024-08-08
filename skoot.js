@@ -197,12 +197,8 @@ function doSKOOT(rawSKOOT)
 			
 			//	correct URL
 			skootText = skootText.replace('http://www.skotos.net/MarrachGame', 'http://images.marrach.com');
-			
-			artPopUp = window.open(skootText, 'Art', 'innerWidth=312, innerHeight=548, status=no, location=no, toolbar=no, menubar=no');
-			if (!artPopUp)
-				reportError('I just tried to open a new window, but I seem to have failed.');
-			else 
-				artPopUp.focus();
+
+			drawPopup(skootText, artSize.height, artSize.width);
 			break;
 		
 		case 3:
@@ -233,35 +229,8 @@ function doSKOOT(rawSKOOT)
 		
 		case 6:
 			//	Open a new window - 800x600
-			console.log("Show a page in a 800x600 box: " + skootText);
-			chrome.windows.create(
-				{
-					focused : true,
-					height : popupSize.h,
-					type : "popup",	//	"popup" | "panel"
-					url : skootText,
-					width : popupSize.w
-				},
-				(window) => {
-					if (!window?.tabs[0]){
-						reportClientMessage('I just tried to open a new window, but I seem to have failed.', 'error');
-						return;
-					}
-
-					console.log(window?.tabs[0].height, window?.tabs[0].width);
-
-					let newHeight = window?.tabs[0].height + 2 * (popupSize.height - window?.tabs[0].height);
-					let newWidth = window?.tabs[0].width + 2 * (popupSize.width - window?.tabs[0].width);
-
-					chrome.windows.update(
-						window?.id,
-						{
-							height: newHeight,
-							width: newWidth,
-						}
-					  )
-				}
-			);
+			debugLog("doSKOOT(): Show a page in a " + popupSize.width + "x " + popupSize.height + " box: " + skootText);
+			drawPopup(skootText, popupSize.height, popupSize.width);
 			break;
 		
 		case 7:
@@ -305,11 +274,7 @@ function doSKOOT(rawSKOOT)
 			break;
 		
 		case 70:	//	SkotosToolSourceView - 800x600
-			popUp = window.open(skootText, 'Castle Marrach', 'width=800, height=600');
-			if (!popUp)
-				reportError('I just tried to open a new window, but I seem to have failed.');
-			else 
-				popUp.focus();
+			drawPopup(skootText, 600, 800);
 			break;
 		
 		case 80:

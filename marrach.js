@@ -8,6 +8,7 @@ var forceLightMode = false;
 
 var mapSize = {width: 468, height: 468};
 var popupSize = {width: 800, height: 600};
+var artSize = {width: 286, height: 450};	//	Size used by CM
 
 var profile = {
 		"method":   "websocket",

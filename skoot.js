@@ -147,7 +147,7 @@ function populateSkoot()
 			if (myArray = regexTags.exec(myResponse))
 			{
 				themeList.innerHTML += myArray[1];
-				debugLog("Themes loaded from Marrach.com");
+				debugLog("populateSkoot(): Themes loaded from " + gameName);
 				
 				//	TODO: Save themes to Local in case we lose access
 				//	~magical backup~ = myArray[1];

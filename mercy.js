@@ -191,7 +191,7 @@ function init()
 		});
 	}
 	
-	console.log("["+gamePrefix+":"+localCharacter+"] Initialising " + client.name + " " + client.version);
+	debugLog("Initialising " + client.name + " " + client.version);
 	
 	currentDateString = 'currentDate-' + gamePrefix + '-' + localCharacter;
 	
@@ -518,7 +518,7 @@ function reportMessage(myMessage)
 	let regEx = /<a xch_cmd=\'(.*?)\'>/g;
 
 	while ((linkText = regEx.exec(myMessage)) !== null){
-		console.log(linkText);
+		//	While not perfect, it does the job and doesn't seem to break the parser
 		let linkURI = linkText[1].replaceAll("\'", "\"");
 		myMessage = myMessage.replace(/<a xch_cmd=\'(.*?)\'>/, "<a style=\"" + styleString + "\" title=\'" + linkURI + "\'>");
 	}

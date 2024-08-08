@@ -1267,7 +1267,6 @@ function sendMessage(text)
 		reportMessage("> " + text)
 	
 	//	Strip accents and other stuff which doesn't show correctly in the other clients.
-//	socketObject.send(text.normalize("NFD").replace(/[\u0300-\u036f]/g, "") + "\n");
 	socketObject.send(text.normalize("NFD") + "\n");
 }
 

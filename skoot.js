@@ -11,12 +11,6 @@
 	*	Let's split off the SKOOT commands becauce they are just so much fun...
 	*	MAPURL can go here too.
 	*/
-	
-	/*
-	* scrape 'http://game.marrach.com/Marrach/Zealous/Right.sam' (since there seems no other way to get theme values)
-		get element where id="elementTheme"
-		use regex to steal the values of each <option> or maybe just drop it into my new <select> element unaltered
-	*/
 
 function isDevMode() {
     return !('update_url' in chrome.runtime.getManifest());
@@ -135,12 +129,12 @@ function populateSkoot()
 	
 	if (gameName == "Castle Marrach")
 		myRequest = new Request('http://game.marrach.com/Marrach/Zealous/Right.sam');
-//	else if (gameName == "Allegory of Empires")
-//		myRequest = new Request('http://game.allegoryofempires.com/Theatre/Flash/index.sam');
 	else if (gameName == "Multiverse Revelations")
 		myRequest = new Request('http://game.multirev.net/Theatre/Flash/index.sam');
 	else if (gameName == "The Lazarus Project")
 		myRequest = new Request('http://game.lazarus-project.net/Theatre/Flash/index.sam');
+//	else if (gameName == "Allegory of Empires")
+//		myRequest = new Request('http://game.allegoryofempires.com/Theatre/Flash/index.sam');
 	else
 		return;
 	
@@ -208,7 +202,6 @@ function doSKOOT(rawSKOOT)
 		case 4:
 			//	update the main map
 			fullMapURL = skootText;
-//			console.log("The main map was updated: " + skootText);
 			break;
 		
 		case 5:
@@ -331,7 +324,7 @@ function setMap(mapURL)
 	exitList.appendChild(tmpExit);
 }
 
-//	A trio of helpers which use the SKOOT commands to track the contents of a room.
+//	A set of helpers which use the SKOOT commands to track the contents of a room.
 function addToMe(name, ID)
 {
 	name = name.split(" from")[0].split(" which")[0];

@@ -218,10 +218,10 @@ function init()
 		}
 	});
 	
-	chrome.storage.local.get(['cookieUser' + gamePrefix], function(result) {
+	chrome.storage.session.get(['cookieUser' + gamePrefix], function(result) {
 		cookieUser = result.cookieUser;
 		
-		chrome.storage.local.get(['cookiePass' + gamePrefix], function(result) {
+		chrome.storage.session.get(['cookiePass' + gamePrefix], function(result) {
 			cookiePass = result.cookiePass;
 		
 			if ((!cookieUser) && (!cookiePass))

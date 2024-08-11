@@ -192,7 +192,9 @@ chrome.runtime.onMessage.addListener(
 			chrome.storage.session.get(['gameTabs'], function(result) {
 				if (result.gameTabs)
 				{
+					console.log(result.gameTabs);
 					for (const [key, value] of Object.entries(result.gameTabs)) {
+					  console.log(key, request);
 					  chrome.tabs.sendMessage(key, request);
 					}
 				}

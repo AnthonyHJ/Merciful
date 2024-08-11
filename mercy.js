@@ -739,9 +739,42 @@ function unSnapWindow()
  * @param {int} targetHeight window height in pixels
  * @param {int} targetWidth window width in pixels
  */
+async function drawPopup(targetURL, targetHeight, targetWidth){
 
 	//	TODO - stop opening a new window every time; need to reuse the same window
 	//	TODO - work out why the "popup" window type obscures the top of the page in Opera GX
+
+	//	check if targetURL is an image
+	let imageFormats3 = ['gif', 'png', 'jpg'];
+	let imageFormats4 = ['apng', 'jpeg', 'webp'];
+	let targetIsImage = false;
+
+	if (
+		(imageFormats3.includes(targetURL.substring(targetURL.length - 3)))
+		||
+		(imageFormats4.includes(targetURL.substring(targetURL.length - 4)))
+	){
+		targetIsImage = true;
+		//	Image!
+		//	Inject some code to resize the page to match the image
+
+		const myImage = new Image();
+		myImage.src = targetURL;
+		
+		const promise1 = new Promise((resolve, reject) => {
+		  const loop = () => myImage.complete !== false ? resolve(myImage) : setTimeout(loop)
+		  loop();
+		});
+		
+		await promise1.then((image) => {
+			if (image.width + image.height > 0){
+				targetHeight = image.height;
+				targetWidth = image.width;
+			} else {
+				debugLog("Image not found");
+			}
+		});
+	}
 
 	chrome.windows.create(
 		{

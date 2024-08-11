@@ -163,7 +163,7 @@ function init()
 		if (scrollToBottom)
 			mainTXT.scrollTop = mainTXT.scrollHeight - mainTXT.clientHeight;
 		
-		//	TODO: need to loop all entries
+		//	loop all entry windows
 		for (let _tempThisInputNo = 0; _tempThisInputNo < inputWindow.length; _tempThisInputNo++) 
 		{
 			inputGhost[_tempThisInputNo].style.width = window.getComputedStyle(inputWindow[_tempThisInputNo]).getPropertyValue('width');
@@ -625,8 +625,7 @@ function reportMessage(myMessage)
 		//	Notify player of new events
 		window.document.title = "* " + window.document.title;
 		
-		//	Play an event noise?
-		//	TODO: use audioTriggersFixed['notifySound']
+		//	Play an event noise
 		if (clientVars.get('useNotifySound') == 'once')
 		{
 			playSound('notifySound');
@@ -740,7 +739,10 @@ function unSnapWindow()
  * @param {int} targetHeight window height in pixels
  * @param {int} targetWidth window width in pixels
  */
-function drawPopup(targetURL, targetHeight, targetWidth){
+
+	//	TODO - stop opening a new window every time; need to reuse the same window
+	//	TODO - work out why the "popup" window type obscures the top of the page in Opera GX
+
 	chrome.windows.create(
 		{
 			focused : true,
@@ -1323,7 +1325,7 @@ function sendMessage(text)
 	{
 		//	Correct for default style
 		mainTXT.style = null;
-		//	TODO: loop through all inputWindow entities
+		//	loop through all inputWindow entities
 		inputWindow.forEach((_tempThisInput) => {
 			_tempThisInput.style = null;
 		});

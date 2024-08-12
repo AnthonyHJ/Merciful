@@ -453,15 +453,23 @@ function getLoginCookies(URL,gameCode)
 	});
 }
 
-function SaveLogFile(windowID)
+async function SaveLogFile(windowID)
 {	
-	chrome.storage.local.get(['gameTabLog','logFileID','logFiles'], function (items) {
+	chrome.storage.local.get(['gameTabLog','logFileID','logFiles'], async function (items) {
 		if (!items.gameTabLog)
 		{
 			DebugLogger("Cannot find gameTabLog!", "error");
 			return;
 		}
 		
+		//	Fix for page reset killing the logging functionality
+		if (!items.gameTabLog[windowID])
+		{
+			await chrome.storage.session.get(["gameTabs"]).then((sessionTabs) => {
+				items.gameTabLog = Object.assign(sessionTabs.gameTabLog, items.gameTabLog);
+			});
+		}
+			
 		if (!items.gameTabLog[windowID])
 		{
 			DebugLogger("Cannot find a name for this character! WindowID: " + windowID, "error");

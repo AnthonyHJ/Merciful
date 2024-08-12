@@ -798,6 +798,10 @@ async function drawPopup(targetURL, targetHeight, targetWidth){
 			let newHeight = window?.tabs[0].height + 2 * (targetHeight - window?.tabs[0].height);
 			let newWidth = window?.tabs[0].width + 2 * (targetWidth - window?.tabs[0].width);
 
+			if (newHeight < 1 || newWidth < 1){
+				debugLog("drawPopup(): trying to draw a window with height " + newHeight + " and width " + newWidth + "!")
+			}
+
 			chrome.windows.update(
 				window?.id,
 				{

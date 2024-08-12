@@ -748,6 +748,7 @@ async function drawPopup(targetURL, targetHeight, targetWidth){
 	let imageFormats3 = ['gif', 'png', 'jpg'];
 	let imageFormats4 = ['apng', 'jpeg', 'webp'];
 	let targetIsImage = false;
+	let targetWindowType = "popup";
 
 	if (
 		(imageFormats3.includes(targetURL.substring(targetURL.length - 3)))
@@ -776,11 +777,15 @@ async function drawPopup(targetURL, targetHeight, targetWidth){
 		});
 	}
 
+	if (navigator.userAgent.indexOf(' OPR/') > -1){
+		targetWindowType = "normal";
+	}
+
 	chrome.windows.create(
 		{
 			focused : true,
 			height : targetHeight,
-			type : "popup",
+			type : targetWindowType,
 			url : targetURL,
 			width : targetWidth
 		},

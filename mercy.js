@@ -189,7 +189,7 @@ function init()
 				window.document.title = localCharacterCap + " - " + client.name + " " + client.version
 				
 				//	Ensure the Web Worker knows about this tab
-				chrome.runtime.sendMessage({'registerTab': true, 'login': localCharacter, 'backgroundOnly': true}, () => {return true;});
+				chrome.runtime.sendMessage({'registerTab': true, 'login': localCharacter, 'backgroundOnly': true});
 			}
 		});
 	}
@@ -1231,7 +1231,7 @@ function rebuildStyleSheet()
 						'color : ' + themeText + ';';
 	myStyles.links = 'color : ' + themeLink + ';';
 	
-	chrome.runtime.sendMessage({'htmlStyles': myStyles}, () => {return true;});
+	chrome.runtime.sendMessage({'htmlStyles': myStyles});
 		
 	lineHeight = getComputedStyle(inputGhost[0])['height'];
 }
@@ -1643,7 +1643,7 @@ function parseMessage(text)
 	else if (text.substring(0,30) === "Authentication error: BAD HASH")
 	{
 		reportMessage("Cannot log in. Redirecting...");
-		chrome.runtime.sendMessage({badHash: true, loginURL: loginURL}, () => {return true;});
+		chrome.runtime.sendMessage({badHash: true, loginURL: loginURL});
 		debugLog('parseMessage(): Sending \'badHash: true\'');
 	}
 	else if (text.substring(0,6) === "SKOOT ")
@@ -1762,7 +1762,7 @@ function sendToLogger(myMessage)
 function SaveLogFile(overflowText)
 {
 	//	Sends logging to background.js
-	chrome.runtime.sendMessage({'saveLog': true}, () => {return true;});
+	chrome.runtime.sendMessage({'saveLog': true});
 	logFileName = "";
 	logFileString = overflowText;
 }

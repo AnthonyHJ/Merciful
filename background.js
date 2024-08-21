@@ -200,7 +200,7 @@ chrome.runtime.onMessage.addListener(
 				}
 			});
 		}
-	return true;
+	//	return true;
 });
 
 //	Startup script

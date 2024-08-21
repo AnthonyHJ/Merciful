@@ -24,7 +24,9 @@ var roomExits = new Array();
 var compassPoints = new Map();
 
 var miniMap = document.getElementById("map_area");
-var fullMapURL = "images/Merciful_128.png";
+
+if (typeof fullMapURL === 'undefined')
+	var fullMapURL = "images/Merciful_128.png";
 
 var popUp, mapPopUp, artPopUp;
 

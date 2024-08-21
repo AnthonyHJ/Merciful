@@ -3,6 +3,7 @@
 var gamePrefix = 'LP';
 var gameName = "The Lazarus Project";
 var loginURL = 'https://login.lazarus-project.net';
+var fullMapURL = "https://images.lazarus-project.net/bigmaps/ColonyBigmapDisplay.jpg";
 var runOnStart = false;
 var forceLightMode = false;
 

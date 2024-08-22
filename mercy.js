@@ -66,6 +66,10 @@ var startedUp = false;
 var ctrlDown = false;
 var shiftDown = false;
 
+//	Popup window data
+var popupTab;
+var windowBloat = {x:0,y:0};
+
 //	Initialising
 
 /**
@@ -740,10 +744,6 @@ function unSnapWindow()
  * @param {int} targetWidth window width in pixels
  */
 async function drawPopup(targetURL, targetHeight, targetWidth){
-
-	//	TODO - stop opening a new window every time; need to reuse the same window
-	//	TODO - work out why the "popup" window type obscures the top of the page in Opera GX
-
 	//	check if targetURL is an image
 	let imageFormats3 = ['gif', 'png', 'jpg'];
 	let imageFormats4 = ['apng', 'jpeg', 'webp'];
@@ -781,6 +781,35 @@ async function drawPopup(targetURL, targetHeight, targetWidth){
 		targetWindowType = "normal";
 	}
 
+	if (popupTab){
+		chrome.tabs.get(
+			popupTab,
+			(tab) => {
+				if (tab?.id){
+					chrome.tabs.update(
+						tab.id,
+						{url : targetURL},
+						(foundTab) => {
+							chrome.windows.update(
+								foundTab?.windowId,
+								{
+									focused: true,
+									height:  targetHeight + windowBloat.y,
+									width:   targetWidth  + windowBloat.x,
+								}
+							  );
+						}
+					  )
+				} else {
+					popupTab = null;
+					drawPopup(targetURL, targetHeight, targetWidth);
+				}
+			}
+		  );
+
+		return;
+	}
+
 	chrome.windows.create(
 		{
 			focused : true,
@@ -795,12 +824,17 @@ async function drawPopup(targetURL, targetHeight, targetWidth){
 				return;
 			}
 			
-			let newHeight = window?.tabs[0].height + 2 * (targetHeight - window?.tabs[0].height);
-			let newWidth = window?.tabs[0].width + 2 * (targetWidth - window?.tabs[0].width);
+			windowBloat.y = targetHeight - window?.tabs[0].height;
+			windowBloat.x = targetWidth - window?.tabs[0].width;
+
+			let newHeight = targetHeight + windowBloat.y;
+			let newWidth =  targetWidth  + windowBloat.x;
 
 			if (newHeight < 1 || newWidth < 1){
 				debugLog("drawPopup(): trying to draw a window with height " + newHeight + " and width " + newWidth + "!")
 			}
+
+			popupTab = window?.tabs[0].id;
 
 			chrome.windows.update(
 				window?.id,
@@ -808,7 +842,7 @@ async function drawPopup(targetURL, targetHeight, targetWidth){
 					height: newHeight,
 					width: newWidth,
 				}
-			  )
+			  );
 		}
 	);
 }

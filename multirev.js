@@ -3,6 +3,7 @@
 var gamePrefix = 'MR';
 var gameName = "Multiverse Revelations";
 var loginURL = 'https://login.multirev.net';
+var fullMapURL = "https://imagizer.imageshack.com/v2/641x641q70/924/weXBro.jpg";
 var runOnStart = false;
 var forceLightMode = false;
 

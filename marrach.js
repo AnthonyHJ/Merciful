@@ -3,6 +3,7 @@
 var gamePrefix = 'CM';
 var gameName = "Castle Marrach";
 var loginURL = 'https://login.marrach.com';
+var fullMapURL = "https://www.skotos.net/MarrachGame/images/bigmaps/OB%20Second.jpg";
 var runOnStart = false;
 var forceLightMode = false;
 

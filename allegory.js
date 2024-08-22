@@ -3,6 +3,7 @@
 var gamePrefix = 'AE';
 var gameName = "Allegory of Empires";
 var loginURL = 'https://login.allegoryofempires.com';
+var fullMapURL = "https://allegoryofempires.com/wp-content/uploads/Maps/Rinascita.jpg";
 var runOnStart = true;
 
 var mapSize = {width: 468, height: 468};

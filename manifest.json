@@ -27,21 +27,26 @@
     "service_worker": "background.js"
   },
   "externally_connectable": {
-    "matches": ["*://*.marrach.com/*","*://*.multirev.net/*","*://*.allegoryofempires.com/*","*://*.lazarus-project.net/*"]
+    "matches": [
+          "*://*.marrach.com/*",
+          "*://*.multirev.net/*",
+          "*://*.allegoryofempires.com/*",
+          "*://*.lazarus-project.net/*"
+        ]
     },
   "options_page": "options.html",
   "permissions": [
             "cookies", 
-			"downloads", 
-			"scripting", 
+            "downloads", 
+            "scripting", 
             "storage", 
             "webNavigation"
             ],
   "host_permissions": [
             "*://*.marrach.com/*",
-			"*://*.multirev.net/*",
-			"*://*.allegoryofempires.com/*",
-			"*://*.lazarus-project.net/*"
+            "*://*.multirev.net/*",
+            "*://*.allegoryofempires.com/*",
+            "*://*.lazarus-project.net/*"
             ],
     
   "manifest_version": 3

@@ -1799,6 +1799,9 @@ function sendToLogger(myMessage)
  */
 function SaveLogFile(overflowText)
 {
+	if (clientVars.get('logging') == 0)
+		return;
+
 	//	Sends logging to background.js
 	chrome.runtime.sendMessage({'saveLog': true});
 	logFileName = "";

@@ -1332,6 +1332,13 @@ function updateClientVars(key, value)
 	{
 		reSortPersonList();
 	}
+
+	if (key == "simpleStyle"){
+		if (value == 1)
+			document.getElementsByTagName("body")[0].classList.remove("fancy");
+		else
+			document.getElementsByTagName("body")[0].classList.add("fancy");
+	}
 }
 
 /**

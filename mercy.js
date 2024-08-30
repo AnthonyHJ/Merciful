@@ -993,7 +993,12 @@ function serverMessage(event)
 	switch(socketObject.binaryType)
 	{
 		case "blob":
-			event.data.text().then(text => parseServerEvent(text));
+			event.data.text()
+				.catch((err) => {
+					console.error(err);
+					reportClientMessage(err.toString(), 'connection');
+				})	
+				.then(text => parseServerEvent(text));
 			break;
 			
 		case "arraybuffer":
@@ -1001,6 +1006,8 @@ function serverMessage(event)
 			break;
 			
 		default:
+			reportClientMessage("I just got an unknown binaryType", 'connection');
+			break;
 	}
 }
 

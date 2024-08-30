@@ -189,7 +189,7 @@ function doSKOOT(rawSKOOT)
 	{
 		case 2:
 			//	Show some art - 286x450 window
-			console.log("Show some art in a 286x450 box: " + skootText);
+			console.log("Show some art in a " + popupSize.width + "x" + popupSize.height + " box: " + skootText);
 			
 			//	correct URL
 			skootText = skootText.replace('http://www.skotos.net/MarrachGame', 'http://images.marrach.com');
@@ -224,7 +224,7 @@ function doSKOOT(rawSKOOT)
 		
 		case 6:
 			//	Open a new window - 800x600
-			debugLog("doSKOOT(): Show a page in a " + popupSize.width + "x " + popupSize.height + " box: " + skootText);
+			debugLog("doSKOOT(): Show a page in a " + popupSize.width + "x" + popupSize.height + " box: " + skootText);
 			drawPopup(skootText, popupSize.height, popupSize.width);
 			break;
 		

@@ -1,8 +1,8 @@
 {
   "name": "Merciful Client",
   "short_name": "Merciful",
-  "version": "0.4.9.4",
-  "version_name": "0.4.9.4 - Window Fix",
+  "version": "0.4.9.5",
+  "version_name": "0.4.9.5 - Arty Sidebars",
   "description": "A less-zealous client for Skotos-Tech games",
   
   "icons": {

@@ -1,0 +1,15 @@
+body.fancy{
+    #right, #left { width: 136px !important; }
+    #left   {
+        background-image: url("http://images.marrach.com/images/edgeleft.jpg");
+    }
+    #right { 
+        background-image: url("http://images.marrach.com/images/edgeright.jpg");
+     }
+    
+     #helper_area {
+        backdrop-filter: blur(4px);
+        background-color: #3f3f3fbf;
+        color: white;
+     }
+}

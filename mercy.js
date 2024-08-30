@@ -382,6 +382,10 @@ function loadClientVars()
 		}
 	
 		rebuildStyleSheet();
+
+		if (clientVars.get("simpleStyle") != true){
+			document.getElementsByTagName("body")[0].classList.add("fancy");
+		}
 	});
   
 	//	If you can get it from chrome.storage.local then do so.

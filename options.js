@@ -237,6 +237,15 @@ var clientVarsChar = {
 		'type' : 'number',
 		'category' : 'Experimental',
 		'specificity' : 'char'
+	},
+	'simpleStyle' : {
+		'pretty' : 'Simple style',
+		'defaultValue' : '1',
+		'pattern' : 'true|false',
+		'desc' : 'This variable decides whether you want to remove the sidebar art in games with custom sidebar art.',
+		'type' : 'bool',
+		'category' : 'Interface',
+		'specificity' : 'char'
 	}
 };
 
@@ -273,7 +282,8 @@ var clientVarsGame = {
 			'category' : 'Interface',
 			'specificity' : 'game'
 		}
-	}
+	},
+//	'LP' : {}
 };
 
 var clientVars = {};

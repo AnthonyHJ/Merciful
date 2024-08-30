@@ -1,13 +1,15 @@
-#right, #left { width: 136px !important; }
-#left   {
-    background-image: url("https://images.lazarus-project.net/edgeleft.jpg");
+body.fancy{
+    #right, #left { width: 136px !important; }
+    #left   {
+        background-image: url("https://images.lazarus-project.net/edgeleft.jpg");
+    }
+    #right { 
+        background-image: url("https://images.lazarus-project.net/edgeright.jpg");
+     }
+    
+     #helper_area {
+        backdrop-filter: blur(4px);
+        background-color: #3f3f3fbf;
+        color: white;
+     }
 }
-#right { 
-    background-image: url("https://images.lazarus-project.net/edgeright.jpg");
- }
-
- #helper_area {
-    backdrop-filter: blur(4px);
-    background-color: #3f3f3fbf;
-    color: white;
- }

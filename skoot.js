@@ -175,16 +175,16 @@ function doSKOOT(rawSKOOT)
 	if (rawSKOOT.length < 1)
 		return;
 	
-	var skootID = Number(rawSKOOT.split(" ")[0]);
-	var skootData = rawSKOOT.split(" ")[1];
-	var skootText = rawSKOOT.substring (rawSKOOT.split(" ")[0].length + 1, rawSKOOT.length)
-	var skootDetail;
+	let skootArray = rawSKOOT.split(" ");	//	Array of arguments
 	
-	if (rawSKOOT.split(" ")[2])
-	{
-		skootDetail = rawSKOOT.substring (rawSKOOT.split(" ")[0].length + skootData.length+2, rawSKOOT.length);
-	}
+	let skootID = Number(skootArray.shift());	//	remove and record first element as a number
+
+	let skootText = skootArray.join(" ");		//	everything left over after removing first argument
+
+	let skootData = skootArray.shift();			//	remove and record first element as a string
 	
+	let skootDetail = skootArray.join(" ");		//	everything left over after removing first two arguments
+
 	switch (skootID)
 	{
 		case 2:

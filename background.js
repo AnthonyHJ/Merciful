@@ -195,7 +195,7 @@ chrome.runtime.onMessage.addListener(
 					console.log(result.gameTabs);
 					for (const [key, value] of Object.entries(result.gameTabs)) {
 					  console.log(key, request);
-					  chrome.tabs.sendMessage(key, request);
+					  chrome.tabs.sendMessage(Number(key), request, {});
 					}
 				}
 			});

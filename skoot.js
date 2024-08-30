@@ -329,7 +329,7 @@ function setMap(mapURL)
 //	A set of helpers which use the SKOOT commands to track the contents of a room.
 function addToMe(name, ID)
 {
-	name = name.split(" from")[0].split(" which")[0];
+	name = name?.split(" from")[0].split(" which")[0];
 	
 //	console.log("Adding an inventory object: " + name + " (ID: " + ID + ")");
 	let tmpItem = document.createElement("option");
@@ -435,7 +435,7 @@ function addPerson(name, ID)
 	});
 	
 	tmpPerson.innerHTML = name;
-	let nameSplit = name.split(" ");
+	let nameSplit = name?.split(" ");
 	let sortName = nameSplit[nameSplit.length -1];
 	
 	//	Which node (player name) to put the new one BEFORE

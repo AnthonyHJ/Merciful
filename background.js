@@ -288,7 +288,9 @@ chrome.webNavigation.onCompleted.addListener(function(details) {
 	   target: {tabId: details.tabId},
 	   files: ["insertMercyMR.js"]
    })
-}, {url: [{urlMatches : 'http://game.multirev.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}]});
+}, {url: [{urlMatches : 'http://game.multirev.net/SAM/Prop/Lazarus:Web:Theatre/Index?$'}, 
+			{urlMatches : 'http://game.multirev.net/SAM/Prop/AMR:Web:Theatre/Index?$'}
+]});
  
 chrome.webNavigation.onCompleted.addListener(function(details) {
    DebugLogger("chrome.webNavigation.onCompleted : Adding Merciful login links.");

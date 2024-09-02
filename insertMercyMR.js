@@ -18,7 +18,7 @@ function insertMercy()
 	let charList = new Array();	//	list of characters
 	
 	for (let thisTable of myTables) {
-		if (thisTable.innerText != "Orchil")
+		if (thisTable.innerText.toUpperCase() != "ORCHIL")
 			continue;
 		
 		console.log(thisTable.innerHTML);

@@ -3,6 +3,8 @@
 
 Merciful is a very unofficial Chrome client for the former Skotos-Tech games which aims to bring the functionality you love from Zealotry into the Chrome browser. These games include Castle Marrach, Multiverse Revelations and Allegory of Empires.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/X8X812D5VQ)
+
 ## Instructions for End Users
 
 There are two ways to install Merciful

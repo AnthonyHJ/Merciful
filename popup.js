@@ -97,6 +97,10 @@ function HandleClick (event) {
 		return;
 	
 	var targ = event.target;
+
+	if (targ.parentNode?.tagName == "A"){
+		targ = targ.parentNode;
+	}
 	
 	if (!targ.title && targ.href)
 	{

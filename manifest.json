@@ -1,8 +1,8 @@
 {
   "name": "Merciful Client",
   "short_name": "Merciful",
-  "version": "0.4.9.6",
-  "version_name": "0.4.9.6 - MultiRev Tweak",
+  "version": "0.4.9.7",
+  "version_name": "0.4.9.7 - UI tweaks",
   "description": "A less-zealous client for Skotos-Tech games",
   
   "icons": {

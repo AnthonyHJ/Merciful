@@ -417,7 +417,24 @@ function addExit(name, exit)
 
 function addPerson(name, ID)
 {
-	if ((clientVars.get('hideNpcNames'))&&((name.substring(0,2) == "A ") || (name.substring(0,2) == "a ") || (name.substring(0,3) == "An ") || (name.substring(0,3) == "an ") || (name.substring(0,5) == "<font")))
+	if (!name)
+		return;
+
+	let nameSplit = name.split(" ");
+	let _firstword = nameSplit[0];
+	let sortName = nameSplit.pop();
+	
+	if (
+		(clientVars.get('hideNpcNames'))
+		&&
+		(
+			_firstword.toLowerCase() == "a"
+			||
+			_firstword.toLowerCase() == "an"
+			||
+			_firstword.toLowerCase() == "<font"
+		)
+	)
 	{
 		addNPC(name, ID)
 		return;
@@ -426,6 +443,7 @@ function addPerson(name, ID)
 	let tmpPerson = document.createElement("div");
 	tmpPerson.id = "player" + ID;
 	tmpPerson.className = 'target-assist';
+	tmpPerson.innerHTML = name;
 	
 	tmpPerson.addEventListener('contextmenu', event => {
 		
@@ -433,10 +451,6 @@ function addPerson(name, ID)
 		
 		event.preventDefault();
 	});
-	
-	tmpPerson.innerHTML = name;
-	let nameSplit = name?.split(" ");
-	let sortName = nameSplit[nameSplit.length -1];
 	
 	//	Which node (player name) to put the new one BEFORE
 	let nodePlacement = null;

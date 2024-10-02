@@ -56,3 +56,6 @@ var audioTriggersFixed = new Map([
 var audioTriggers = new Map([
 //	['mistSound', /^A frigid chill runs throughout your core as the icy white mists coarse over you./],
 ]);
+
+var titlesFilter = {
+};

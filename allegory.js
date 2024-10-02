@@ -158,3 +158,7 @@ var audioTriggersFixed = new Map([
 var audioTriggers = new Map([
 	['badSound', /^[^\"]+?You encounter monsters!/],
 ]);
+
+var titlesFilter = {
+	"Doctor" : "Dr."
+};

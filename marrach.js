@@ -111,3 +111,22 @@ var audioTriggers = new Map([
 	['watchSound', /^In the distance, you hear the desperate \"QUACK!\" of a duckcall/],
 	['watchSound2', /^In the distance, you hear the mild \"Toot!\" of a duckcall/]
 ]);
+
+var titlesFilter = {
+	"Armswoman" : "Arms.",
+	"Armsman" : "Arms.",
+	"Captain" : "Cpt.",
+	"Constable" : "W.C.",
+	"Corporal " : "Cpl.",
+	"Deputy" : "Dep.",
+	"Doctor" : "Dr.",
+	"Lieutenant" : "Lt.",
+	"Major" : "Mjr.",
+	"Priestess" : "Rev.",
+	"Private" : "Pvt.",
+	"Seneschal" : "Sen.",
+	"Serjeant" : "Sjt.",
+	"Watchwoman" : "W.W.",
+	"Watchman" : "W.W.",
+	"Yeoman" : "Yeo.",
+};

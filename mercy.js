@@ -1293,6 +1293,7 @@ var clientVars = new Map([
   ['useNotifySound', 'once'],
   ['notifyOnPage', 1],
   ['hideNpcNames', 1 ],
+  ['shortTitles', 0 ],
   ['nameSort', 'Default' ],
   ['echoInput', 1 ],
   ['outputMargin', 1],
@@ -1328,7 +1329,7 @@ function updateClientVars(key, value)
 		rebuildStyleSheet();
 	}
 	
-	if (key == "nameSort")
+	if (key == "nameSort" || key == "shortTitles")
 	{
 		reSortPersonList();
 	}

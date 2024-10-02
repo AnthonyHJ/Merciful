@@ -423,6 +423,7 @@ function addPerson(name, ID)
 	let nameSplit = name.split(" ");
 	let _firstword = nameSplit[0];
 	let sortName = nameSplit.pop();
+	let titles = nameSplit.join(" ");
 	
 	if (
 		(clientVars.get('hideNpcNames'))
@@ -472,7 +473,9 @@ function addPerson(name, ID)
 		}
 	}
 	
-	//	peopleList.children[2].innerText
+	if (titlesFilter && titlesFilter[titles] && clientVars.get('shortTitles')){
+		tmpPerson.innerHTML = titlesFilter[titles] + " " + sortName;
+	}
 	
 	if (!roomPeople.has(ID))
 		peopleList.insertBefore(tmpPerson, nodePlacement);

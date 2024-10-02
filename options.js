@@ -106,6 +106,15 @@ var clientVarsCore = {
 		'category' : 'Interface',
 		'specificity' : 'core'
 	},
+	'shortTitles' : {
+		'pretty' : 'Use short titles',
+		'defaultValue' : '0',
+		'pattern' : '(true|false)',
+		'desc' : 'This variable shortens titles such as \'doctor\' or \'Lieutenant\' to their shortened equivalents, such as \'Dr.\' and \'Lt.\'.',
+		'type' : 'bool',
+		'category' : 'Interface',
+		'specificity' : 'core'
+	},
 //	'mercifulTheme' : {
 //		'pretty' : 'Merciful theme',
 //		'defaultValue' : 'Mercy',

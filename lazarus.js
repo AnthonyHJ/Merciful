@@ -75,5 +75,9 @@ var titlesFilter = {
 	"First Advisor" : "Adv.",
 	"Reserve Officer" : "R.O.",
 	"Delivery-Tech" : "",
-	"Med-Student" : "Med."
+	"Med-Student" : "Med.",
+	"Field-Medic" : "Med.",
+	"Administrator" : "Admin",
+	"StoryPlotter" : "SP",
+	"StoryHost" : "SH",
 };

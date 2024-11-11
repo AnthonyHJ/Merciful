@@ -1398,7 +1398,8 @@ function sendMessage(text)
 	}
 	else if (text == "@reconnect")
 	{
-		//	This is an empty function
+		//	Reconnect to server
+		serverConnect();
 		
 		return;
 	}

@@ -24,6 +24,7 @@
   },
   
   "background": {
+    "scripts": ["background.js"],
     "service_worker": "background.js"
   },
   "externally_connectable": {
@@ -48,6 +49,9 @@
             "*://*.allegoryofempires.com/*",
             "*://*.lazarus-project.net/*"
             ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'"
+    },
     
   "manifest_version": 3
 }

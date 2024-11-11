@@ -1409,13 +1409,41 @@ function sendMessage(text)
 		
 		return;
 	}
-//	else if (text == "@healer")
-//	{
-//		healerWindow("Bob", "Novice", 5)
-//		
-//		//	This should never be sent to the server.
-//		return;
-//	}
+	else if (text.substring(0,5) == "MACRO")
+	{
+		let commandSplit = text.split(" ");
+		text.shift();
+
+		let macroCommand = text.shift();
+		let macroKey = text.shift();
+
+		if (macroCommand.toUpperCase() == "ADD"){
+			let macroPayload = text.join(" ");
+
+			//	sanity check the macro
+			if (commandSplit.length < 1){
+				debugLog("MACRO ADD failed: not enough parameters in \"" + text + "\"");
+				return;
+			}
+	
+			//	add a new macro locally
+			updateMacros(macroKey, macroPayload);
+	
+			//	TODO: save new macro as per-game
+			chrome.storage.local.get(['macros'], function(result) {
+				result.macros.game[gamePrefix].char[localCharacter][macroKey] = macroPayload;
+				chrome.storage.local.set({macros : result.macros}, () => {});
+			});
+		}
+
+		if (macroCommand.toUpperCase() == "DELETE"){
+			//	delete the macro if it exists
+			updateMacros(macroKey, null);
+		}
+
+		//	This should never be sent to the server.
+		return;
+	}
 	else if (text.substring(0,14) == "@profile theme")
 	{
 		//	Correct for default style

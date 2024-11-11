@@ -20,6 +20,28 @@ var profile = {
 		"path":     "/marrach",
 	};
 
+/**
+ * Handles commands from the player to the server
+ * @param {String} clientCommand Command from the server
+ * @returns {Boolean} True if the command is not sent to the server
+ */
+function checkClientCommands(clientCommand){
+	return false;
+}
+
+/**
+ * Handles commands from the server to the player
+ * @param {String} serverCommand Raw text from the server
+ * @returns {Boolean} Hide return from the player?
+ */
+function checkServerCommands(serverCommand){
+	if (serverCommand.substring(0,2) == "A "){
+		checkCourierTriggers(text);
+	}
+	
+	return false;
+}
+	
 function healerWindow(patient, level, time)
 {
 	//	Heal timer (experimental)

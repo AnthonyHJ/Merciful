@@ -1430,6 +1430,10 @@ function sendMessage(text)
 		//	Let's recolour the icons
 		iconColour("#FFFFFF");
 	}
+	else if (checkClientCommands(text)){
+		//	If this returns a true value, it means the server doesn't need to see this command
+		return;
+	}
 	
 	if ((clientVars.get("echoInput") == 1) && (startedUp))
 		reportMessage("> " + text)
@@ -1716,7 +1720,7 @@ function parseMessage(text)
 		//	No need to print this, but it keeps the connection live
 		debugLog('parseMessage(): KEEPALIVE');
 	}
-	else	// if (text != "")
+	else if (!checkServerCommands(text))
 	{
 		text = text.trim();
 		if ((lastMessage != "")||(text != ""))	//	Stop spamming empty lines!
@@ -1726,9 +1730,6 @@ function parseMessage(text)
 	}
 	
 	checkAudioTriggers(text);
-	
-	if ((text.substring(0,2) == "A ") &&(gameName == "Castle Marrach"))
-		checkCourierTriggers(text);
 }
 
 /**

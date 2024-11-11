@@ -19,12 +19,25 @@ var profile = {
 		"path":     "/lazarus",
 	};
 
-function healerWindow(patient, level, time)
-{
-	return;
+/**
+ * Handles commands from the player to the server
+ * @param {String} clientCommand Command from the server
+ * @returns {Boolean} True if the command is not sent to the server
+ */
+function checkClientCommands(clientCommand){
+	return false;
 }
 
-function checkCourierTriggers (text)
+/**
+ * Handles commands from the server to the player
+ * @param {String} serverCommand Raw text from the server
+ * @returns {Boolean} Hide return from the player?
+ */
+function checkServerCommands(){
+	return false;
+}
+
+function healerWindow(patient, level, time)
 {
 	return;
 }

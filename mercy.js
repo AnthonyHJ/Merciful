@@ -1409,6 +1409,14 @@ function sendMessage(text)
 		
 		return;
 	}
+	else if (text == "@flushlogs")
+	{
+		//	TODO: flush any logs left behind by the log saving code
+		chrome.storage.local.set({logFiles : {}}, () => {});
+		
+		//	This should never be sent to the server.
+		return;
+	}
 	else if (text.substring(0,5) == "MACRO")
 	{
 		let commandSplit = text.split(" ");

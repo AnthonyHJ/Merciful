@@ -33,6 +33,52 @@ function checkClientCommands(clientCommand){
 		//	
 		//	This should never be sent to the server.
 		return true;
+	} else if (commandsList[0] == "suture") {
+		//	You just healed someone!
+
+		let healTarget = "UNKNOWN";
+
+		//	Cut off the command
+		commandsList.shift();
+
+		//	Check for the practice-dummy
+		if (commandsList[0] = "headless"){
+			console.log("Probably healed: a dummy.");
+
+			return false;
+		}
+		else if (commandsList[0] == "me" || commandsList[0] == "myself" || commandsList[0] == "self"){
+			//	you healed yourself
+			healTarget = localCharacter.substring(0,1).toUpperCase() + localCharacter.substring(1,localCharacter.length).toLowerCase();
+		}
+		else{
+			//	you might have healed a real person
+			healTarget = commandsList.join(" ");
+		}
+
+		//	I can look at list of characters in the scene and maybe find the target
+		let roomPeopleList = [...roomPeople.values()];
+		let roomPeopleSearchList = [];
+
+		roomPeopleList.forEach((roomPerson) => {
+			roomPeopleSearchList.push(roomPerson.split(" ").pop().toLocaleLowerCase());
+		});
+
+		//	Quick search of players
+		let healTargetRegEx = new RegExp(roomPeopleSearchList.join("|").toLocaleLowerCase());
+		let healTargetRegExResult;
+
+		if (healTargetRegExResult = healTargetRegEx.exec(healTarget.toLocaleLowerCase())){
+			healTarget = healTargetRegExResult[0];
+
+			let targetIndex = roomPeopleSearchList.findIndex((n) => n == healTarget);
+
+			if (targetIndex > -1){
+				healTarget = roomPeopleList[targetIndex];
+			}
+		}
+
+		console.log("Probably healed: " + healTarget);
 	}
 
 	return false;

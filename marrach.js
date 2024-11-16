@@ -151,4 +151,7 @@ var titlesFilter = {
 	"Watchwoman" : "W.W.",
 	"Watchman" : "W.W.",
 	"Yeoman" : "Yeo.",
+	"StoryPlotter" : "SP",
+	"StoryHost" : "SH",
+	"StoryCoder" : "SC",
 };

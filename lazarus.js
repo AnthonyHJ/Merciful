@@ -73,11 +73,13 @@ var titlesFilter = {
 	"Professor" : "Prof.",
 	"Doctor" : "Dr.",
 	"First Advisor" : "Adv.",
-	"Reserve Officer" : "R.O.",
-	"Delivery-Tech" : "",
+	"Reserve Officer" : "Res.",
+	"Delivery-Tech" : "Post.",
 	"Med-Student" : "Med.",
 	"Field-Medic" : "Med.",
 	"Administrator" : "Admin",
 	"StoryPlotter" : "SP",
 	"StoryHost" : "SH",
+	"StoryCoder" : "SC",
+	"StoryWrangler" : "SW",	//	This is a thing?
 };

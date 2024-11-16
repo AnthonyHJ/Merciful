@@ -66,4 +66,7 @@ var audioTriggers = new Map([
 ]);
 
 var titlesFilter = {
+	"StoryPlotter" : "SP",
+	"StoryHost" : "SH",
+	"StoryCoder" : "SC",
 };

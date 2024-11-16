@@ -178,5 +178,8 @@ var audioTriggers = new Map([
 ]);
 
 var titlesFilter = {
-	"Doctor" : "Dr."
+	"Doctor" : "Dr.",
+	"StoryPlotter" : "SP",
+	"StoryHost" : "SH",
+	"StoryCoder" : "SC",
 };

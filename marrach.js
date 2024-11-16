@@ -26,6 +26,14 @@ var profile = {
  * @returns {Boolean} True if the command is not sent to the server
  */
 function checkClientCommands(clientCommand){
+	if (clientCommand == "@healer")
+	{
+		//	healerWindow("Bob", "Novice", 5)
+		//	
+		//	This should never be sent to the server.
+		return true;
+	}
+
 	return false;
 }
 

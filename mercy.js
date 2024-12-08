@@ -1432,22 +1432,32 @@ function sendMessage(text)
 			//	sanity check the macro
 			if (commandSplit.length < 1){
 				debugLog("MACRO ADD failed: not enough parameters in \"" + text + "\"");
+				reportMessage("MACRO ADD failed");
+				reportMessage("Please use: <strong>MACRO ADD key <em>new value</em></strong>");
+				reportMessage("key: <em>a single word to be replaced</em>");
+				reportMessage("new value: <em>the text to replace it with (can be more than one word)</em>");
 				return;
 			}
 	
 			//	add a new macro locally
 			updateMacros(macroKey, macroPayload);
+			reportMessage("MACRO ADDED: " + macroKey + " will now be changed to " + macroPayload);
 	
 			//	TODO: save new macro as per-game
 			chrome.storage.local.get(['macros'], function(result) {
 				result.macros.game[gamePrefix].char[localCharacter][macroKey] = macroPayload;
 				chrome.storage.local.set({macros : result.macros}, () => {});
 			});
-		}
-
-		if (macroCommand.toUpperCase() == "DELETE"){
+		} else if (macroCommand.toUpperCase() == "DELETE"){
+			if (macros.get(macroKey)){
+				reportMessage("MACRO DELETED: " + macroKey);
+			}
 			//	delete the macro if it exists
 			updateMacros(macroKey, null);
+		} else if (macroCommand.toUpperCase() == "help"){
+			reportMessage("Please use: <strong>MACRO ADD key <em>new value</em></strong>");
+			reportMessage("key: <em>a single word to be replaced</em>");
+			reportMessage("new value: <em>the text to replace it with (can be more than one word)</em>");
 		}
 
 		//	This should never be sent to the server.

@@ -42,7 +42,7 @@ function checkClientCommands(clientCommand){
 		commandsList.shift();
 
 		//	Check for the practice-dummy
-		if (commandsList[0] = "headless"){
+		if (commandsList[0] == "headless"){
 			console.log("Probably healed: a dummy.");
 
 			return false;

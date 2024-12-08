@@ -1421,13 +1421,13 @@ function sendMessage(text)
 	else if (text.substring(0,5).toUpperCase() == "MACRO")
 	{
 		let commandSplit = text.split(" ");
-		text.shift();
+		commandSplit.shift();
 
-		let macroCommand = text.shift();
-		let macroKey = text.shift();
+		let macroCommand = commandSplit.shift();
+		let macroKey = commandSplit.shift();
 
 		if (macroCommand.toUpperCase() == "ADD"){
-			let macroPayload = text.join(" ");
+			let macroPayload = commandSplit.join(" ");
 
 			//	sanity check the macro
 			if (commandSplit.length < 1){

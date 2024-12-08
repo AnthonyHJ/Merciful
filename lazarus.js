@@ -25,7 +25,7 @@ var profile = {
  * @returns {Boolean} True if the command is not sent to the server
  */
 function checkClientCommands(clientCommand){
-	let commandsList = clientCommand.split(" ");
+	let commandsList = clientCommand.toLocaleLowerCase().split(" ");
 
 	if (commandsList[0] == "@healer")
 	{

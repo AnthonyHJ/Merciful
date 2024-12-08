@@ -1418,7 +1418,7 @@ function sendMessage(text)
 		//	This should never be sent to the server.
 		return;
 	}
-	else if (text.substring(0,5) == "MACRO")
+	else if (text.substring(0,5).toUpperCase() == "MACRO")
 	{
 		let commandSplit = text.split(" ");
 		text.shift();

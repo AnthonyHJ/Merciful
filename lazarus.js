@@ -19,6 +19,8 @@ var profile = {
 		"path":     "/lazarus",
 	};
 
+var healTarget = "UNKNOWN";
+
 /**
  * Handles commands from the player to the server
  * @param {String} clientCommand Command from the server
@@ -35,8 +37,6 @@ function checkClientCommands(clientCommand){
 		return true;
 	} else if (commandsList[0] == "suture") {
 		//	You just healed someone!
-
-		let healTarget = "UNKNOWN";
 
 		//	Cut off the command
 		commandsList.shift();

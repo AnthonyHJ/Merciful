@@ -1436,6 +1436,7 @@ function sendMessage(text)
 				reportMessage("Please use: <strong>MACRO ADD key <em>new value</em></strong>");
 				reportMessage("key: <em>a single word to be replaced</em>");
 				reportMessage("new value: <em>the text to replace it with (can be more than one word)</em>");
+				reportMessage("Example: <strong>MACRO ADD bag1 my first bag</strong>");
 				return;
 			}
 	
@@ -1458,6 +1459,7 @@ function sendMessage(text)
 			reportMessage("Please use: <strong>MACRO ADD key <em>new value</em></strong>");
 			reportMessage("key: <em>a single word to be replaced</em>");
 			reportMessage("new value: <em>the text to replace it with (can be more than one word)</em>");
+			reportMessage("Example: <strong>MACRO ADD bag1 my first bag</strong>");
 		}
 
 		//	This should never be sent to the server.

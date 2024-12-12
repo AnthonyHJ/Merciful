@@ -19,6 +19,9 @@ var profile = {
 		"path":     "/lazarus",
 	};
 
+//	Healing
+const regexSuturePermission = /^(?:.. )?(\w.*?) allows you to suture (\w.*?)\.$/mg;
+
 var healTarget = "UNKNOWN";
 
 /**
@@ -77,8 +80,6 @@ function checkClientCommands(clientCommand){
 				healTarget = roomPeopleList[targetIndex];
 			}
 		}
-
-		console.log("Probably healed: " + healTarget);
 	}
 
 	return false;
@@ -89,7 +90,16 @@ function checkClientCommands(clientCommand){
  * @param {String} serverCommand Raw text from the server
  * @returns {Boolean} Hide return from the player?
  */
-function checkServerCommands(){
+function checkServerCommands(serverCommand){
+	if ((skillsData = regexSuturePermission.exec(serverCommand)) !== null){
+		healTarget = skillsData[1];
+	} else if (serverCommand.slice(0,68) == "You position the suturing device close to the wound, and activate it"){
+
+		console.log("Probably healed: " + healTarget);
+
+		//	TODO - a timer?
+	}
+
 	return false;
 }
 

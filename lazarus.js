@@ -143,6 +143,7 @@ var titlesFilter = {
 	"Delivery-Tech" : "Post.",
 	"Med-Student" : "Med.",
 	"Field-Medic" : "Med.",
+	"First-Medic" : "Med.",
 	"Administrator" : "Admin",
 	"StoryPlotter" : "SP",
 	"StoryHost" : "SH",

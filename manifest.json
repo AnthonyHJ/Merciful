@@ -37,6 +37,7 @@
     },
   "options_page": "options.html",
   "permissions": [
+            "alarms", 
             "cookies", 
             "downloads", 
             "scripting", 

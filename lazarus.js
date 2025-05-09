@@ -19,6 +19,17 @@ var profile = {
 		"path":     "/lazarus",
 	};
 
+//	Skills RegEx
+const regexSkillClass = /^----([\w ]*?)----$/mg;
+const regexSkillProficiency = /^([\w ]*?): (\d{2,3})% proficiency$/mg;
+const regexSkillExperience = /^Experience: (\d{1,2}(?:\.\d*?)?)%$/mg;
+const regexSkillBanked = /^- Available Lessons: (\d) -$/mg;
+
+//	Skills Data
+const skillsObject = {};
+var currentSkillClass;
+var currentSkill;
+
 //	Healing
 const regexSuturePermission = /^(?:.. )?(\w.*?) allows you to suture (\w.*?)\.$/mg;
 const healTargets = {
@@ -116,6 +127,40 @@ function checkServerCommands(serverCommand){
 		chrome.alarms.create('heal-alarm-' + healTarget, {
 			delayInMinutes: 15
 		  });
+	} else if ((skillsData = regexSkillClass.exec(serverCommand)) !== null){
+		currentSkillClass = skillsData[1];
+
+		if (!skillsObject[currentSkillClass]) {
+			skillsObject[currentSkillClass] = {}
+		};
+
+		saveSkillData()
+	} else if ((skillsData = regexSkillProficiency.exec(serverCommand)) !== null){
+		currentSkill = skillsData[1];
+
+		if (!skillsObject[currentSkillClass][currentSkill]) {
+			skillsObject[currentSkillClass][currentSkill] = {proficiency: skillsData[2]};
+		} else {
+			skillsObject[currentSkillClass][currentSkill].proficiency = skillsData[2];
+		}
+
+		saveSkillData()
+	} else if ((skillsData = regexSkillExperience.exec(serverCommand)) !== null){
+		if (!skillsObject[currentSkillClass][currentSkill]) {
+			console.log("SOMETHING WENT WRONG: SKILL NOT FOUND: " + currentSkillClass + " -> " + currentSkill, skillsObject);
+		} else {
+			skillsObject[currentSkillClass][currentSkill].experience = skillsData[1];
+		}
+
+		saveSkillData()
+	} else if ((skillsData = regexSkillBanked.exec(serverCommand)) !== null){
+		if (!skillsObject[currentSkillClass][currentSkill]) {
+			console.log("SOMETHING WENT WRONG: SKILL NOT FOUND: " + currentSkillClass + " -> " + currentSkill, skillsObject);
+		} else {
+			skillsObject[currentSkillClass][currentSkill].available = skillsData[1];
+		}
+
+		saveSkillData()
 	}
 
 	return false;
@@ -124,6 +169,20 @@ function checkServerCommands(serverCommand){
 function healerWindow(patient, level, time)
 {
 	return;
+}
+
+function saveSkillData()
+{
+	chrome.storage.local.get(['clientVars'])
+		.then((result) => {
+			if (!result.clientVars.char[gamePrefix]) {result.clientVars.char[gamePrefix] = {}}
+			if (!result.clientVars.char[gamePrefix][localCharacter]) {result.clientVars.char[gamePrefix][localCharacter] = {}}
+
+			result.clientVars.char[gamePrefix][localCharacter].skillsObject = skillsObject;
+
+			chrome.storage.local.set({clientVars : result.clientVars});
+		}
+	);
 }
 
 function skoot80 (skootText)

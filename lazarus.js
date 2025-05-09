@@ -209,7 +209,8 @@ var audioTriggersFixed = new Map([
 ]);
 
 var audioTriggers = new Map([
-//	['mistSound', /^A frigid chill runs throughout your core as the icy white mists coarse over you./],
+	//	['cashSound', /^The words: \'Daily rations and occupation credits applied to your account./]
+	//	['wakeSound', /^You regain consciousness./]
 ]);
 
 var titlesFilter = {

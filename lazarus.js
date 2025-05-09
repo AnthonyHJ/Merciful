@@ -21,8 +21,20 @@ var profile = {
 
 //	Healing
 const regexSuturePermission = /^(?:.. )?(\w.*?) allows you to suture (\w.*?)\.$/mg;
+const healTargets = {
+	him: null,
+	her: null,
+	them: null,
+	it: null
+};
 
 var healTarget = "UNKNOWN";
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+	if (alarm.name.slice(0,11) == "heal-alarm-"){
+		reportMessage(alarm.name.slice(11) + " can be healed again.");
+	}
+  });
 
 /**
  * Handles commands from the player to the server
@@ -91,13 +103,19 @@ function checkClientCommands(clientCommand){
  * @returns {Boolean} Hide return from the player?
  */
 function checkServerCommands(serverCommand){
+	let skillsData;
+
 	if ((skillsData = regexSuturePermission.exec(serverCommand)) !== null){
+		healTargets[skillsData[2]] = skillsData[1];
 		healTarget = skillsData[1];
 	} else if (serverCommand.slice(0,68) == "You position the suturing device close to the wound, and activate it"){
 
 		console.log("Probably healed: " + healTarget);
 
-		//	TODO - a timer?
+		//	timer
+		chrome.alarms.create('heal-alarm-' + healTarget, {
+			delayInMinutes: 15
+		  });
 	}
 
 	return false;

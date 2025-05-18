@@ -44,7 +44,7 @@ function checkClientCommands(clientCommand){
  */
 function checkServerCommands(serverCommand){
 	if (serverCommand.substring(0,2) == "A "){
-		checkCourierTriggers(text);
+		checkCourierTriggers(serverCommand);
 	}
 	
 	return false;

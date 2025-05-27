@@ -498,6 +498,7 @@ async function SaveLogFile(windowID)
 			return;
 		}
 		
+		var newID = items.logFileID[windowID];
 		items.logFileID[windowID] = -1; 
 		chrome.storage.local.set({logFileID : items.logFileID});
 		
@@ -519,7 +520,8 @@ async function SaveLogFile(windowID)
 				else
 					logFileOutput = "<html><body>" + logFileOutput + "</body></html>";
 				
-				let file = 'data:text/html,'+logFileOutput;
+				let file = URL.createObjectURL(new Blob([logFileOutput], {type: "text/html"}));
+
 				chrome.downloads.download({ url : file, filename : items.logFiles[items.gameTabLog[windowID]].logName, conflictAction : "uniquify" }, (newID) => { 
 					items.logFileID[windowID] = newID; 
 					chrome.storage.local.set({logFileID : items.logFileID});
@@ -528,7 +530,7 @@ async function SaveLogFile(windowID)
 		}
 		else
 		{
-			let file = 'data:text/plain,'+logFileOutput;
+			let file = URL.createObjectURL(new Blob([logFileOutput], {type: "text/plain"}));
 
 			chrome.downloads.download({ url : file, filename : items.logFiles[items.gameTabLog[windowID]].logName, conflictAction : "uniquify" }, (newID) => { 
 				items.logFileID[windowID] = newID; 

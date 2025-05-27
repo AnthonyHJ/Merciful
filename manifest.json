@@ -54,5 +54,12 @@
     "extension_pages": "script-src 'self'"
     },
     
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "apps@freyas8.co.uk"
+    }
+  },
+
+    
   "manifest_version": 3
 }

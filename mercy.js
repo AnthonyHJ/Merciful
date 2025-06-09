@@ -142,7 +142,9 @@ function init()
 			if ((inputWindow[inputActive].value.length > 0)&&(inputWindow[inputActive].value[inputWindow[inputActive].value.length-1] != " "))
 				inputWindow[inputActive].value += " ";
 			
-			inputWindow[inputActive].value += targ.innerText;
+			let _targetName = targ.innerText.split(" ").pop();	//	get the last word, which should strip off titles
+
+			inputWindow[inputActive].value += _targetName;
 			
 			inputWindow[inputActive].focus();
 		}

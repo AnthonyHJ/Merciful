@@ -4,3 +4,7 @@
 	#focus_bar, #energy_bar		{ background: linear-gradient(0deg, #ff0 var(--percentValue), #ccc var(--percentValue)); }
 	#hunger_bar					{ background: linear-gradient(0deg, #0f0 var(--percentValue), #ccc var(--percentValue)); }
 }
+
+#weather_box img {
+    border: solid 1px;
+}

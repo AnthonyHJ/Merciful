@@ -71,15 +71,21 @@ function skoot90 (skootText)
 			reportClientMessage("No wind entry for: " + values[2], 'error');
 	}
 	
-	if (timesOfDay.get(values[0]))
+	if (timesOfDay.get(values[0])){
 		document.getElementById("time_Image").src = iconsLoc + timesOfDay.get(values[0]);
+		document.getElementById("time_Image").title = values[0];
+	}
 	
-	if (weatherIcons.get(values[1]))
+	if (weatherIcons.get(values[1])){
 		document.getElementById("weather_Image").src = iconsLoc + weatherIcons.get(values[1]);
-	
-	if (windIcons.get(values[2]))
+		document.getElementById("weather_Image").title = values[1];
+	}
+
+	if (windIcons.get(values[2])){
 		document.getElementById("wind_Image").src = iconsLoc + windIcons.get(values[2]);
-	
+		document.getElementById("wind_Image").title = values[2];
+	}
+
 	//	time is iconsLoc+timesOfDay['value']
 	//	weather is iconsLoc+weatherIcons['value']
 	//	wind is iconsLoc+windIcons['value']

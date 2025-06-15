@@ -1342,6 +1342,13 @@ function updateClientVars(key, value)
 		else
 			document.getElementsByTagName("body")[0].classList.add("fancy");
 	}
+
+	if (key == "showPercentages"){
+		if (value == 1)
+			document.getElementById("combat_bars").classList.add("show_percentages");
+		else
+			document.getElementById("combat_bars").classList.remove("show_percentages");
+	}
 }
 
 /**

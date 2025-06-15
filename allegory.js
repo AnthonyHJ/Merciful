@@ -49,6 +49,7 @@ function skoot80 (skootText)
 	
 	document.getElementById(values[0] + '_bar').style.setProperty("--percentValue", values[1] + '%');
 
+	document.getElementById(values[0] + '_bar').dataset.percentage = values[1] + "%";
 }
 
 function skoot90 (skootText)
@@ -135,6 +136,9 @@ function RunOnStart()
 	
 	document.getElementById("player_name").innerText = localCharacter.substring(0,1).toUpperCase() + 
 										localCharacter.substring(1,localCharacter.length).toLowerCase();
+	
+	if (clientVars.get("showPercentages") == 1)
+		document.getElementById("combat_bars").classList.add("show_percentages");
 	
 	runOnStart = false;
 }

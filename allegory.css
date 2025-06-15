@@ -5,6 +5,16 @@
 	#hunger_bar					{ background: linear-gradient(0deg, #0f0 var(--percentValue), #ccc var(--percentValue)); }
 }
 
+#combat_bars.show_percentages .player_bar::before {
+    content: attr(data-percentage);
+    transform: rotate(90deg);
+    position: absolute;
+    left: -1.2ex;
+    bottom: 3em;
+    width: 3em;
+    text-align-last: end;
+}
+
 #weather_box img {
     border: solid 1px;
 }

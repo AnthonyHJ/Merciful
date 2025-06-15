@@ -290,6 +290,15 @@ var clientVarsGame = {
 			'type' : 'select',
 			'category' : 'Interface',
 			'specificity' : 'game'
+		},
+		'showPercentages' : {
+			'pretty' : 'Show bar values',
+			'defaultValue' : '0',
+			'pattern' : 'true|false',
+			'desc' : 'This variable lets you toggle on and off numerical values for the stat bars',
+			'type' : 'bool',
+			'category' : 'Interface',
+			'specificity' : 'game'
 		}
 	},
 	'LP' : {

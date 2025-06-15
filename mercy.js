@@ -319,8 +319,6 @@ function init()
 	
 	let snapButton = document.getElementById("snap_button");
 	snapButton.addEventListener("click", snapToBottom);
-
-	RunOnStart();
 }
 
 /**
@@ -487,6 +485,8 @@ function serverHandshake(event)
 		
 		inputWindow[inputActive].disabled = false;
 	});
+
+	RunOnStart();
 
 	if (useALICE)
 		sendMessage("SKOTOS " + client.name + " " + client.version);

@@ -310,7 +310,8 @@ var clientVarsGame = {
 			'type' : 'bool',
 			'category' : 'Interface',
 			'specificity' : 'game'
-		}}
+		}
+	}
 };
 
 var clientVars = {};

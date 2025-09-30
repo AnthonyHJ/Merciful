@@ -461,6 +461,19 @@ function getLoginCookies(URL,gameCode)
 
 async function SaveLogFile(windowID)
 {	
+	chrome.tabs.create({"url": "log-manager.html", "active": true});
+
+	/*
+	 	TODO - major changes
+
+		New Chrome changes broke the logging because background scripts cannot access URL.createObjectURL
+
+		Need to spawn a new 'save' page that exists long enough to download a file and then dies.
+		Pretty sure this could fail if you close the window instead of a tab. 
+
+		I'd move the save code back into mercy.js but it got moved into here precisely because it could fail.
+	 */
+	/*
 	chrome.storage.local.get(['gameTabLog','logFileID','logFiles'], async function (items) {
 		if (!items.gameTabLog)
 		{
@@ -541,6 +554,7 @@ async function SaveLogFile(windowID)
 		delete items.gameTabLog[windowID];
 		chrome.storage.local.set({gameTabLog : items.gameTabLog});
 	});
+	*/
 }
 
 chrome.downloads.onChanged.addListener(DownloadComplete);

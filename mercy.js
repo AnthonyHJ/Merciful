@@ -1824,8 +1824,8 @@ function sendToLogger(myMessage)
 	
 	if (logFileName == "")
 	{
-		logFileName= "Log-" + localCharacter + "-" + 
-				timeNow.getFullYear() + "." + 
+		logFileName= "Log-" + gamePrefix + "-" + localCharacter + 
+				"-" + timeNow.getFullYear() + "." + 
 				("0" + (timeNow.getMonth()+1)).slice(-2) + "." + 
 				("0" + timeNow.getDate()).slice(-2) + "-" + 
 				("0" + timeNow.getHours()).slice(-2) + "." + 
